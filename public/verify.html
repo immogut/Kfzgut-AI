@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KfzGut-AI – E-Mail bestätigen</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1e2433;--blue:#1a56a0;--orange:#d95f1a;--green:#1a6e3a;--red:#c02828;--bg:#f0f2f6;--serif:'Fraunces',Georgia,serif;--sans:'Instrument Sans',system-ui,sans-serif}
+html,body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--ink)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.topbar{background:var(--ink);height:54px;padding:0 24px;display:flex;align-items:center}
+.logo{font-family:var(--serif);font-size:21px;color:white;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:white}
+.logo-ai{color:var(--orange)}
+.page{max-width:480px;margin:80px auto;padding:0 24px;text-align:center}
+.icon{width:72px;height:72px;border-radius:50%;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.icon.loading{background:#deeaf8;animation:pulse 1.5s ease-in-out infinite}
+.icon.success{background:#e2f0e8}
+.icon.error{background:#fdf0f0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.spinner{width:32px;height:32px;border:3px solid rgba(26,86,160,0.2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+h1{font-family:var(--serif);font-size:28px;font-weight:400;margin-bottom:12px;color:var(--ink)}
+p{font-size:15px;font-weight:300;color:#5a6478;line-height:1.65;margin-bottom:24px}
+.btn{display:inline-block;padding:12px 28px;border-radius:9px;text-decoration:none;font-weight:500;font-size:14px;font-family:var(--sans);transition:all .18s}
+.btn-blue{background:var(--blue);color:white}
+.btn-blue:hover{background:#2e7dd1}
+.btn-orange{background:var(--orange);color:white}
+.btn-orange:hover{background:#f07030}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-mark">K</div>
+    Kfz<span style="color:rgba(255,255,255,0.7)">Gut</span>-<span class="logo-ai">AI</span>
+  </a>
+</div>
+
+<div class="page">
+  <div class="icon loading" id="icon">
+    <div class="spinner"></div>
+  </div>
+  <h1 id="title">E-Mail wird bestätigt…</h1>
+  <p id="msg">Einen Moment bitte.</p>
+  <div id="btnArea"></div>
+</div>
+
+<script>
+const API = '';
+const token = new URLSearchParams(window.location.search).get('token');
+const authToken = localStorage.getItem('kg_token');
+
+async function verify() {
+  if (!token) {
+    showError('Ungültiger Link', 'Der Bestätigungslink ist ungültig oder abgelaufen.');
+    return;
+  }
+
+  try {
+    const r = await fetch(API + '/api/verify-email?token=' + encodeURIComponent(token));
+    const data = await r.json();
+
+    if (!r.ok) {
+      showError('Fehler', data.error || 'Der Link ist ungültig oder abgelaufen.');
+      return;
+    }
+
+    if (data.alreadyVerified) {
+      showSuccess('Bereits bestätigt', 'Ihre E-Mail-Adresse wurde bereits bestätigt.', true);
+      return;
+    }
+
+    showSuccess('E-Mail bestätigt ✓', 'Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Ihr 7-tägiger Testzugang ist ab sofort aktiv.', false);
+
+  } catch (err) {
+    showError('Verbindungsfehler', 'Bitte versuchen Sie es erneut.');
+  }
+}
+
+
+function showSuccess(title, msg, alreadyDone) {
+  document.getElementById('icon').className = 'icon success';
+  document.getElementById('icon').innerHTML = '✓';
+  document.getElementById('icon').style.fontSize = '36px';
+  document.getElementById('icon').style.color = 'var(--green)';
+  document.getElementById('title').textContent = title;
+  document.getElementById('msg').textContent = msg;
+
+  if (authToken) {
+    // Go directly to app – 7-day trial, no payment needed
+    document.getElementById('btnArea').innerHTML =
+      '<a href="app.html" class="btn btn-orange" style="font-size:15px;padding:13px 32px">Zum Tool – 7 Tage kostenlos →</a>' +
+      '<p style="margin-top:12px;font-size:12px;color:#9aa0ae">Keine Kreditkarte nötig · 7 Tage vollen Zugang kostenlos</p>';
+    setTimeout(() => { window.location.href = 'app.html'; }, 2000);
+  } else {
+    document.getElementById('btnArea').innerHTML =
+      '<a href="login.html" class="btn btn-orange">Einloggen →</a>' +
+      '<p style="margin-top:12px;font-size:12px;color:#9aa0ae">Bitte im selben Browser anmelden, in dem Sie sich registriert haben.</p>';
+  }
+}
+
+function showError(title, msg) {
+  document.getElementById('icon').className = 'icon error';
+  document.getElementById('icon').innerHTML = '✕';
+  document.getElementById('icon').style.fontSize = '28px';
+  document.getElementById('icon').style.color = 'var(--red)';
+  document.getElementById('title').textContent = title;
+  document.getElementById('msg').textContent = msg;
+  document.getElementById('btnArea').innerHTML = '<a href="login.html" class="btn btn-blue">Zurück zum Login</a>';
+}
+
+verify();
+</script>
+</body>
+</html>

@@ -21,7 +21,7 @@ async function buildChecklist({ kategorien, zusammenfassung, gesamtbewertung }){
       rows:[new TableRow({ children:[
         new TableCell({ borders:nb, shading:{ fill:INK, type:ShadingType.CLEAR }, margins:{ top:220,bottom:220,left:300,right:120 }, width:{ size:7026, type:WidthType.DXA },
           children:[new Paragraph({ children:[
-            new TextRun({ text:'Immo', font:'Georgia', size:36, color:WHITE }),
+            new TextRun({ text:'Kfz', font:'Georgia', size:36, color:WHITE }),
             new TextRun({ text:'Gut', font:'Georgia', size:36, color:'AAAAAA' }),
             new TextRun({ text:'-AI', font:'Georgia', size:36, color:ORANGE }),
             new TextRun({ text:'   Prüfbericht & Checkliste', font:'Arial', size:20, color:'AAAAAA' }),
@@ -117,7 +117,7 @@ async function buildChecklist({ kategorien, zusammenfassung, gesamtbewertung }){
           children:[
             new Paragraph({ children:[new TextRun({ text:'Rechtlicher Hinweis', font:'Arial', size:18, bold:true, color:INK })] }),
             new Paragraph({ spacing:{ before:80, after:0 }, children:[new TextRun({
-              text:'Dieser Prüfbericht wurde automatisch durch KfzGut-AI erstellt und dient ausschließlich als Arbeitshilfe. KfzGut-AI ersetzt nicht die fachliche Beurteilung durch einen öffentlich bestellten und vereidigten Sachverständigen. Die rechtliche und fachliche Verantwortung für das fertige Gutachten liegt ausschließlich beim Verfasser. Alle Hinweise sind vor Verwendung eigenverantwortlich zu prüfen. KfzGut-AI übernimmt keine Haftung für Schäden aus der Verwendung dieses Berichts.',
+              text:'Dieser Prüfbericht wurde automatisch durch KfzGut-AI erstellt und dient ausschließlich als Arbeitshilfe. KfzGut-AI ersetzt nicht die fachliche Beurteilung durch einen öffentlich bestellten und vereidigten Kfz-Sachverständigen. Die rechtliche und fachliche Verantwortung für das fertige Gutachten liegt ausschließlich beim Verfasser. Alle Hinweise sind vor Verwendung eigenverantwortlich zu prüfen. KfzGut-AI übernimmt keine Haftung für Schäden aus der Verwendung dieses Berichts.',
               font:'Arial', size:16, color:'777777'
             })] }),
             new Paragraph({ spacing:{ before:100, after:0 }, children:[new TextRun({
@@ -140,6 +140,14 @@ async function buildChecklist({ kategorien, zusammenfassung, gesamtbewertung }){
   }
 
   const doc = new Document({
+    // Maschinenlesbare Kennzeichnung KI-generierter Inhalte (Art. 50 Abs. 2 EU-KI-VO)
+    creator: 'KfzGut-AI (KI-generiert)',
+    title: 'KI-generierter Prüfbericht',
+    subject: 'AI-generated content',
+    description: 'Dieser Prüfbericht wurde automatisiert mit künstlicher Intelligenz erstellt '
+               + '(AI-generated content, EU AI Act Art. 50). Er ersetzt nicht die fachliche '
+               + 'Beurteilung durch eine sachverständige Person.',
+    keywords: 'AI-generated, KI-generiert, KfzGut-AI',
     styles:{ default:{ document:{ run:{ font:'Arial', size:20 } } } },
     sections:[{ properties:{ page:{ size:{ width:11906, height:16838 }, margin:{ top:800, right:800, bottom:1200, left:800 } }},
       children:[
