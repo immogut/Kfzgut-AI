@@ -3,660 +3,177 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KfzGut-AI – Mein Konto</title>
+<title>Konto — KfzGut-AI</title>
+<link rel="stylesheet" href="/stil.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --ink:#1e2433;--ink2:#3a4155;--ink3:#5a6478;--ink4:#9aa0ae;
-  --bg:#f4f5f7;--bg2:#ebedf2;--white:#fff;
-  --blue:#1a56a0;--blue2:#2e7dd1;--blue-tint:#e8edf5;
-  --orange:#d95f1a;--orange-tint:#f2e8e0;
-  --green:#1a6e3a;--green-tint:#e6f4ec;
-  --red:#c02828;--red-tint:#fdf0f0;
-  --border:rgba(30,36,51,0.1);--border2:rgba(30,36,51,0.06);
-  --serif:'Fraunces',Georgia,serif;--sans:'Instrument Sans',system-ui,sans-serif;
-  --radius:10px;--radius-lg:16px;
-  --shadow:0 2px 16px rgba(30,36,51,0.07);--shadow-lg:0 8px 40px rgba(30,36,51,0.11);
-}
-html,body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
-.topbar{background:var(--ink);height:52px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo{font-family:var(--serif);font-size:19px;color:white;text-decoration:none;display:flex;align-items:center;gap:9px}
-.logo-mark{width:28px;height:28px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white}
-.logo-ai{color:var(--orange)}
-.topbar-nav{display:flex;align-items:center;gap:6px}
-.tb-link{font-size:12px;font-weight:500;color:rgba(255,255,255,0.55);text-decoration:none;padding:5px 12px;border-radius:6px;transition:all .15s}
-.tb-link:hover{color:white;background:rgba(255,255,255,0.08)}
-.tb-link.active{color:white;background:rgba(255,255,255,0.1)}
-.tb-btn{font-family:var(--sans);font-size:12px;font-weight:500;color:white;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.14);padding:5px 13px;border-radius:6px;cursor:pointer;transition:all .15s}
-.tb-btn:hover{background:rgba(255,255,255,0.18)}
-.page{max-width:900px;margin:0 auto;padding:40px 24px 80px}
-.page-hd{margin-bottom:36px}
-.page-title{font-family:var(--serif);font-size:32px;font-weight:400;letter-spacing:-0.01em;color:var(--ink);margin-bottom:6px}
-.page-sub{font-size:14px;font-weight:300;color:var(--ink3)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.grid.three{grid-template-columns:repeat(3,1fr)}
-.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;position:relative}
-.card-title{font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
-.card-title-action{font-size:11px;color:var(--blue);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:500;text-decoration:none;background:none;border:none;font-family:var(--sans)}
-.card-title-action:hover{text-decoration:underline}
-.plan-card{background:var(--ink);border-color:transparent;overflow:hidden}
-.plan-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
-.plan-glow{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(26,86,160,0.25) 0%,transparent 70%);top:-80px;right:-60px;pointer-events:none}
-.plan-card .card-title{color:rgba(255,255,255,0.4)}
-.plan-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:5px 12px;border-radius:100px;font-size:12px;font-weight:500;color:white;margin-bottom:14px;position:relative;z-index:1}
-.plan-badge-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.plan-badge-dot.green{background:#4ade80}
-.plan-badge-dot.orange{background:var(--orange)}
-.plan-badge-dot.gray{background:rgba(255,255,255,0.3)}
-.plan-name{font-family:var(--serif);font-size:28px;font-weight:400;color:white;margin-bottom:4px;position:relative;z-index:1}
-.plan-desc{font-size:13px;font-weight:300;color:rgba(255,255,255,0.5);margin-bottom:20px;position:relative;z-index:1}
-.trial-bar-wrap{margin-bottom:16px;position:relative;z-index:1}
-.trial-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:6px}
-.trial-bar{height:5px;background:rgba(255,255,255,0.1);border-radius:100px;overflow:hidden}
-.trial-bar-fill{height:100%;background:var(--orange);border-radius:100px;transition:width .6s ease}
-.plan-meta{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1;margin-bottom:20px}
-.plan-meta-item{display:flex;align-items:center;justify-content:space-between;font-size:13px}
-.plan-meta-label{color:rgba(255,255,255,0.45)}
-.plan-meta-value{color:white;font-weight:500}
-.plan-meta-value.orange{color:var(--orange)}
-.plan-meta-value.green{color:#4ade80}
-.plan-divider{height:1px;background:rgba(255,255,255,0.08);margin:16px 0;position:relative;z-index:1}
-.plan-actions{display:flex;gap:8px;position:relative;z-index:1}
-.plan-btn{padding:9px 18px;border-radius:var(--radius);font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .18s;border:none}
-.plan-btn.primary{background:var(--blue);color:white}
-.plan-btn.primary:hover{background:var(--blue2)}
-.plan-btn.ghost{background:rgba(255,255,255,0.08);color:white;border:1px solid rgba(255,255,255,0.14)}
-.plan-btn.ghost:hover{background:rgba(255,255,255,0.14)}
-.plan-btn.danger{background:rgba(200,40,40,0.15);color:#f87171;border:1px solid rgba(200,40,40,0.2)}
-.plan-btn.danger:hover{background:rgba(200,40,40,0.25)}
-.avatar{width:52px;height:52px;border-radius:50%;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;font-weight:400;color:var(--blue);margin-bottom:16px}
-.profile-name{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ink);margin-bottom:2px}
-.profile-email{font-size:13px;color:var(--ink4);margin-bottom:12px}
-.profile-company{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);padding:4px 10px;border-radius:100px;font-size:12px;color:var(--ink3)}
-.fg{margin-bottom:12px}
-.fg label{display:block;font-size:10px;font-weight:500;color:var(--ink4);margin-bottom:3px;letter-spacing:0.04em;text-transform:uppercase}
-.fg input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:var(--sans);background:var(--bg);color:var(--ink);transition:all .15s;outline:none}
-.fg input:focus{border-color:var(--blue);background:white}
-.fg input:disabled{opacity:0.5;cursor:not-allowed}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{padding:16px;background:var(--bg);border-radius:var(--radius);text-align:center}
-.stat-num{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink);display:block;line-height:1}
-.stat-label{font-size:11px;color:var(--ink4);margin-top:4px;display:block}
-.style-list{display:flex;flex-direction:column;gap:6px}
-.style-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:var(--radius);font-size:12px}
-.style-item-icon{width:28px;height:28px;border-radius:6px;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.style-item-icon svg{width:13px;height:13px;stroke:var(--ink3);fill:none;stroke-width:1.5;stroke-linecap:round}
-.style-item-name{flex:1;font-weight:500;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.style-item-size{color:var(--ink4);flex-shrink:0;margin-right:4px}
-.style-item-del{background:none;border:none;cursor:pointer;color:var(--ink4);font-size:15px;padding:0 2px;transition:color .15s}
-.style-item-del:hover{color:var(--red)}
-.empty-style{padding:20px;text-align:center;color:var(--ink4);font-size:12px;background:var(--bg);border-radius:var(--radius);border:1.5px dashed var(--border);line-height:1.6}
-.danger-card{border-color:rgba(200,40,40,0.15)}
-.danger-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border2);gap:16px}
-.danger-item:last-child{border-bottom:none;padding-bottom:0}
-.danger-item:first-child{padding-top:0}
-.danger-item h4{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
-.danger-item p{font-size:12px;color:var(--ink4);line-height:1.5}
-.danger-btn{padding:7px 14px;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .15s;background:var(--red-tint);color:var(--red);border:1px solid rgba(200,40,40,0.2)}
-.danger-btn:hover{background:rgba(200,40,40,0.12)}
-.save-btn{padding:9px 20px;background:var(--blue);color:white;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:6px}
-.save-btn:hover{background:var(--blue2)}
-.inline-ok{display:none;align-items:center;gap:5px;font-size:12px;color:var(--green);margin-top:8px}
-.inline-ok.v{display:flex}
-.err-msg{font-size:12px;color:var(--red);margin-bottom:10px;display:none}
-.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:white;padding:9px 18px;border-radius:var(--radius);font-size:12px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:999;box-shadow:var(--shadow-lg)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.modal-bg{position:fixed;inset:0;background:rgba(30,36,51,0.45);z-index:200;display:none;align-items:center;justify-content:center}
-.modal-bg.open{display:flex}
-.modal{background:white;border-radius:var(--radius-lg);padding:28px;max-width:420px;width:90%;box-shadow:var(--shadow-lg)}
-.modal h3{font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:8px}
-.modal p{font-size:13px;color:var(--ink3);margin-bottom:20px;line-height:1.6}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end}
-.m-btn{padding:8px 18px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans);border:1px solid var(--border);background:var(--bg);color:var(--ink2);transition:all .15s}
-.m-btn:hover{background:var(--bg2)}
-.m-btn.danger{background:var(--red-tint);color:var(--red);border-color:rgba(200,40,40,0.2)}
-.m-btn.danger:hover{background:rgba(200,40,40,0.12)}
-@media(max-width:680px){.grid,.grid.three{grid-template-columns:1fr}.page{padding:24px 16px 60px}}
+.haupt{padding:36px 0 80px}
+.reihe{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px dashed var(--linie);flex-wrap:wrap}
+.reihe:last-child{border-bottom:none}
+.reihe .l{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--stahl-70)}
+.reihe .w{font-size:15.5px;font-weight:500}
+h2{font-size:20px;margin-bottom:16px}
+.abschnitt{margin-bottom:28px}
+.preis-hinweis{background:var(--signal-tint);border:1px solid var(--signal);border-radius:10px;padding:18px 20px;margin-bottom:18px}
+.preis-hinweis .gross{font-family:var(--display);font-weight:800;font-size:28px;color:var(--signal)}
+.preis-hinweis .klein{font-size:13.5px;color:var(--stahl-70)}
+.nav-konto{display:flex;align-items:center;gap:14px;font-size:14px}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <a href="index.html" class="logo"><div class="logo-mark">K</div>KfzGut-<span class="logo-ai">AI</span></a>
-  <div class="topbar-nav">
-    <a href="app.html" class="tb-link">Tool</a>
-    <a href="konto.html" class="tb-link active">Mein Konto</a>
-    <button class="tb-btn" onclick="doLogout()">Abmelden</button>
-  </div>
-</div>
 
-<div class="page">
-  <div class="page-hd">
-    <div class="page-title">Mein Konto</div>
-    <div class="page-sub" id="pageSub">Verwalten Sie Ihre Profildaten und Ihr Abonnement.</div>
+<header class="kopf">
+  <div class="wrap">
+    <a class="logo" href="/app.html"><span class="mark"></span>KfzGut<span class="ai">-AI</span></a>
+    <nav class="nav-konto">
+      <a href="/app.html">Prüfen</a>
+      <a href="#" onclick="abmelden();return false">Abmelden</a>
+    </nav>
   </div>
+</header>
 
-  <!-- Plan + Profil -->
-  <div class="grid" style="margin-bottom:20px">
-    <div class="card plan-card" id="planCard">
-      <div class="plan-bg"></div><div class="plan-glow"></div>
-      <div class="card-title">Abonnement</div>
-      <!-- TRIAL -->
-      <div id="stTrial">
-        <div class="plan-badge"><div class="plan-badge-dot orange"></div>Testzeitraum aktiv</div>
-        <div class="plan-name">7-Tage-Trial</div>
-        <div class="plan-desc">Kostenlos – alle 55 Bausteine inklusive</div>
-        <div class="trial-bar-wrap">
-          <div class="trial-bar-labels"><span>Start</span><span id="daysLeft">— Tage verbleibend</span></div>
-          <div class="trial-bar"><div class="trial-bar-fill" id="trialFill" style="width:0%"></div></div>
-        </div>
-        <div class="plan-meta">
-          <div class="plan-meta-item"><span class="plan-meta-label">Trial endet am</span><span class="plan-meta-value orange" id="trialEnd">—</span></div>
-          <div class="plan-meta-item"><span class="plan-meta-label">Danach</span><span class="plan-meta-value">ab 149 € / Monat inkl. 19% USt.</span></div>
-        </div>
-        <div class="plan-divider"></div>
-        <div class="plan-actions">
-          <button class="plan-btn primary" onclick="goUpgrade('solo')">Einzelplatz – 149 €</button>
-          <button class="plan-btn primary" onclick="goUpgrade('team')" style="background:var(--orange)">Büro (5 Nutzer) – 199 €</button>
-          <button class="plan-btn ghost" onclick="confirmAction('cancelTrial')">Trial beenden</button>
-        </div>
+<main class="haupt">
+  <div class="wrap-schmal">
+    <h1 style="font-size:28px;margin-bottom:24px">Konto</h1>
+    <div class="meldung" id="meldung"></div>
+
+    <!-- Zugang -->
+    <div class="karte abschnitt">
+      <h2>Zugang</h2>
+      <div id="zugang">Wird geladen …</div>
+    </div>
+
+    <!-- Freischalten -->
+    <div class="karte abschnitt" id="kaufBox" style="display:none">
+      <h2>Zugang freischalten</h2>
+      <div class="preis-hinweis">
+        <div class="gross" id="preisAnzeige">79 € <span style="font-size:15px;font-weight:500;color:var(--stahl-70)">/ Monat</span></div>
+        <div class="klein" id="preisText">zzgl. USt. · monatlich kündbar</div>
       </div>
-      <!-- ACTIVE -->
-      <div id="stActive" style="display:none">
-        <div class="plan-badge"><div class="plan-badge-dot green"></div>Aktives Abonnement</div>
-        <div class="plan-name">KfzGut-AI</div>
-        <div class="plan-desc">Alle 55 Bausteine · 8 Kategorien · unlimitiert</div>
-        <div class="plan-meta">
-          <div class="plan-meta-item"><span class="plan-meta-label">Tarif</span><span class="plan-meta-value green" id="planPriceLabel">–</span></div>
-          <div class="plan-meta-item"><span class="plan-meta-label">Nächste Abbuchung</span><span class="plan-meta-value" id="nextBill">—</span></div>
-          <div class="plan-meta-item"><span class="plan-meta-label">Zahlungsart</span><span class="plan-meta-value" id="payMethod">Kreditkarte</span></div>
-          <div class="plan-meta-item"><span class="plan-meta-label">Mitglied seit</span><span class="plan-meta-value" id="memberSince">—</span></div>
-        </div>
-        <div class="plan-divider"></div>
-        <div class="plan-actions">
-          <button class="plan-btn ghost" onclick="toast('Bitte kontaktieren Sie den Support.')">Zahlungsdaten</button>
-          <button class="plan-btn danger" onclick="confirmAction('cancelSub')">Kündigen</button>
-        </div>
-      </div>
-      <!-- CANCELLED -->
-      <div id="stCancelled" style="display:none">
-        <div class="plan-badge"><div class="plan-badge-dot gray"></div>Kein aktives Abonnement</div>
-        <div class="plan-name">Inaktiv</div>
-        <div class="plan-desc">Ihr Zugang ist abgelaufen oder wurde beendet.</div>
-        <div class="plan-divider"></div>
-        <div class="plan-actions">
-          <button class="plan-btn primary" onclick="goUpgrade('solo')">Einzelplatz – 149 €</button>
-          <button class="plan-btn primary" onclick="goUpgrade('team')" style="background:var(--orange)">Büro (5 Nutzer) – 199 €</button>
-        </div>
-      </div>
+      <button class="btn btn-primary btn-voll" id="kaufBtn" onclick="kaufen()">Jetzt freischalten</button>
     </div>
 
-    <div class="card">
-      <div class="card-title">Profil <button class="card-title-action" id="editToggle" onclick="toggleEdit()">Bearbeiten</button></div>
-      <div class="avatar" id="avatarEl">??</div>
-      <div class="profile-name" id="pName">—</div>
-      <div class="profile-email" id="pEmail">—</div>
-      <div class="profile-company" id="pCompany" style="display:none">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-        <span id="pCompanyName"></span>
-      </div>
-      <div id="editForm" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border2)">
-        <div class="fr">
-          <div class="fg"><label>Vorname</label><input type="text" id="ef-fn"></div>
-          <div class="fg"><label>Nachname</label><input type="text" id="ef-ln"></div>
-        </div>
-        <div class="fg"><label>Büro / Unternehmen</label><input type="text" id="ef-co"></div>
-        <div class="fg"><label>E-Mail</label><input type="email" id="ef-em" disabled></div>
-        <button class="save-btn" onclick="saveProfile()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Speichern
-        </button>
-        <div class="inline-ok" id="profOk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Gespeichert</div>
-      </div>
+    <!-- Abo verwalten -->
+    <div class="karte abschnitt" id="aboBox" style="display:none">
+      <h2>Abo verwalten</h2>
+      <p style="color:var(--stahl-70);font-size:14.5px;margin-bottom:16px">
+        Rechnungen, Zahlungsmittel und Kündigung verwaltest du direkt bei unserem Zahlungsdienstleister.
+      </p>
+      <button class="btn btn-ghost btn-voll" onclick="portal()">Zum Kundenportal</button>
     </div>
+
+    <!-- Stammdaten -->
+    <div class="karte abschnitt">
+      <h2>Stammdaten</h2>
+      <div class="feld"><label for="fFirma">Büro / Name</label><input type="text" id="fFirma"></div>
+      <div class="feld"><label for="fName">Ansprechpartner</label><input type="text" id="fName"></div>
+      <button class="btn btn-ghost" onclick="speichern()">Speichern</button>
+    </div>
+
+    <!-- Feedback -->
+    <div class="karte abschnitt">
+      <h2>Feedback</h2>
+      <p style="color:var(--stahl-70);font-size:14.5px;margin-bottom:14px">
+        Fehlt ein Prüffeld? Lag ein Befund daneben? Schreib es rein — das fließt direkt in die Weiterentwicklung.
+      </p>
+      <div class="feld"><textarea id="fbText" rows="4" placeholder="Deine Rückmeldung …"></textarea></div>
+      <button class="btn btn-ghost" onclick="feedback()">Absenden</button>
+    </div>
+
+    <p style="text-align:center;font-size:13px;color:var(--stahl-70);margin-top:30px">
+      <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a>
+    </p>
   </div>
+</main>
 
-  <!-- Team-Verwaltung (nur Büro-Tarif) -->
-  <div class="card" id="teamCard" style="display:none;margin-bottom:20px">
-    <div class="card-title">Nutzer im Büro <span id="teamSeats" style="font-size:11px;font-weight:400;color:var(--ink4);margin-left:6px"></span></div>
-    <div id="teamList" style="margin-top:12px"></div>
-
-    <div id="teamAddBox" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border2)">
-      <div class="fr">
-        <div class="fg"><label>Name</label><input type="text" id="tm-name" placeholder="Max Mustermann"></div>
-        <div class="fg"><label>E-Mail</label><input type="email" id="tm-email" placeholder="kollege@buero.de"></div>
-      </div>
-      <div class="fg"><label>Passwort (mind. 8 Zeichen)</label><input type="password" id="tm-pw" placeholder="••••••••"></div>
-      <button class="save-btn" onclick="addTeamMember()" id="tmBtn">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nutzer hinzufügen
-      </button>
-      <div style="font-size:11px;color:var(--ink4);margin-top:8px">Der Nutzer erhält die Zugangsdaten automatisch per E-Mail.</div>
-    </div>
-
-    <div id="teamFullMsg" style="display:none;margin-top:14px;padding:12px 14px;background:var(--orange-tint,rgba(217,95,26,0.08));border:1px solid rgba(217,95,26,0.18);border-radius:var(--radius);font-size:12.5px;color:var(--ink3);line-height:1.6">
-      Alle Plätze Ihres Tarifs sind belegt. Entfernen Sie einen Nutzer, um einen neuen hinzuzufügen.
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="grid three" style="margin-bottom:20px">
-    <div class="card" style="padding:20px"><div class="stat"><span class="stat-num" id="stGut">0</span><span class="stat-label">Gespeicherte Gutachten</span></div></div>
-    <div class="card" style="padding:20px"><div class="stat"><span class="stat-num" id="stBau">0</span><span class="stat-label">Generierte Bausteine gesamt</span></div></div>
-    <div class="card" style="padding:20px"><div class="stat"><span class="stat-num" id="stSty">0</span><span class="stat-label">Stil-Referenzen</span></div></div>
-  </div>
-
-  <!-- Stil + Passwort -->
-  <div class="grid" style="margin-bottom:20px">
-    <div class="card">
-      <div class="card-title">Schreibstil-Referenzen <a class="card-title-action" href="app.html">Im Tool verwalten</a></div>
-      <div id="styleCont"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Passwort ändern</div>
-      <div class="fg"><label>Aktuelles Passwort</label><input type="password" id="pw-cur" placeholder="••••••••"></div>
-      <div class="fg"><label>Neues Passwort</label><input type="password" id="pw-new" placeholder="Mindestens 8 Zeichen"></div>
-      <div class="fg"><label>Passwort bestätigen</label><input type="password" id="pw-con" placeholder="••••••••"></div>
-      <div class="err-msg" id="pwErr"></div>
-      <button class="save-btn" onclick="changePw()">Passwort aktualisieren</button>
-      <div class="inline-ok" id="pwOk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Passwort geändert</div>
-    </div>
-  </div>
-
-  <!-- Danger zone -->
-  <div class="card danger-card">
-    <div class="card-title" style="color:var(--red);opacity:0.7">Gefahrenzone</div>
-    <div class="danger-item">
-      <div><h4>Verlauf löschen</h4><p>Alle gespeicherten Gutachten unwiderruflich entfernen.</p></div>
-      <button class="danger-btn" onclick="confirmAction('delHistory')">Verlauf löschen</button>
-    </div>
-    <div class="danger-item">
-      <div><h4>Schreibstil zurücksetzen</h4><p>Alle Referenz-Gutachten und den gespeicherten Stil löschen.</p></div>
-      <button class="danger-btn" onclick="confirmAction('delStyle')">Stil zurücksetzen</button>
-    </div>
-    <div class="danger-item">
-      <div><h4>Konto löschen</h4><p>Alle Daten unwiderruflich entfernen und das Konto schließen.</p></div>
-      <button class="danger-btn" onclick="confirmAction('delAccount')">Konto löschen</button>
-    </div>
-  </div>
-
-  <!-- Rechtliche Links -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:24px;padding:24px 0 8px">
-    <a href="impressum.html" style="font-size:12px;color:var(--ink4);text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink4)'">Impressum</a>
-    <span style="width:3px;height:3px;border-radius:50%;background:var(--border);display:inline-block"></span>
-    <a href="datenschutz.html" style="font-size:12px;color:var(--ink4);text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink4)'">Datenschutz</a>
-    <span style="width:3px;height:3px;border-radius:50%;background:var(--border);display:inline-block"></span>
-    <a href="agb.html" style="font-size:12px;color:var(--ink4);text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink4)'">AGB</a>
-  </div>
-</div>
-
-<div class="toast" id="toastEl"></div>
-
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <h3 id="mTitle">Bestätigen</h3>
-    <p id="mText">Sind Sie sicher?</p>
-    <div class="modal-btns">
-      <button class="m-btn" onclick="closeModal()">Abbrechen</button>
-      <button class="m-btn danger" onclick="doConfirm()">Bestätigen</button>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
-const API='';
-let pendingAction=null;
-let currentUser=null;
+const TOKEN = localStorage.getItem('kfzgut_token');
+if(!TOKEN) location.href = '/login.html';
+let USER = null;
 
-// ── AUTH & INIT ───────────────────────────────────────────────────────────────
-async function init(){
-  const token=localStorage.getItem('kg_token');
-  if(!token){window.location.href='login.html';return}
-  try{
-    const r=await fetch(API+'/api/me',{headers:{'Authorization':'Bearer '+token}});
-    if(!r.ok){window.location.href='login.html';return}
-    currentUser=await r.json();
-    renderProfile(currentUser);
-    renderPlan(currentUser);
-    loadTeam();
-    renderStats();
-    renderStyleDocs();
-  }catch{window.location.href='login.html'}
+function kopf(){ return { 'Content-Type':'application/json', Authorization:'Bearer ' + TOKEN }; }
+function melde(t, art){ const m = document.getElementById('meldung'); m.className = 'meldung zeigen m-' + art; m.textContent = t; }
+function toast(t){ const el = document.getElementById('toast'); el.textContent = t; el.style.display='block'; setTimeout(()=>el.style.display='none', 2600); }
+function datum(s){ return s ? new Date(s).toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'}) : '–'; }
+
+function abmelden(){
+  fetch('/api/logout',{method:'POST',headers:kopf()}).finally(()=>{
+    localStorage.removeItem('kfzgut_token'); location.href='/login.html';
+  });
 }
 
-function renderProfile(u){
-  const name=u.name||u.email;
-  const ini=name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)||'??';
-  document.getElementById('avatarEl').textContent=ini;
-  document.getElementById('pName').textContent=name;
-  document.getElementById('pEmail').textContent=u.email;
-  document.getElementById('pageSub').textContent='Willkommen zurück, '+(name.split(' ')[0]||'zurück')+'.';
-  if(u.company){document.getElementById('pCompany').style.display='inline-flex';document.getElementById('pCompanyName').textContent=u.company}
-  const parts=(u.name||'').split(' ');
-  document.getElementById('ef-fn').value=parts[0]||'';
-  document.getElementById('ef-ln').value=parts.slice(1).join(' ')||'';
-  document.getElementById('ef-co').value=u.company||'';
-  document.getElementById('ef-em').value=u.email;
-}
+async function laden(){
+  const r = await fetch('/api/me',{headers:kopf()});
+  if(r.status === 401){ localStorage.removeItem('kfzgut_token'); location.href='/login.html'; return; }
+  const d = await r.json();
+  USER = d.user;
 
-function toggleEdit(){
-  const f=document.getElementById('editForm');
-  const open=f.style.display==='block';
-  f.style.display=open?'none':'block';
-  document.getElementById('editToggle').textContent=open?'Bearbeiten':'Abbrechen';
-}
+  let statusZeile;
+  if(USER.plan === 'aktiv') statusZeile = '<span class="badge b-gruen">Aktiv</span>';
+  else if(USER.zugriff){
+    const tage = Math.ceil((new Date(USER.trial_ends_at) - new Date())/86400000);
+    statusZeile = `<span class="badge b-gelb">Test — noch ${tage} Tage</span>`;
+  } else statusZeile = '<span class="badge b-rot">Kein Zugang</span>';
 
-async function saveProfile(){
-  const fn=document.getElementById('ef-fn').value.trim();
-  const ln=document.getElementById('ef-ln').value.trim();
-  const co=document.getElementById('ef-co').value.trim();
-  const name=(fn+' '+ln).trim();
-  const token=localStorage.getItem('kg_token');
-  try{
-    const r=await fetch(API+'/api/me',{
-      method:'PUT',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({name,company:co})
-    });
-    if(!r.ok)throw new Error();
-    currentUser.name=name;currentUser.company=co;
-    renderProfile(currentUser);
-    show('profOk');toast('Profil gespeichert');
-  }catch{toast('Fehler beim Speichern')}
-}
+  document.getElementById('zugang').innerHTML = `
+    <div class="reihe"><span class="l">Status</span><span class="w">${statusZeile}</span></div>
+    <div class="reihe"><span class="l">E-Mail</span><span class="w">${USER.email}</span></div>
+    ${USER.plan === 'trial' ? `<div class="reihe"><span class="l">Test endet am</span><span class="w">${datum(USER.trial_ends_at)}</span></div>` : ''}
+    <div class="reihe"><span class="l">Prüfungen gesamt</span><span class="w">${USER.pruefungen_gesamt}</span></div>
+    ${USER.launch_preis ? `<div class="reihe"><span class="l">Preis</span><span class="w"><span class="badge b-grau">79 € dauerhaft garantiert</span></span></div>` : ''}`;
 
-function renderPlan(u){
-  ['stTrial','stActive','stCancelled'].forEach(id=>document.getElementById(id).style.display='none');
-  if(u.isTeamMember){
-    const pc=document.getElementById('planCard');
-    if(pc)pc.innerHTML='<div class="card-title" style="color:rgba(255,255,255,0.4)">Zugang</div>'
-      +'<div style="color:#fff;font-family:Georgia,serif;font-size:20px;margin:8px 0 6px">Büro-Zugang aktiv</div>'
-      +'<div style="color:rgba(255,255,255,0.45);font-size:13px;line-height:1.7">Ihr Zugang läuft über den Hauptaccount Ihres Büros. Abrechnung und Verwaltung erfolgen dort.</div>';
-    return;
-  }
-  const plan=u.plan||'trial';
-  const status=u.planStatus||'active';
-  if(plan==='trial'&&status==='active'){
-    document.getElementById('stTrial').style.display='block';
-    const now=Math.floor(Date.now()/1000);
-    const rem=Math.max(0,u.trialEndsAt-now);
-    const days=Math.ceil(rem/86400);
-    const total=14*86400;
-    const elapsed=total-rem;
-    const pct=Math.min(100,(elapsed/total)*100);
-    const end=new Date(u.trialEndsAt*1000);
-    document.getElementById('daysLeft').textContent=days+(days===1?' Tag verbleibend':' Tage verbleibend');
-    document.getElementById('trialFill').style.width=pct+'%';
-    document.getElementById('trialEnd').textContent=end.toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'});
-  } else if(plan==='active_sub'&&status==='active'){
-    document.getElementById('stActive').style.display='block';
-    const since=new Date((u.createdAt||0)*1000);
-    document.getElementById('memberSince').textContent=since.toLocaleDateString('de-DE',{month:'long',year:'numeric'});
-    const next=new Date();next.setMonth(next.getMonth()+1);
-    document.getElementById('nextBill').textContent=next.toLocaleDateString('de-DE',{day:'2-digit',month:'long',year:'numeric'});
-    document.getElementById('payMethod').textContent='Kreditkarte';
-    const lbl=document.getElementById('planPriceLabel');
-    if(lbl){
-      const seats=u.planSeats||1;
-      lbl.textContent = seats>1
-        ? '199 € / Monat inkl. 19% USt. · bis '+seats+' Nutzer'
-        : '149 € / Monat inkl. 19% USt. · Einzelplatz';
-    }
+  document.getElementById('fFirma').value = USER.firma || '';
+  document.getElementById('fName').value = USER.name || '';
+
+  document.getElementById('kaufBox').style.display = USER.plan === 'aktiv' ? 'none' : 'block';
+  document.getElementById('aboBox').style.display = USER.hat_abo ? 'block' : 'none';
+
+  if(!USER.launch_preis){
+    document.getElementById('preisAnzeige').innerHTML = '99 € <span style="font-size:15px;font-weight:500;color:var(--stahl-70)">/ Monat</span>';
+    document.getElementById('preisText').textContent = 'zzgl. USt. · monatlich kündbar';
   } else {
-    document.getElementById('stCancelled').style.display='block';
+    document.getElementById('preisText').textContent = 'Einführungspreis — für dich dauerhaft garantiert · zzgl. USt. · monatlich kündbar';
   }
 }
 
-async function goUpgrade(plan){
-  plan = plan || 'solo';
-  const token=localStorage.getItem('kg_token');
-  const btns=document.querySelectorAll('[onclick^="goUpgrade"]');
-  btns.forEach(b=>{b.disabled=true;});
-  const clicked=[...btns].find(b=>b.getAttribute('onclick').indexOf("'"+plan+"'")>=0);
-  const orig=clicked?clicked.textContent:'';
-  if(clicked)clicked.textContent='Weiterleitung...';
-  try{
-    const r=await fetch(API+'/api/checkout',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({plan})
-    });
-    const data=await r.json();
-    if(data.url){window.location.href=data.url;}
-    else{
-      toast('Fehler: '+(data.error||'Unbekannt'));
-      console.error('Checkout error:',data);
-      btns.forEach(b=>{b.disabled=false;});
-      if(clicked)clicked.textContent=orig;
-    }
-  }catch(e){
-    toast('Verbindungsfehler: '+e.message);
-    btns.forEach(b=>{b.disabled=false;});
-    if(clicked)clicked.textContent=orig;
-  }
+async function kaufen(){
+  const b = document.getElementById('kaufBtn');
+  b.disabled = true;
+  const r = await fetch('/api/checkout',{method:'POST',headers:kopf()});
+  const d = await r.json();
+  if(d.url) location.href = d.url;
+  else { melde(d.error || 'Der Bezahlvorgang konnte nicht gestartet werden.', 'fehler'); b.disabled = false; }
 }
 
-// Nutzerdaten aus dem Team dürfen nicht als Markup interpretiert werden
-function esc(v){
-  if (v === null || v === undefined) return '';
-  return String(v)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+async function portal(){
+  const r = await fetch('/api/portal',{method:'POST',headers:kopf()});
+  const d = await r.json();
+  if(d.url) location.href = d.url;
+  else melde(d.error || 'Das Kundenportal ist nicht verfügbar.', 'fehler');
 }
 
-// ── TEAM-VERWALTUNG ───────────────────────────────────────────────────────────
-async function loadTeam(){
-  const token=localStorage.getItem('kg_token');
-  const card=document.getElementById('teamCard');
-  if(!card)return;
-  try{
-    const r=await fetch(API+'/api/team',{headers:{'Authorization':'Bearer '+token}});
-    if(!r.ok){card.style.display='none';return;}
-    const d=await r.json();
-    if((d.seats||1)<2){card.style.display='none';return;}
-    card.style.display='block';
-    document.getElementById('teamSeats').textContent=d.seatsUsed+' von '+d.seats+' Plätzen belegt';
-    const list=document.getElementById('teamList');
-    let html='<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)">'
-      +'<div style="width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0">HA</div>'
-      +'<div style="flex:1"><div style="font-size:13px;color:var(--ink)">'+esc(currentUser&&currentUser.email?currentUser.email:'Hauptaccount')+'</div>'
-      +'<div style="font-size:11px;color:var(--ink4)">Hauptaccount · Abrechnung</div></div></div>';
-    (d.members||[]).forEach(m=>{
-      const initials=esc((m.name||m.email).slice(0,2).toUpperCase());
-      html+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)">'
-        +'<div style="width:28px;height:28px;border-radius:50%;background:var(--ink4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0">'+initials+'</div>'
-        +'<div style="flex:1"><div style="font-size:13px;color:var(--ink)">'+esc(m.email)+'</div>'
-        +'<div style="font-size:11px;color:var(--ink4)">'+esc(m.name||'Nutzer')+'</div></div>'
-        +'<button onclick="removeTeamMember('+m.id+')" style="background:none;border:none;color:var(--ink4);cursor:pointer;font-size:12px;padding:4px 8px" title="Entfernen">Entfernen</button>'
-        +'</div>';
-    });
-    list.innerHTML=html;
-    document.getElementById('teamAddBox').style.display=d.canAdd?'block':'none';
-    document.getElementById('teamFullMsg').style.display=d.canAdd?'none':'block';
-  }catch(e){card.style.display='none';}
+async function speichern(){
+  const r = await fetch('/api/me',{method:'PATCH',headers:kopf(),body:JSON.stringify({
+    firma: document.getElementById('fFirma').value,
+    name: document.getElementById('fName').value
+  })});
+  if(r.ok) toast('Gespeichert.'); else toast('Fehler beim Speichern.');
 }
 
-async function addTeamMember(){
-  const token=localStorage.getItem('kg_token');
-  const name=document.getElementById('tm-name').value.trim();
-  const email=document.getElementById('tm-email').value.trim();
-  const pw=document.getElementById('tm-pw').value;
-  if(!email||!pw){toast('E-Mail und Passwort erforderlich');return;}
-  if(pw.length<8){toast('Passwort mindestens 8 Zeichen');return;}
-  const btn=document.getElementById('tmBtn');
-  btn.disabled=true;btn.textContent='Wird hinzugefügt...';
-  try{
-    const r=await fetch(API+'/api/team',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({name,email,password:pw})
-    });
-    const d=await r.json();
-    if(!r.ok){toast(d.error||'Fehler beim Hinzufügen');}
-    else{
-      toast('Nutzer hinzugefügt – Zugangsdaten wurden per E-Mail versendet');
-      document.getElementById('tm-name').value='';
-      document.getElementById('tm-email').value='';
-      document.getElementById('tm-pw').value='';
-      loadTeam();
-    }
-  }catch(e){toast('Verbindungsfehler');}
-  btn.disabled=false;
-  btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nutzer hinzufügen';
+async function feedback(){
+  const t = document.getElementById('fbText').value.trim();
+  if(!t) return;
+  const r = await fetch('/api/feedback',{method:'POST',headers:kopf(),body:JSON.stringify({text:t})});
+  if(r.ok){ document.getElementById('fbText').value=''; toast('Danke für die Rückmeldung.'); }
+  else toast('Konnte nicht gesendet werden.');
 }
 
-async function removeTeamMember(id){
-  if(!confirm('Diesen Nutzer wirklich entfernen? Der Zugang wird sofort gesperrt.'))return;
-  const token=localStorage.getItem('kg_token');
-  try{
-    const r=await fetch(API+'/api/team/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+token}});
-    if(r.ok){toast('Nutzer entfernt');loadTeam();}
-    else{const d=await r.json();toast(d.error||'Fehler');}
-  }catch(e){toast('Verbindungsfehler');}
+if(new URLSearchParams(location.search).get('bezahlt')){
+  melde('Zahlung erfolgreich. Dein Zugang ist freigeschaltet.', 'ok');
 }
-
-async function goManage(){
-  const token=localStorage.getItem('kg_token');
-  try{
-    const r=await fetch(API+'/api/portal',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}
-    });
-    const data=await r.json();
-    if(data.url)window.location.href=data.url;
-    else toast('Stripe-Portal nicht verfügbar');
-  }catch{toast('Verbindungsfehler')}
-}
-
-function renderStats(){
-  const hist=JSON.parse(localStorage.getItem('kg_history')||'[]');
-  const style=JSON.parse(localStorage.getItem('kg_styledocs')||'[]');
-  let total=0;hist.forEach(h=>total+=Object.keys(h.sections||{}).length);
-  document.getElementById('stGut').textContent=hist.length;
-  document.getElementById('stBau').textContent=total;
-  document.getElementById('stSty').textContent=style.length;
-}
-
-function renderStyleDocs(){
-  const docs=JSON.parse(localStorage.getItem('kg_styledocs')||'[]');
-  const c=document.getElementById('styleCont');
-  if(!docs.length){c.innerHTML='<div class="empty-style">Noch keine Referenz-Gutachten hochgeladen.<br>Gehe ins Tool um deinen Schreibstil einzurichten.</div>';return}
-  c.innerHTML='<div class="style-list">'+docs.map((d,i)=>`
-    <div class="style-item">
-      <div class="style-item-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-      <span class="style-item-name" title="${d.name}">${d.name}</span>
-      <span class="style-item-size">${d.size}</span>
-      <button class="style-item-del" onclick="rmStyle(${i})">×</button>
-    </div>`).join('')+'</div>';
-}
-
-function rmStyle(i){
-  const docs=JSON.parse(localStorage.getItem('kg_styledocs')||'[]');
-  docs.splice(i,1);localStorage.setItem('kg_styledocs',JSON.stringify(docs));
-  renderStyleDocs();renderStats();toast('Referenz entfernt');
-}
-
-async function changePw(){
-  const cur=document.getElementById('pw-cur').value;
-  const nw=document.getElementById('pw-new').value;
-  const con=document.getElementById('pw-con').value;
-  const err=document.getElementById('pwErr');
-  err.style.display='none';
-  if(nw.length<8){err.textContent='Neues Passwort mindestens 8 Zeichen.';err.style.display='block';return}
-  if(nw!==con){err.textContent='Passwörter stimmen nicht überein.';err.style.display='block';return}
-  const token=localStorage.getItem('kg_token');
-  try{
-    const r=await fetch(API+'/api/me',{
-      method:'PUT',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({password:nw,currentPassword:cur})
-    });
-    const data=await r.json();
-    if(!r.ok){err.textContent=data.error||'Fehler';err.style.display='block';return}
-    document.getElementById('pw-cur').value='';
-    document.getElementById('pw-new').value='';
-    document.getElementById('pw-con').value='';
-    show('pwOk');toast('Passwort geändert');
-  }catch{err.textContent='Verbindungsfehler';err.style.display='block'}
-}
-
-const MODALS={
-  delHistory:{title:'Verlauf löschen',text:'Alle gespeicherten Gutachten werden unwiderruflich gelöscht.'},
-  delStyle:{title:'Schreibstil zurücksetzen',text:'Alle Referenz-Gutachten und der gespeicherte Schreibstil werden gelöscht.'},
-  delAccount:{title:'Konto wirklich löschen?',text:'Alle Daten werden unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.'},
-  cancelTrial:{title:'Trial beenden',text:'Dein kostenloser Testzeitraum wird sofort beendet und dein Zugriff gesperrt. Bist du sicher?'},
-  cancelSub:{title:'Abonnement kündigen',text:'Dein Abonnement wird zum Ende der aktuellen Laufzeit gekündigt. Du hast bis dahin noch vollen Zugriff.'}
-};
-
-function confirmAction(action){
-  pendingAction=action;
-  const cfg=MODALS[action]||{title:'Bestätigen',text:'Sind Sie sicher?'};
-  document.getElementById('mTitle').textContent=cfg.title;
-  document.getElementById('mText').textContent=cfg.text;
-  document.getElementById('modalBg').classList.add('open');
-}
-
-function closeModal(){document.getElementById('modalBg').classList.remove('open');pendingAction=null}
-
-async function doConfirm(){
-  const action = pendingAction; // save before closeModal resets it
-  closeModal();
-  const token = localStorage.getItem('kg_token');
-
-  if(action === 'delHistory'){
-    localStorage.removeItem('kg_history');
-    renderStats();
-    toast('Verlauf gelöscht');
-
-  } else if(action === 'delStyle'){
-    localStorage.removeItem('kg_styledocs');
-    renderStyleDocs();
-    renderStats();
-    toast('Schreibstil zurückgesetzt');
-
-  } else if(action === 'delAccount'){
-    toast('Konto wird gelöscht…');
-    try{
-      const r = await fetch(API+'/api/me', {method:'DELETE', headers:{'Authorization':'Bearer '+token}});
-      if(!r.ok){
-        const d = await r.json();
-        toast('Fehler: '+(d.error||'Unbekannt'));
-        return;
-      }
-    } catch {
-      toast('Verbindungsfehler – bitte erneut versuchen.');
-      return;
-    }
-    // Clear all local data
-    ['kg_token','kg_user','kg_history','kg_styledocs','kg_onboarding_done','kg_last_mode'].forEach(k=>localStorage.removeItem(k));
-    window.location.href = 'index.html';
-
-  } else if(action === 'cancelTrial'){
-    try{
-      const r = await fetch(API+'/api/cancel', {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}});
-      const d = await r.json();
-      if(r.ok){ toast('Trial beendet – du wirst ausgeloggt.'); setTimeout(()=>doLogout(), 2000); }
-      else toast('Fehler: '+(d.error||'Unbekannt'));
-    } catch { toast('Verbindungsfehler'); }
-
-  } else if(action === 'cancelSub'){
-    try{
-      const r = await fetch(API+'/api/cancel', {method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}});
-      const d = await r.json();
-      if(r.ok){ toast('Abonnement wird zum Ende der Laufzeit gekündigt.'); setTimeout(()=>init(), 1500); }
-      else toast('Fehler: '+(d.error||'Unbekannt'));
-    } catch { toast('Verbindungsfehler'); }
-  }
-}
-
-document.getElementById('modalBg').addEventListener('click',function(e){if(e.target===this)closeModal()});
-
-function doLogout(){
-  ['kg_token','kg_user','kg_onboarding_done'].forEach(k=>localStorage.removeItem(k));
-  window.location.href='login.html';
-}
-
-function toast(msg){const t=document.getElementById('toastEl');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
-function show(id){const e=document.getElementById(id);e.classList.add('v');setTimeout(()=>e.classList.remove('v'),3000)}
-
-init();
+laden();
 </script>
 </body>
 </html>

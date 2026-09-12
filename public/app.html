@@ -2,1866 +2,275 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KfzGut-AI – Schadengutachten prüfen & erstellen</title>
-
+<title>Gutachten prüfen — KfzGut-AI</title>
+<link rel="stylesheet" href="/stil.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --ink:#1e2433;--ink2:#3a4155;--ink3:#5a6478;--ink4:#9aa0ae;
-  --bg:#eef0f5;--bg2:#e4e6ed;--white:#fff;
-  --blue:#1a56a0;--blue2:#2e7dd1;--blue-tint:#deeaf8;
-  --orange:#d95f1a;--orange2:#f07030;--orange-tint:#fdeee5;
-  --gelb:#c9a000;--gelb2:#e6b800;--gelb-tint:#fef9e0;
-  --green:#1a6e3a;--green-tint:#e2f0e8;
-  --red:#c02828;--red-tint:#fdf0f0;
-  --border:rgba(30,36,51,0.1);--border2:rgba(30,36,51,0.06);
-  --serif:"Fraunces",Georgia,serif;--sans:"Instrument Sans",system-ui,sans-serif;
-  --radius:10px;--radius-lg:14px;
-}
-html{height:100%}body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55;display:flex;flex-direction:column}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.haupt{padding:32px 0 80px}
+.paywall{background:var(--gelb-bg);border:1px solid var(--gelb);border-radius:10px;padding:18px 20px;margin-bottom:24px;display:none}
+.paywall.zeigen{display:block}
+.paywall b{display:block;margin-bottom:4px}
+.paywall a{font-weight:600}
 
-/* ── TOPBAR ── */
-.topbar{background:var(--ink);height:54px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-shrink:0}
-.logo{font-family:var(--serif);font-size:21px;color:white;text-decoration:none;display:flex;align-items:center;gap:10px}
-.logo-mark{width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;color:white}
-.logo-ai{color:var(--orange)}
-.tb-right{display:flex;align-items:center;gap:6px}
-.tb-btn{font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:5px 13px;border-radius:7px;cursor:pointer;font-family:var(--sans);text-decoration:none;transition:all .15s;white-space:nowrap}
-.tb-btn:hover{background:rgba(255,255,255,0.15);color:white}
-.tb-btn.orange{background:var(--orange);border-color:var(--orange);color:white}
-.tb-btn.orange:hover{background:var(--orange2)}
-.tb-sep{width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 2px}
-.tb-user{font-size:12px;color:rgba(255,255,255,0.4)}
-.tb-badge{font-size:10px;font-weight:600;background:var(--orange);color:white;padding:2px 7px;border-radius:4px}
+.ablage{border:2px dashed var(--linie);border-radius:12px;padding:44px 24px;text-align:center;background:var(--blatt);cursor:pointer;transition:border-color .15s,background .15s}
+.ablage:hover,.ablage.drueber{border-color:var(--signal);background:var(--signal-tint)}
+.ablage .gross{font-size:17px;font-weight:600;margin-bottom:6px}
+.ablage .klein{font-size:13.5px;color:var(--stahl-70)}
+.ablage .icon{font-size:32px;margin-bottom:10px}
 
-/* ── MODE SELECTOR (Startseite) ── */
-.mode-selector{max-width:900px;margin:0 auto;padding:40px 24px 0}
-.mode-selector-title{font-family:var(--serif);font-size:26px;font-weight:400;color:var(--ink);margin-bottom:6px;text-align:center}
-.mode-selector-sub{font-size:14px;color:var(--ink3);text-align:center;margin-bottom:28px;font-weight:300}
-.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.mode-card{background:white;border:2px solid var(--border);border-radius:var(--radius-lg);padding:28px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:12px;position:relative}
-.mode-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 24px rgba(30,36,51,0.1)}
-.mode-card.primary{border-color:rgba(217,95,26,0.3);background:linear-gradient(135deg,rgba(217,95,26,0.03) 0%,white 100%)}
-.mode-card.primary:hover{border-color:var(--orange);box-shadow:0 8px 24px rgba(217,95,26,0.15)}
-.mode-badge{position:absolute;top:16px;right:16px;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px}
-.mode-badge.new{background:var(--orange);color:white}
-.mode-icon{font-size:32px;margin-bottom:4px}
-.mode-card h3{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--ink)}
-.mode-card p{font-size:13px;color:var(--ink3);line-height:1.65;font-weight:300}
-.mode-checks{display:flex;flex-direction:column;gap:6px;margin-top:4px}
-.mode-check{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)}
-.mode-check-dot{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;flex-shrink:0}
-.mode-check-dot.orange{background:var(--orange)}
-.mode-check-dot.blue{background:var(--blue)}
-.mode-btn{margin-top:8px;padding:11px 20px;border-radius:var(--radius);border:none;font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .18s;align-self:flex-start}
-.mode-btn.orange{background:var(--orange);color:white}
-.mode-btn.orange:hover{background:var(--orange2)}
-.mode-btn.blue{background:var(--blue);color:white}
-.mode-btn.blue:hover{background:var(--blue2)}
+.datei{background:var(--blatt);border:1px solid var(--linie);border-radius:10px;padding:14px 18px;margin-top:16px;display:none;align-items:center;gap:14px}
+.datei.zeigen{display:flex}
+.datei .name{font-family:var(--mono);font-size:13.5px;flex:1;word-break:break-all}
+.datei .weg{background:none;border:none;color:var(--stahl-70);cursor:pointer;font-size:20px;line-height:1}
 
-/* ── MAIN LAYOUT ── */
-.main{display:none;max-width:1280px;margin:0 auto;padding:20px 20px 0;gap:20px}
-.main.pruef-mode{display:grid;grid-template-columns:340px 1fr}
-.main.gen-mode{display:grid;grid-template-columns:300px 1fr}
+.fortschritt{height:5px;background:#EEF0F1;border-radius:3px;overflow:hidden;margin-top:16px;display:none}
+.fortschritt.zeigen{display:block}
+.fortschritt div{height:100%;background:var(--signal);width:0;transition:width .3s}
 
-/* ── LEFT PANEL ── */
-.left-panel{display:flex;flex-direction:column;gap:14px}
-.panel-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-.panel-hd{padding:13px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
-.panel-hd-title{font-family:var(--serif);font-size:15px;font-weight:400;color:var(--ink)}
-.panel-hd-sub{font-size:11px;color:var(--ink4);margin-top:1px}
-.panel-body{padding:14px 16px;display:flex;flex-direction:column;gap:9px}
-.fg label{display:block;font-size:10px;font-weight:500;color:var(--ink4);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em}
-.fg input,.fg select,.fg textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--sans);background:var(--bg);color:var(--ink);outline:none;transition:border-color .15s;-webkit-appearance:none}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);background:white}
-.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.req{color:var(--orange);font-size:9px}
-.upload-area{border:1.5px dashed var(--border);border-radius:var(--radius);padding:12px;text-align:center;cursor:pointer;transition:all .18s;background:var(--bg)}
-.upload-area:hover{border-color:var(--blue);background:var(--blue-tint)}
-.upload-area p{font-size:11px;color:var(--ink4);line-height:1.5}
-.sdoc{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:11px}
-.sdoc-name{flex:1;color:var(--ink2);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sdoc-del{background:none;border:none;cursor:pointer;color:var(--ink4);font-size:14px;padding:0}
-.sdoc-del:hover{color:var(--orange)}
+.status{font-family:var(--mono);font-size:13px;color:var(--stahl-70);margin-top:12px;text-align:center;display:none}
+.status.zeigen{display:block}
 
-/* ── RIGHT PANEL ── */
-.right-panel{display:flex;flex-direction:column;min-height:calc(100vh - 100px)}
+#ergebnis{margin-top:34px;display:none}
+.protokoll-kopf{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--stahl)}
+.protokoll-kopf h2{font-size:22px}
+.zaehler{display:flex;gap:8px;flex-wrap:wrap}
+.zus{background:var(--blatt);border-left:4px solid var(--stahl);padding:16px 18px;border-radius:0 8px 8px 0;margin-bottom:22px;font-size:15px}
 
-/* ── PRÜFUNG VIEW ── */
-.pruef-upload-wrap{padding:0}
-.upload-zone{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:32px 24px;text-align:center;cursor:pointer;transition:all .2s;background:white}
-.upload-zone:hover,.upload-zone.over{border-color:var(--orange);background:var(--orange-tint)}
-.upload-zone h4{font-family:var(--serif);font-size:17px;font-weight:400;color:var(--ink);margin-bottom:6px}
-.upload-zone p{font-size:12px;color:var(--ink4)}
-.upload-zone svg{width:36px;height:36px;stroke:var(--ink4);fill:none;stroke-width:1.5;stroke-linecap:round;margin-bottom:12px}
-.file-loaded{display:none;padding:12px 16px;background:var(--green-tint);border:1px solid rgba(26,110,58,0.2);border-radius:var(--radius);align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
-.file-loaded.v{display:flex}
-.file-loaded.open{display:flex}
-.file-name{font-size:13px;font-weight:500;color:var(--green)}
-.file-clear{font-size:11px;color:var(--ink4);cursor:pointer;background:none;border:none;padding:0;font-family:var(--sans)}
-.file-clear:hover{color:var(--red)}
-.run-btn{width:100%;padding:13px;background:var(--orange);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .18s;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px}
-.run-btn:hover{background:var(--orange2)}
-.run-btn:disabled{opacity:0.5;cursor:not-allowed}
-.info-box{font-size:12px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;line-height:1.65;margin-top:8px}
-.loading-box{display:none;align-items:center;gap:12px;padding:14px 16px;background:var(--blue-tint);border:1px solid rgba(26,86,160,0.15);border-radius:var(--radius);margin-top:12px;flex-direction:column}
-.loading-box.v{display:flex}
-.spinner{width:16px;height:16px;border:2px solid rgba(26,86,160,0.2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.befund{background:var(--blatt);border:1px solid var(--linie);border-radius:10px;padding:18px 20px;margin-bottom:12px;border-left-width:4px}
+.befund.rot{border-left-color:var(--rot)}
+.befund.gelb{border-left-color:var(--gelb)}
+.befund.gruen{border-left-color:var(--gruen)}
+.befund .zeile{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.befund h3{font-size:16.5px}
+.befund p{font-size:14.5px;color:var(--stahl-70)}
+.befund .fund{font-family:var(--mono);font-size:12px;color:var(--stahl-70);margin-top:8px}
 
-/* ── PRÜFBERICHT ── */
-.results{display:none;animation:fadeIn .3s ease;margin-top:16px}
-.results.v{display:block}
-.result-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px}
-.result-title{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--ink)}
-.score-badge{font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px}
-.score-badge.green{background:var(--green-tint);color:var(--green)}
-.score-badge.orange{background:var(--orange-tint);color:var(--orange)}
-.score-badge.gelb{background:var(--gelb-tint);color:var(--gelb)}
-.score-badge.red{background:var(--red-tint);color:var(--red)}
-.result-summary{font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.6}
-.result-actions{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.r-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:white;color:var(--ink2);cursor:pointer;font-family:var(--sans);transition:all .15s}
-.r-btn:hover{border-color:var(--blue);color:var(--blue)}
-.r-btn.primary{background:var(--blue);border-color:var(--blue);color:white}
-.kat-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px}
-.kat-hd{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;transition:background .15s}
-.kat-hd:hover{background:var(--bg)}
-.ampel{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.ampel.green{background:#22c55e}
-.ampel.orange{background:var(--orange)}
-.ampel.gelb{background:var(--gelb)}
-.ampel.red{background:#ef4444}
-.kat-name{font-size:13px;font-weight:500;color:var(--ink);flex:1}
-.kat-arr{font-size:16px;color:var(--ink4);transition:transform .18s;margin-left:4px}
-.kat-arr.open{transform:rotate(90deg)}
-.kat-body{display:none;border-top:1px solid var(--border2)}
-.kat-body.v{display:block}
-.kat-item{display:flex;align-items:flex-start;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border2);transition:opacity .15s}
-.kat-item:last-child{border-bottom:none}
-.kat-item.done{opacity:0.35}
-.kat-item.done .kat-text{text-decoration:line-through}
-.check-btn{width:18px;height:18px;border-radius:4px;border:1.5px solid #ccc;background:white;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:3px;padding:0;font-size:11px;color:transparent}
-.check-btn:hover{border-color:var(--green)}
-.check-btn.checked{background:var(--green);border-color:var(--green);color:white}
-.kat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.kat-text{font-size:12px;color:var(--ink2);line-height:1.6;flex:1}
-.fix-btn{font-size:10px;font-weight:500;padding:3px 9px;background:var(--blue-tint);color:var(--blue);border:1px solid rgba(26,86,160,0.2);border-radius:5px;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-top:2px;font-family:var(--sans);transition:all .15s}
-.fix-btn:hover{background:var(--blue);color:white}
-.ok-msg{font-size:12px;color:var(--green);padding:10px 16px;display:flex;align-items:center;gap:6px}
-.done-hint{display:none;font-size:12px;color:var(--green);text-align:center;padding:8px;background:var(--green-tint);border-radius:var(--radius);border:1px solid rgba(26,110,58,0.2);margin-top:8px}
-
-/* ── FORMULIERUNGSHILFE MODAL ── */
-.fix-overlay{position:fixed;inset:0;background:rgba(20,26,40,0.6);z-index:500;display:none;align-items:flex-end;justify-content:center;padding:0 0 0 0}
-.fix-overlay.open{display:flex}
-.fix-panel{background:white;border-radius:20px 20px 0 0;width:100%;max-width:680px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(0,0,0,0.2);overflow:hidden}
-.fix-hd{background:var(--ink);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.fix-hd h3{font-family:var(--serif);font-size:17px;color:white;font-weight:400}
-.fix-hd-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px}
-.fix-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.5);font-size:22px;padding:0}
-.fix-body{padding:20px;overflow-y:auto;flex:1}
-.fix-problem{background:var(--red-tint);border:1px solid rgba(192,40,40,0.2);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--ink2);line-height:1.6}
-.fix-problem strong{color:var(--red);display:block;margin-bottom:3px;font-size:11px;text-transform:uppercase;letter-spacing:0.06em}
-.fix-result{background:var(--green-tint);border:1px solid rgba(26,110,58,0.2);border-radius:var(--radius);padding:14px;margin-top:12px;font-size:13px;color:var(--ink2);line-height:1.7;white-space:pre-wrap;min-height:80px}
-.fix-result-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.fix-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.fix-action-btn{font-size:12px;font-weight:500;padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:white;color:var(--ink2);cursor:pointer;font-family:var(--sans);transition:all .15s}
-.fix-action-btn:hover{border-color:var(--blue);color:var(--blue)}
-.fix-action-btn.primary{background:var(--blue);border-color:var(--blue);color:white}
-.fix-action-btn.primary:hover{background:var(--blue2)}
-.fix-gen-btn{width:100%;padding:11px;background:var(--orange);color:white;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:background .15s;margin-top:4px}
-.fix-gen-btn:hover{background:var(--orange2)}
-.fix-gen-btn:disabled{opacity:0.5;cursor:not-allowed}
-
-/* ── GENERIERUNG VIEW ── */
-.cat-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.cat-tab{padding:6px 14px;border-radius:100px;border:1.5px solid var(--border);background:white;cursor:pointer;font-size:12px;font-weight:500;color:var(--ink3);transition:all .18s;font-family:var(--sans)}
-.cat-tab:hover{border-color:var(--blue);color:var(--blue)}
-.cat-tab.active{background:var(--ink);border-color:var(--ink);color:white}
-.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:16px}
-.pcard{background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:14px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;gap:7px}
-.pcard:hover{border-color:var(--orange);transform:translateY(-2px);box-shadow:0 4px 16px rgba(217,95,26,0.1)}
-.pcard.done{border-color:var(--green);background:var(--green-tint)}
-.pcard-icon{width:32px;height:32px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.pcard-icon svg{width:16px;height:16px;stroke:var(--ink3);fill:none;stroke-width:1.5;stroke-linecap:round}
-.pcard.done .pcard-icon{background:var(--green-tint)}
-.pcard.done .pcard-icon svg{stroke:var(--green)}
-.pcard-name{font-size:12px;font-weight:500;color:var(--ink);line-height:1.3}
-.pcard-desc{font-size:11px;color:var(--ink4);line-height:1.5;flex:1}
-.pcard-btn{font-size:11px;font-weight:500;color:white;background:var(--orange);border:none;border-radius:5px;padding:5px 10px;cursor:pointer;font-family:var(--sans);align-self:flex-start}
-.pcard.done .pcard-btn{background:var(--green)}
-.pcard-wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:14px;background:linear-gradient(135deg,var(--ink) 0%,#2a3555 100%);border-color:transparent;padding:16px 20px}
-.pcard-wide:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15)}
-.pcard-wide .pcard-name{color:white;font-size:14px}
-.pcard-wide .pcard-desc{color:rgba(255,255,255,0.5)}
-.pcard-wide .pcard-icon{background:rgba(255,255,255,0.1)}
-.pcard-wide .pcard-icon svg{stroke:rgba(255,255,255,0.7)}
-.pcard-wide .pcard-btn{background:var(--orange);font-size:12px;padding:8px 16px}
-
-/* Generated results */
-.gen-results-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.gen-title{font-family:var(--serif);font-size:19px;font-weight:400;color:var(--ink)}
-.gen-actions{display:flex;gap:7px;flex-wrap:wrap}
-.act-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:white;color:var(--ink2);cursor:pointer;font-family:var(--sans);transition:all .15s}
-.act-btn:hover{border-color:var(--blue);color:var(--blue)}
-.act-btn.primary{background:var(--orange);border-color:var(--orange);color:white}
-.act-btn.primary:hover{background:var(--orange2)}
-.empty-state{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px 24px;text-align:center;animation:fadeIn .25s ease}
-.empty-state-icon{font-size:40px;margin-bottom:12px}
-.empty-state h3{font-family:var(--serif);font-size:18px;font-weight:400;color:var(--ink);margin-bottom:8px}
-.empty-state p{font-size:13px;color:var(--ink3);line-height:1.65}
-.gsec{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px;animation:fadeIn .2s ease}
-.gsec-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;transition:background .15s}
-.gsec-hd:hover{background:var(--bg)}
-.gsec-info{display:flex;align-items:center;gap:9px}
-.gsec-icon{width:26px;height:26px;background:var(--bg);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.gsec-icon svg{width:13px;height:13px;stroke:var(--ink4);fill:none;stroke-width:1.5;stroke-linecap:round}
-.gsec-name{font-size:12px;font-weight:500;color:var(--ink)}
-.gsec-st{font-size:10px;padding:2px 7px;border-radius:4px}
-.gsec-st.loading{background:var(--blue-tint);color:var(--blue)}
-.gsec-st.done{background:var(--green-tint);color:var(--green)}
-.spin{display:inline-block;width:9px;height:9px;border:1.5px solid rgba(26,86,160,0.2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
-.gsec-arr{font-size:15px;color:var(--ink4);transition:transform .18s}
-.gsec-arr.open{transform:rotate(90deg)}
-.gsec-body{display:none;padding:14px 16px;font-size:13px;line-height:1.75;color:var(--ink2);white-space:pre-wrap;border-top:1px solid var(--border2)}
-.ai-tag{display:flex;align-items:center;gap:7px;padding:8px 16px;background:var(--blue-tint);border-top:1px solid var(--border2);font-size:11px;color:var(--ink4);line-height:1.5}
-.ai-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0}
-.ai-notice{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;background:var(--blue-tint);border:1px solid rgba(26,86,160,0.15);border-radius:var(--radius);font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:14px}
-.gsec-body.v{display:block}
-.gsec-btns{display:flex;gap:6px;padding:8px 16px;border-top:1px solid var(--border2);background:var(--bg)}
-.gs-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:white;color:var(--ink3);cursor:pointer;font-family:var(--sans);transition:all .15s}
-.gs-btn:hover{border-color:var(--blue);color:var(--blue)}
-
-/* ── SHARED MODALS ── */
-.overlay{position:fixed;inset:0;background:rgba(30,36,51,0.5);z-index:300;display:none;align-items:center;justify-content:center}
-.overlay.open{display:flex}
-.modal-box{background:white;border-radius:var(--radius-lg);width:100%;max-width:440px;box-shadow:0 20px 60px rgba(30,36,51,0.2);overflow:hidden;margin:16px}
-.modal-hd{background:var(--ink);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
-.modal-hd h3{font-family:var(--serif);font-size:16px;color:white;font-weight:400}
-.modal-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.5);font-size:20px;padding:0}
-.modal-body{padding:20px}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
-.m-btn{padding:7px 16px;border-radius:7px;border:1px solid var(--border);background:white;color:var(--ink2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:all .15s}
-.m-btn:hover{border-color:var(--blue);color:var(--blue)}
-.m-btn.p{background:var(--blue);border-color:var(--blue);color:white}
-.hitem{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;margin-bottom:7px}
-.hitem-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-.hitem-name{font-size:12px;font-weight:500;color:var(--ink)}
-.hitem-date{font-size:10px;color:var(--ink4)}
-.hitem-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
-.htag{font-size:10px;padding:2px 7px;background:var(--bg2);border-radius:4px;color:var(--ink4)}
-.hitem-btns{display:flex;gap:5px}
-
-/* ── LEITFADEN ── */
-.lg-overlay{position:fixed;inset:0;background:rgba(30,36,51,0.5);z-index:300;display:none;align-items:flex-start;justify-content:flex-end}
-.lg-overlay.open{display:flex}
-.lg-panel{width:360px;height:100%;background:white;overflow-y:auto;box-shadow:-4px 0 24px rgba(0,0,0,0.1)}
-.lg-hd{background:var(--ink);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0}
-.lg-hd-title{font-family:var(--serif);font-size:16px;color:white;font-weight:400}
-.lg-hd-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.5);font-size:20px;padding:0}
-.lg-body{padding:18px}
-.guide-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink4);margin:14px 0 9px}
-.guide-step{display:flex;gap:11px;padding-bottom:12px;border-bottom:1px solid var(--border2);margin-bottom:12px}
-.guide-num{width:24px;height:24px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--ink4);flex-shrink:0;margin-top:1px}
-.guide-content h4{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px}
-.guide-content p{font-size:11px;color:var(--ink3);line-height:1.6}
-.tip{font-size:11px;color:var(--ink3);background:var(--bg);border-left:3px solid rgba(26,86,160,0.2);padding:6px 9px;border-radius:0 5px 5px 0;margin-top:6px;line-height:1.6}
-
-/* ── FEEDBACK ── */
-.fb-overlay{position:fixed;inset:0;background:rgba(30,36,51,0.5);z-index:300;display:none;align-items:center;justify-content:center}
-.fb-overlay.open{display:flex}
-.star{font-size:22px;cursor:pointer;opacity:0.3;transition:opacity .15s}
-.star.active{opacity:1}
-.fb-cat{display:inline-block;padding:4px 11px;border-radius:100px;border:1px solid var(--border);font-size:11px;cursor:pointer;margin:2px;transition:all .15s;background:white}
-.fb-cat.sel{background:var(--ink);color:white;border-color:var(--ink)}
-
-/* ── BACK BUTTON ── */
-.back-btn{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink4);cursor:pointer;background:none;border:none;padding:0;font-family:var(--sans);margin:16px 0 0 0;transition:color .15s}
-.back-btn:hover{color:var(--ink)}
-
-/* ── STATUS BAR ── */
-.sbar{height:26px;background:var(--ink);padding:0 16px;display:flex;align-items:center;gap:12px;margin-top:auto;z-index:50}
-.si{font-size:10px;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:5px}
-.sdot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25)}
-.sdot.o{background:#f59e0b}
-.sdot.g{background:#22c55e}
-
-/* ── LOADING OVERLAY ── */
-#loadingOverlay{position:fixed;inset:0;background:var(--ink);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:white;padding:8px 16px;border-radius:var(--radius);font-size:12px;font-weight:500;opacity:0;transition:all .22s;pointer-events:none;z-index:999;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.cp-overlay{position:fixed;inset:0;background:rgba(30,36,51,0.5);z-index:300;display:none;align-items:center;justify-content:center}
-.cp-overlay.open{display:flex}
+.aktionen{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.disclaimer{font-size:12.5px;color:var(--stahl-70);background:#F1F3F2;border-radius:8px;padding:14px 16px;margin-top:26px;line-height:1.6}
+.nav-konto{display:flex;align-items:center;gap:14px;font-size:14px}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
-<div id="loadingOverlay">
-  <div style="font-family:var(--serif);font-size:22px;color:white;margin-bottom:8px">Kfz<span style="color:rgba(255,255,255,0.6)">Gut</span>-<span style="color:var(--orange)">AI</span></div>
-  <div style="width:32px;height:32px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite"></div>
-  <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px" id="loadingMsg">Wird geladen…</div>
-  <div id="loadingHint" style="font-size:11px;color:rgba(255,255,255,0.25);margin-top:16px;max-width:260px;text-align:center;line-height:1.6;display:none">
-    Beim ersten Aufruf des Tages startet der Server neu.<br>Das dauert einmalig 20–30 Sekunden.
+<header class="kopf">
+  <div class="wrap">
+    <a class="logo" href="/app.html"><span class="mark"></span>KfzGut<span class="ai">-AI</span></a>
+    <nav class="nav-konto">
+      <span class="badge b-grau" id="planBadge">–</span>
+      <a href="/konto.html">Konto</a>
+      <a href="#" onclick="abmelden();return false">Abmelden</a>
+    </nav>
   </div>
-</div>
+</header>
 
-<!-- PAYWALL -->
-<div class="overlay" id="paywallOverlay">
-  <div class="modal-box">
-    <div class="modal-hd"><h3>Testzeitraum abgelaufen</h3></div>
-    <div class="modal-body" style="text-align:center;padding:28px">
-      <div style="font-size:36px;margin-bottom:12px">🎉</div>
-      <p style="font-size:14px;color:var(--ink3);line-height:1.75;margin-bottom:16px">Ihr <strong style="color:var(--ink)">7-tägiger Testzeitraum</strong> ist abgelaufen. Abonnieren Sie jetzt um weiterhin alle Funktionen zu nutzen.</p>
-      <button onclick="goCheckout('solo')" style="width:100%;padding:12px;background:var(--blue);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans);margin-bottom:8px">Einzelplatz – 69 € / Monat →</button>
-      <button onclick="goCheckout('team')" style="width:100%;padding:12px;background:var(--orange);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans);margin-bottom:10px">Büro (bis 5 Nutzer) – 99 € / Monat →</button>
-      <div style="font-size:11px;color:var(--ink4)">inkl. 19% USt. · monatlich kündbar · USt-IdNr.: DE344796099</div>
+<main class="haupt">
+  <div class="wrap-schmal">
+
+    <div class="paywall" id="paywall">
+      <b>Dein Testzeitraum ist beendet.</b>
+      Schalte den Zugang frei, um weiter zu prüfen — <a href="/konto.html">zum Konto</a>.
     </div>
+
+    <h1 style="font-size:28px;margin-bottom:8px">Gutachten prüfen</h1>
+    <p style="color:var(--stahl-70);margin-bottom:26px">
+      PDF auswählen — der Text wird in deinem Browser ausgelesen. Das Dokument selbst wird nicht hochgeladen.
+    </p>
+
+    <div class="ablage" id="ablage" onclick="document.getElementById('datei').click()">
+      <div class="icon">📄</div>
+      <div class="gross">PDF hierher ziehen oder klicken</div>
+      <div class="klein">Schadengutachten als PDF, bis 30 MB</div>
+    </div>
+    <input type="file" id="datei" accept="application/pdf" hidden onchange="dateiGewaehlt(this.files[0])">
+
+    <div class="datei" id="dateiZeile">
+      <span class="badge b-gruen">PDF</span>
+      <span class="name" id="dateiName"></span>
+      <button class="weg" onclick="zuruecksetzen()" title="Entfernen">×</button>
+    </div>
+
+    <div class="fortschritt" id="fortschritt"><div id="balken"></div></div>
+    <div class="status" id="status"></div>
+
+    <div class="meldung" id="meldung" style="margin-top:18px"></div>
+
+    <button class="btn btn-primary btn-voll" id="pruefBtn" style="margin-top:20px;display:none" onclick="pruefen()">
+      Prüfung starten
+    </button>
+
+    <div id="ergebnis">
+      <div class="protokoll-kopf">
+        <h2>Prüfprotokoll</h2>
+        <div class="zaehler" id="zaehler"></div>
+      </div>
+      <div class="zus" id="zus"></div>
+      <div id="befunde"></div>
+      <div class="aktionen">
+        <button class="btn btn-ghost" onclick="kopieren()">Als Text kopieren</button>
+        <button class="btn btn-ghost" onclick="window.print()">Drucken / als PDF sichern</button>
+        <button class="btn btn-ghost" onclick="zuruecksetzen()">Neues Gutachten</button>
+      </div>
+      <div class="disclaimer">
+        <strong>Hinweis:</strong> Die Befunde sind unverbindliche Hinweise eines Assistenzwerkzeugs.
+        Die fachliche Bewertung und die Verantwortung für das Gutachten liegen ausschließlich bei dir
+        als Sachverständigem. Keine Rechtsberatung.
+      </div>
+    </div>
+
   </div>
-</div>
+</main>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <a href="index.html" class="logo">
-    <div class="logo-mark">K</div>
-    Kfz<span style="color:rgba(255,255,255,0.7)">Gut</span>-<span class="logo-ai">AI</span>
-  </a>
-  <div class="tb-right">
-    <span class="tb-badge" id="tbBadge" style="display:none">Trial</span>
-    <span class="tb-user" id="tbUserName"></span>
-    <div class="tb-sep"></div>
-    <a href="konto.html" class="tb-btn">Konto</a>
-    <button class="tb-btn" onclick="openLeitfaden()">Leitfaden</button>
-    <button class="tb-btn" onclick="openFeedback()">Feedback</button>
-    <div class="tb-sep"></div>
-    <button class="tb-btn" onclick="clearAll()">Neu</button>
-    <button class="tb-btn orange" onclick="exportDoc()" id="exportBtn">⬇ Export</button>
-  </div>
-</div>
-
-<!-- MODE SELECTOR -->
-<div id="modeSelector" style="flex:1">
-  <div class="mode-selector">
-    <div class="mode-selector-title">Womit möchten Sie beginnen?</div>
-    <div class="mode-selector-sub">Bestehendes Schadengutachten prüfen oder ein neues erstellen – beides ist möglich.</div>
-    <div id="freeChecksHint" style="display:none;font-size:13px;color:var(--ink3);text-align:center;margin-bottom:12px;padding:8px 16px;background:var(--blue-tint);border-radius:var(--radius);border:1px solid rgba(26,86,160,0.15)"></div>
-    <div class="mode-cards">
-
-      <!-- Weg A: Prüfen -->
-      <div class="mode-card primary" onclick="startMode('pruef')">
-        <span class="mode-badge new">Kernfeature</span>
-        <div class="mode-icon">🔍</div>
-        <h3>Gutachten prüfen</h3>
-        <p>Laden Sie Ihr bestehendes Schadengutachten hoch. KfzGut-AI prüft es auf drei Ebenen – wie ein erfahrener Kollege der gegenliest.</p>
-        <div class="mode-checks">
-          <div class="mode-check"><div class="mode-check-dot orange">✓</div><span><strong>Ebene 1:</strong> Formal – Platzhalter, Sprache, Pflichtangaben</span></div>
-          <div class="mode-check"><div class="mode-check-dot orange">✓</div><span><strong>Ebene 2:</strong> Plausibilität – Kompatibilität, Hergang, Vorschäden</span></div>
-          <div class="mode-check"><div class="mode-check-dot orange">✓</div><span><strong>Ebene 3:</strong> Kalkulation – WBW, Restwert, 130 %, Minderwert</span></div>
-        </div>
-        <button class="mode-btn orange">Gutachten prüfen →</button>
-      </div>
-
-      <!-- Weg B: Erstellen -->
-      <div class="mode-card" onclick="startMode('gen')">
-        <div class="mode-icon">✍️</div>
-        <h3>Neues Gutachten erstellen</h3>
-        <p>Fahrzeug- und Schadendaten eingeben und aus 55 Textbausteinen wählen. Einzeln oder als Vollgutachten generieren.</p>
-        <div class="mode-checks">
-          <div class="mode-check"><div class="mode-check-dot blue">✓</div><span>55 Textbausteine in 8 Kategorien</span></div>
-          <div class="mode-check"><div class="mode-check-dot blue">✓</div><span>Vollgutachten mit einem Klick</span></div>
-          <div class="mode-check"><div class="mode-check-dot blue">✓</div><span>Eigenen Schreibstil hinterlegen</span></div>
-        </div>
-        <button class="mode-btn blue">Bausteine wählen →</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- MAIN: PRUEF MODE -->
-<div class="main pruef-mode" id="mainPruef" style="display:none">
-  <div class="left-panel">
-    <button class="back-btn" onclick="backToSelector()">← Zurück zur Auswahl</button>
-
-    <!-- Upload -->
-    <div class="panel-card" style="margin-top:8px">
-      <div class="panel-hd">
-        <div>
-          <div class="panel-hd-title">Gutachten hochladen</div>
-          <div class="panel-hd-sub">PDF bis 20 MB</div>
-        </div>
-      </div>
-      <div class="panel-body">
-        <div style="display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:var(--ink3);background:var(--blue-tint);border:1px solid rgba(26,86,160,0.15);border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;line-height:1.6">
-          <span style="flex-shrink:0;font-size:15px">🛡️</span>
-          <span><strong style="color:var(--ink)">Vor dem Hochladen:</strong> Bitte schwärzen Sie nach Möglichkeit Namen, Anschriften, Kennzeichen und sonstige personenbezogene Daten von Haltern, Unfallbeteiligten oder Zeugen. Die Plausibilitäts- und Kompatibilitätsprüfung ist davon nicht betroffen. <a href="datenschutz.html" target="_blank" style="color:var(--blue)">Mehr dazu</a></span>
-        </div>
-        <div class="upload-zone" id="dropZone" ondragover="dOverP(event)" ondragleave="dLeaveP()" ondrop="dDropP(event)" onclick="document.getElementById('fileInput').click()">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <h4>PDF hierher ziehen</h4>
-          <p>oder klicken zum Auswählen<br>PDF oder TXT · Max. 20 MB</p>
-        </div>
-        <input type="file" id="fileInput" accept=".pdf,.txt" style="display:none" onchange="handleFile(this.files[0])">
-        <div class="file-loaded" id="fileLoaded">
-          <span class="file-name" id="fileName">—</span>
-          <button class="file-clear" onclick="clearFile()">✕ entfernen</button>
-        </div>
-        <button class="run-btn" id="runBtn" onclick="runCheck()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 11l3 3L22 4"/></svg>
-          Jetzt prüfen
-        </button>
-        <div class="info-box">
-          <strong>3-Ebenen-Tiefenprüfung</strong> · ~30 Seiten = 1 Min · ~60 Seiten = 2 Min · ~100 Seiten = 3–4 Min<br>
-          <span style="color:#9aa0ae;font-size:11px">Bitte nicht schließen während die Prüfung läuft.</span>
-        </div>
-        <div class="loading-box" id="loadingBox">
-          <div style="display:flex;align-items:center;gap:10px;width:100%">
-            <div class="spinner"></div>
-            <span id="loadingMsg" style="font-size:12px;color:var(--blue)">Gutachten wird analysiert…</span>
-          </div>
-          <div style="width:100%;background:rgba(26,86,160,0.1);border-radius:4px;height:3px;overflow:hidden">
-            <div id="progressBar" style="height:100%;background:var(--blue);width:0%;transition:width 8s linear;border-radius:4px"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Text eingeben alternativ -->
-    <div class="panel-card">
-      <div class="panel-hd"><div class="panel-hd-title">Oder: Text eingeben</div></div>
-      <div class="panel-body">
-        <textarea id="textInput" placeholder="Gutachtentext hier einfügen…" style="width:100%;min-height:120px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--sans);background:var(--bg);resize:vertical;outline:none;color:var(--ink)"></textarea>
-        <button onclick="setModeText()" style="width:100%;padding:9px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans)">Text verwenden</button>
-      </div>
-    </div>
-
-    <!-- Nach Prüfung: Zu Bausteinen -->
-    <div class="panel-card" id="afterPruefCard" style="display:none">
-      <div class="panel-hd"><div class="panel-hd-title">Abschnitt neu schreiben?</div></div>
-      <div class="panel-body">
-        <p style="font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:10px">Nutze die Textbausteine um schwache Abschnitte direkt neu generieren zu lassen.</p>
-        <button onclick="startMode('gen')" style="width:100%;padding:9px;background:var(--blue);color:white;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans)">Zu den Textbausteinen →</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="right-panel" style="padding-bottom:24px">
-    <!-- Prüfbericht -->
-    <div class="results" id="results">
-      <div class="result-hd">
-        <span class="result-title">Prüfbericht</span>
-        <span class="score-badge" id="scoreBadge">—</span>
-      </div>
-      <div class="result-summary" id="resultSummary"></div>
-      <div class="result-actions">
-        <button class="r-btn" onclick="expandAll()">Alle aufklappen</button>
-        <button class="r-btn" onclick="collapseAll()">Alle zuklappen</button>
-        <button class="r-btn primary" onclick="exportChecklist()">📥 Als Word exportieren</button>
-      </div>
-      <div id="katList"></div>
-      <div id="doneHint" class="done-hint"></div>
-      <div style="margin-top:10px;font-size:11px;color:var(--ink4);text-align:center;padding:10px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border2)">
-        🔴 Rot = dringend · 🟡 Orange = Hinweis · 🟢 Grün = OK &nbsp;·&nbsp; ☑ Abhaken wenn erledigt &nbsp;·&nbsp; 🔧 KI-Formulierungshilfe pro Punkt
-      </div>
-    </div>
-    <!-- Empty state Prüfung -->
-    <div id="pruefEmpty" style="padding:40px 0">
-      <div class="empty-state">
-        <div class="empty-state-icon">🔍</div>
-        <h3>Bereit zur Prüfung</h3>
-        <p>Laden Sie Ihr Gutachten als PDF hoch oder fügen Sie den Text links ein – dann auf „Jetzt prüfen" klicken.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN: GEN MODE -->
-<div class="main gen-mode" id="mainGen" style="display:none">
-  <div class="left-panel">
-    <button class="back-btn" onclick="backToSelector()">← Zurück zur Auswahl</button>
-
-    <!-- Fahrzeugdaten -->
-    <div class="panel-card" style="margin-top:8px">
-      <div class="panel-hd">
-        <div><div class="panel-hd-title">Fahrzeugdaten</div><div class="panel-hd-sub">Für präzise Texte</div></div>
-      </div>
-      <div class="panel-body">
-        <div class="fg-row">
-          <div class="fg"><label>Hersteller <span class="req">★</span></label><input type="text" id="hersteller" placeholder="Volkswagen"></div>
-          <div class="fg"><label>Modell / Typ <span class="req">★</span></label><input type="text" id="modell" placeholder="Passat Variant 2.0 TDI"></div>
-        </div>
-        <div class="fg"><label>Fahrzeugart</label>
-          <select id="fahrzeugart">
-            <option>PKW</option><option>Transporter</option><option>Motorrad</option><option>LKW</option><option>Wohnmobil</option><option>Anhänger</option><option>Landmaschine</option>
-          </select>
-        </div>
-        <div class="fg-row">
-          <div class="fg"><label>Kennzeichen</label><input type="text" id="kennzeichen" placeholder="L-XY 1234"></div>
-          <div class="fg"><label>FIN</label><input type="text" id="fin" placeholder="WVWZZZ3CZ..."></div>
-        </div>
-        <div class="fg-row">
-          <div class="fg"><label>Erstzulassung <span class="req">★</span></label><input type="text" id="erstzulassung" placeholder="03/2019"></div>
-          <div class="fg"><label>Laufleistung km <span class="req">★</span></label><input type="number" id="laufleistung" placeholder="78500"></div>
-        </div>
-        <div class="fg-row">
-          <div class="fg"><label>Leistung kW</label><input type="number" id="leistung" placeholder="110"></div>
-          <div class="fg"><label>Zustand</label>
-            <select id="zustand"><option>Gut</option><option>Mittel</option><option>Gebrauchsspuren</option><option>Sehr gut / gepflegt</option><option>Mängelbehaftet</option></select>
-          </div>
-        </div>
-        <div class="fg"><label>Ausstattung</label><input type="text" id="ausstattung" placeholder="z.B. Navi, AHK, Standheizung"></div>
-        <div class="fg"><label>Vor- / Altschäden</label><input type="text" id="vorschaeden" placeholder="z.B. Heckschaden 2022, fachgerecht instandgesetzt"></div>
-        <div class="fg"><label>Besonderheiten</label><input type="text" id="besonderheiten" placeholder="z.B. Leasingfahrzeug, Oldtimer, gewerblich"></div>
-      </div>
-    </div>
-
-    <!-- Schadendaten -->
-    <div class="panel-card">
-      <div class="panel-hd"><div class="panel-hd-title">Schadendaten</div></div>
-      <div class="panel-body">
-        <div class="fg"><label>Schadendatum <span class="req">★</span></label><input type="date" id="schadendatum"></div>
-        <div class="fg"><label>Schadenort</label><input type="text" id="schadenort" placeholder="Leipzig, Kreuzung Musterstr. / Beispielweg"></div>
-        <div class="fg"><label>Anstoßbereich</label>
-          <select id="anstoss">
-            <option>Front</option><option>Front links</option><option>Front rechts</option><option>Seite links</option><option>Seite rechts</option><option>Heck</option><option>Heck links</option><option>Heck rechts</option><option>Dach / Überschlag</option><option>Rundumschaden</option>
-          </select>
-        </div>
-        <div class="fg"><label>Unfallhergang</label><input type="text" id="hergang" placeholder="z.B. Auffahrunfall im Stand, Gegner von hinten"></div>
-        <div class="fg"><label>Unfallgegner (Fahrzeug)</label><input type="text" id="gegner" placeholder="z.B. Ford Transit, Kastenwagen"></div>
-      </div>
-    </div>
-
-    <!-- Auftrag -->
-    <div class="panel-card">
-      <div class="panel-hd"><div class="panel-hd-title">Auftrag</div></div>
-      <div class="panel-body">
-        <div class="fg"><label>Auftragsart</label>
-          <select id="auftragsart"><option>Haftpflichtschaden</option><option>Kaskoschaden</option><option>Beweissicherung</option><option>Gerichtsgutachten</option><option>Leasingrückgabe</option><option>Wertgutachten</option><option>Reparaturbestätigung</option></select>
-        </div>
-        <div class="fg"><label>Auftraggeber</label><input type="text" id="auftraggeber" placeholder="Max Mustermann, Halter"></div>
-        <div class="fg"><label>Besichtigungsort</label><input type="text" id="besichtigungsort" placeholder="Autohaus Muster, Leipzig"></div>
-        <div class="fg"><label>Besichtigungsdatum</label><input type="date" id="datum"></div>
-        <div class="fg"><label>Sachverständiger</label><input type="text" id="gutachter" placeholder="Dipl.-Ing. Max Mustermann"></div>
-      </div>
-    </div>
-
-    <!-- Schreibstil -->
-    <div class="panel-card">
-      <div class="panel-hd">
-        <div><div class="panel-hd-title">Schreibstil</div><div class="panel-hd-sub" id="styleCount">Kein Referenz-Gutachten</div></div>
-        <div id="styleActive" style="display:none"><button onclick="clearStyleDocs()" style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer">Löschen</button></div>
-      </div>
-      <div class="panel-body">
-        <div id="styleDocs"></div>
-        <label for="styleInput">
-          <div class="upload-area" id="styleDropZone" ondragover="dOver(event)" ondragleave="dLeave()" ondrop="dDrop(event)">
-            <p>📄 Eigenes Gutachten hochladen<br><span style="font-size:10px;color:var(--ink4)">PDF oder TXT · max. 5 MB</span></p>
-          </div>
-        </label>
-        <input type="file" id="styleInput" accept=".pdf,.txt" multiple style="display:none" onchange="handleStyleFiles(this.files)">
-      </div>
-    </div>
-
-    <!-- Verlauf -->
-    <div class="panel-card">
-      <div class="panel-hd"><div class="panel-hd-title">Verlauf</div></div>
-      <div class="panel-body">
-        <div style="display:flex;gap:7px">
-          <input type="text" id="histName" placeholder="Gutachten benennen…" style="flex:1;padding:7px 9px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--sans);background:var(--bg);outline:none">
-          <button onclick="saveHistory()" style="padding:7px 13px;background:var(--blue);color:white;border:none;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:var(--sans)">Speichern</button>
-        </div>
-        <button onclick="openHistModal()" class="gs-btn" style="width:100%;text-align:center">Verlauf anzeigen</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- RIGHT: Bausteine + Ergebnisse -->
-  <div class="right-panel" style="padding-bottom:24px">
-    <div class="ai-notice">
-      <span style="flex-shrink:0;font-size:14px">🤖</span>
-      <span>Die folgenden Texte werden von künstlicher Intelligenz erzeugt. Sie sind Entwürfe und ersetzen weder Ihre fachliche Prüfung noch Ihr Sachverständigenurteil.</span>
-    </div>
-    <!-- Kategorie-Tabs -->
-    <div id="catTabs" class="cat-tabs"></div>
-    <!-- Baustein-Grid -->
-    <div id="catGrid" class="cat-grid"></div>
-    <!-- Ergebnisse -->
-    <div class="gen-results-hd" id="genResultsHd" style="display:none">
-      <div class="gen-title">Generierte Texte <span id="secCnt" style="font-size:13px;color:var(--ink4);font-family:var(--sans);font-weight:400"></span></div>
-      <div class="gen-actions">
-        <button class="act-btn" onclick="copyAll()">Alles kopieren</button>
-        <button class="act-btn primary" onclick="exportDoc()" id="exportBtnGen">⬇ Word exportieren</button>
-      </div>
-    </div>
-    <div id="emptyState" class="empty-state" style="display:none">
-      <div class="empty-state-icon">✍️</div>
-      <h3>Bereit zum Generieren</h3>
-      <p>Fahrzeug- und Schadendaten links eingeben, dann oben einen Baustein wählen.</p>
-    </div>
-    <div id="genSecs"></div>
-  </div>
-</div>
-
-<!-- FORMULIERUNGSHILFE PANEL -->
-<div class="fix-overlay" id="fixOverlay" onclick="if(event.target===this)closeFixPanel()">
-  <div class="fix-panel">
-    <div class="fix-hd">
-      <div>
-        <h3>🔧 Formulierungshilfe</h3>
-        <div class="fix-hd-sub" id="fixHdSub">KI-Korrekturvorschlag</div>
-      </div>
-      <button class="fix-close" onclick="closeFixPanel()">×</button>
-    </div>
-    <div class="fix-body">
-      <div class="fix-problem" id="fixProblem">
-        <strong>Gefundenes Problem</strong>
-        <span id="fixProblemText">—</span>
-      </div>
-      <button class="fix-gen-btn" id="fixGenBtn" onclick="generateFix()">
-        ✨ KI-Korrekturvorschlag generieren
-      </button>
-      <div id="fixResultWrap" style="display:none">
-        <div style="margin-top:14px">
-          <div class="fix-result-label">
-            <span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span>
-            Vorschlag der KI
-          </div>
-          <div class="fix-result" id="fixResult"></div>
-        </div>
-        <div class="fix-actions">
-          <button class="fix-action-btn primary" onclick="copyFix()">Kopieren</button>
-          <button class="fix-action-btn" onclick="generateFix()">Neu generieren</button>
-          <button class="fix-action-btn" onclick="closeFixPanel()">Schließen</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- LEITFADEN -->
-<div class="lg-overlay" id="lgOverlay" onclick="if(event.target===this)closeLeitfaden()">
-  <div class="lg-panel">
-    <div class="lg-hd"><span class="lg-hd-title">Leitfaden</span><button class="lg-hd-close" onclick="closeLeitfaden()">×</button></div>
-    <div class="lg-body">
-
-      <div class="guide-section-title">🔍 Weg A – Gutachten prüfen</div>
-
-      <div class="guide-step"><div class="guide-num" style="background:var(--orange-tint);color:var(--orange)">1</div><div class="guide-content">
-        <h4>Gutachten hochladen</h4>
-        <p>PDF bis 20 MB hochladen oder Text direkt einfügen. Alle Seiten werden automatisch extrahiert – auch bei 100+ Seiten.</p>
-        <div class="tip">Tipp: Nur Text-PDFs funktionieren. Gescannte PDFs (Bilder) bitte erst per OCR in Text umwandeln.</div>
-      </div></div>
-
-      <div class="guide-step"><div class="guide-num">2</div><div class="guide-content">
-        <h4>Prüfung auf 3 Ebenen</h4>
-        <p>Die KI analysiert das gesamte Gutachten systematisch:</p>
-        <div class="tip" style="margin-top:6px"><strong style="color:var(--red)">Ebene 1 – Formal:</strong> Offene Platzhalter, Rechtschreibfehler, widersprüchliche Angaben, Gliederungsfehler, Anlagenbezeichnungen.</div>
-        <div class="tip" style="margin-top:4px"><strong style="color:var(--orange)">Ebene 2 – Plausibilität:</strong> Passen die Schadenbilder beider Fahrzeuge zueinander? Ist der Schaden mit dem geschilderten Hergang vereinbar? Sind Vorschäden sauber abgegrenzt? Ist der EES-Wert hergeleitet?</div>
-        <div class="tip" style="margin-top:4px"><strong style="color:var(--green)">Ebene 3 – Kalkulation:</strong> Sind Wiederbeschaffungswert und Restwert belegt? 130-%-Grenze geprüft? Minderwert mit benannter Methode? Netto und brutto korrekt getrennt?</div>
-      </div></div>
-
-      <div class="guide-step"><div class="guide-num">3</div><div class="guide-content">
-        <h4>Prüfbericht lesen</h4>
-        <p>Kategorien nach Priorität sortiert (Rot zuerst), Einzelpunkte innerhalb jeder Kategorie nach Seitenzahl aufsteigend.</p>
-        <div class="tip">⏱ Dauer: ~30 Seiten = 1 Min · ~60 Seiten = 2 Min · ~100 Seiten = 3–4 Min</div>
-      </div></div>
-
-      <div class="guide-step"><div class="guide-num">4</div><div class="guide-content">
-        <h4>Abhaken & Korrigieren</h4>
-        <p>Jeden erledigten Punkt mit ☑ abhaken – er wird durchgestrichen und ausgegraut. Der Fortschritt wird am Ende angezeigt.</p>
-        <div class="tip">🔧 „Hilfe"-Button pro Punkt: KI generiert sofort einen konkreten Korrekturvorschlag – kopieren und ins Gutachten einfügen.</div>
-      </div></div>
-
-      <div class="guide-step" style="border-bottom:none;padding-bottom:0;margin-bottom:0"><div class="guide-num">5</div><div class="guide-content">
-        <h4>Checkliste exportieren</h4>
-        <p>Den vollständigen Prüfbericht als .txt-Datei exportieren – zum Nacharbeiten oder zur Dokumentation gegenüber dem Auftraggeber.</p>
-      </div></div>
-
-      <div class="guide-section-title" style="margin-top:16px">✍️ Weg B – Gutachten erstellen</div>
-
-      <div class="guide-step"><div class="guide-num" style="background:var(--blue-tint);color:var(--blue)">1</div><div class="guide-content">
-        <h4>Fahrzeug- und Schadendaten eingeben</h4>
-        <p>Links alle bekannten Felder ausfüllen. Pflichtfelder (★): Hersteller, Modell, Erstzulassung, Laufleistung, Schadendatum. Alle anderen Felder verbessern die Textqualität deutlich.</p>
-        <div class="tip"><strong>Tipp:</strong> Anstoßbereich und Unfallhergang unbedingt korrekt setzen – sie beeinflussen alle Plausibilitätsbausteine.</div>
-      </div></div>
-
-      <div class="guide-step"><div class="guide-num">2</div><div class="guide-content">
-        <h4>Schreibstil hinterlegen</h4>
-        <p>Optional: eigenes Gutachten als PDF hochladen. KfzGut-AI analysiert Satzbau, Formalitätsgrad und Fachbegriffe und schreibt dann in deinem persönlichen Stil.</p>
-        <div class="tip">Empfehlung: 1–2 eigene Gutachten hochladen, mind. 10 Seiten. Je mehr Text, desto besser der Stil-Match.</div>
-      </div></div>
-
-      <div class="guide-step"><div class="guide-num">3</div><div class="guide-content">
-        <h4>Kategorie und Baustein wählen</h4>
-        <p>Oben die Kategorie wählen (Fahrzeug, Schaden, Plausibilität, Wertermittlung…), dann den gewünschten Abschnitt anklicken. Der Text erscheint in 5–15 Sekunden live.</p>
-        <div class="tip">Platzhalter in <strong>[eckigen Klammern]</strong> müssen manuell mit konkreten Werten (z.B. Wiederbeschaffungswert, Restwert) ergänzt werden.</div>
-      </div></div>
-
-      <div class="guide-step"><div class="guide-num">4</div><div class="guide-content">
-        <h4>Vollgutachten auf Knopfdruck</h4>
-        <p>Ganz unten in der Baustein-Liste: „Vollständiges Gutachten" – generiert alle 18 Hauptabschnitte automatisch nacheinander. Dauert ca. 3–5 Minuten.</p>
-        <div class="tip">Danach direkt die Prüffunktion (Weg A) nutzen um das generierte Gutachten auf alle 3 Ebenen zu prüfen.</div>
-      </div></div>
-
-      <div class="guide-step"><div class="guide-num">5</div><div class="guide-content">
-        <h4>Verlauf speichern</h4>
-        <p>Gutachten mit einem Namen speichern – bis zu 50 Vorgänge lokal gespeichert. Als Vorlage für ähnliche Fälle wiederverwenden.</p>
-      </div></div>
-
-      <div class="guide-step" style="border-bottom:none;padding-bottom:0;margin-bottom:0"><div class="guide-num">6</div><div class="guide-content">
-        <h4>Exportieren</h4>
-        <p>„Word exportieren" erstellt eine .txt-Datei mit allen Abschnitten in der richtigen Reihenfolge – direkt ins Gutachten einfügen.</p>
-      </div></div>
-
-      <div class="guide-section-title" style="margin-top:16px">⚠️ Wichtige Hinweise</div>
-
-      <div class="guide-step"><div class="guide-num" style="background:var(--orange-tint);color:var(--orange)">!</div><div class="guide-content">
-        <h4>Rechtliche Verantwortung</h4>
-        <p>KfzGut-AI erstellt Textvorlagen als Arbeitserleichterung. Die fachliche und rechtliche Verantwortung für das fertige Gutachten liegt ausschließlich beim zertifizierten Sachverständigen. Alle Texte vor Verwendung prüfen.</p>
-        <div class="tip" style="background:var(--orange-tint);border-left-color:var(--orange)">Personenbezogene Daten von Beteiligten möglichst vor der Eingabe entfernen.</div>
-      </div></div>
-
-      <div class="guide-step"><div class="guide-num" style="background:var(--blue-tint);color:var(--blue)">KI</div><div class="guide-content">
-        <h4>KI-Transparenz gegenüber Auftraggebern</h4>
-        <p>Empfohlener Transparenz-Hinweis fürs Gutachten:</p>
-        <div class="tip" style="background:var(--blue-tint);border-left-color:var(--blue);font-style:italic">„Einzelne Textabschnitte wurden unter Einsatz KI-gestützter Textwerkzeuge (KfzGut-AI) als Entwürfe erstellt und vom Sachverständigen inhaltlich geprüft, angepasst und fachlich verantwortet."</div>
-      </div></div>
-
-      <div class="guide-step" style="border-bottom:none;margin-bottom:0;padding-bottom:0"><div class="guide-num" style="background:var(--green-tint);color:var(--green)">🛡️</div><div class="guide-content">
-        <h4>Datenschutz</h4>
-        <p>Verlauf und Schreibstil-Referenzen bleiben lokal in Ihrem Browser und werden nicht dauerhaft auf unseren Servern gespeichert. Der eingegebene Text wird zur Analyse an unseren KI-Anbieter übertragen – hierfür besteht ein Auftragsverarbeitungsvertrag inkl. EU-Standardvertragsklauseln. Wir empfehlen, Namen und Adressen von Beteiligten vorher zu entfernen.</p>
-      </div></div>
-
-    </div>
-  </div>
-</div>
-
-<!-- FEEDBACK -->
-<div class="fb-overlay" id="fbOverlay" onclick="if(event.target===this)closeFeedback()">
-  <div class="modal-box">
-    <div class="modal-hd"><h3>Feedback</h3><button class="modal-close" onclick="closeFeedback()">×</button></div>
-    <div class="modal-body" id="fbBody">
-      <p style="font-size:13px;color:var(--ink3);margin-bottom:10px">Wie hilfreich war KfzGut-AI heute?</p>
-      <div style="display:flex;gap:6px;margin:10px 0" id="starRow">
-        <span class="star" onclick="setRating(1)">★</span><span class="star" onclick="setRating(2)">★</span><span class="star" onclick="setRating(3)">★</span><span class="star" onclick="setRating(4)">★</span><span class="star" onclick="setRating(5)">★</span>
-      </div>
-      <div style="margin:10px 0;display:flex;flex-wrap:wrap">
-        <span class="fb-cat" onclick="this.classList.toggle('sel')">Zeitersparnis</span>
-        <span class="fb-cat" onclick="this.classList.toggle('sel')">Prüfqualität</span>
-        <span class="fb-cat" onclick="this.classList.toggle('sel')">Benutzerfreundlichkeit</span>
-        <span class="fb-cat" onclick="this.classList.toggle('sel')">Textqualität</span>
-      </div>
-      <textarea id="fbText" placeholder="Anmerkungen…" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;font-family:var(--sans);min-height:70px;resize:vertical;outline:none;background:var(--bg);margin-bottom:10px"></textarea>
-      <button onclick="submitFeedback()" style="width:100%;padding:10px;background:var(--blue);color:white;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)">Senden</button>
-    </div>
-  </div>
-</div>
-
-<!-- VERLAUF MODAL -->
-<div class="overlay" id="histModal" onclick="if(event.target===this)closeHistModal()">
-  <div class="modal-box">
-    <div class="modal-hd"><h3>Verlauf</h3><button class="modal-close" onclick="closeHistModal()">×</button></div>
-    <div class="modal-body" style="max-height:55vh;overflow-y:auto">
-      <div id="histList"></div>
-      <div id="histEmpty" style="display:none;text-align:center;padding:20px;color:var(--ink4);font-size:12px">Noch keine Gutachten gespeichert.</div>
-    </div>
-  </div>
-</div>
-
-<!-- CONFIRM MODAL -->
-<div class="overlay" id="confirmModal" onclick="if(event.target===this)closeConfirm()">
-  <div class="modal-box">
-    <div class="modal-hd"><h3 id="confTitle">Bestätigen</h3><button class="modal-close" onclick="closeConfirm()">×</button></div>
-    <div class="modal-body">
-      <p id="confText" style="font-size:13px;color:var(--ink3);line-height:1.65"></p>
-      <div class="modal-btns">
-        <button class="m-btn" onclick="closeConfirm()">Abbrechen</button>
-        <button class="m-btn" id="confSkip" style="display:none">Ohne Speichern</button>
-        <button class="m-btn p" id="confOk">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- CUSTOM PROMPT -->
-<div class="cp-overlay" id="cpOverlay" onclick="if(event.target===this)closeCustomPrompt()">
-  <div class="modal-box">
-    <div class="modal-hd"><h3>Eigener Baustein</h3><button class="modal-close" onclick="closeCustomPrompt()">×</button></div>
-    <div class="modal-body">
-      <p style="font-size:12px;color:var(--ink4);margin-bottom:8px;line-height:1.6">Beschreiben Sie welchen Abschnitt Sie benötigen. Fahrzeug- und Schadendaten werden automatisch ergänzt.</p>
-      <textarea id="cpInput" maxlength="400" placeholder="Dein Prompt…" oninput="updateCpCounter()" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;font-family:var(--sans);min-height:90px;resize:vertical;outline:none;background:var(--bg);margin-bottom:8px"></textarea>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink4);margin-bottom:10px">
-        <span>Heute noch <strong id="cpRemaining">—</strong> verfügbar</span>
-        <span id="cpCounter">0/400</span>
-      </div>
-      <button id="cpSubmit" onclick="runCustomPrompt()" style="width:100%;padding:10px;background:var(--blue);color:white;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--sans)">Generieren</button>
-    </div>
-  </div>
-</div>
-
-<!-- DATENSCHUTZ BAR -->
-<div style="background:#161c2a;border-top:1px solid rgba(255,255,255,0.06);padding:20px 24px">
-  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px">
-    <div style="display:flex;align-items:flex-start;gap:12px">
-      <div style="font-size:22px;flex-shrink:0;margin-top:2px">🛡️</div>
-      <div>
-        <div style="font-size:12px;font-weight:500;color:white;margin-bottom:3px">Lokal gespeichert</div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:1.6">Verlauf, Schreibstil-Referenzen und Gutachtentexte bleiben ausschließlich auf deinem Gerät. Kein Cloud-Speicher, keine Server-Kopie.</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:flex-start;gap:12px">
-      <div style="font-size:22px;flex-shrink:0;margin-top:2px">🚫</div>
-      <div>
-        <div style="font-size:12px;font-weight:500;color:white;margin-bottom:3px">Kein KI-Training</div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:1.6">Ihre Gutachten und Eingaben werden nicht zum Training von KI-Modellen verwendet. Anthropic (KI-Anbieter) schließt API-Anfragen vom Training aus.</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:flex-start;gap:12px">
-      <div style="font-size:22px;flex-shrink:0;margin-top:2px">✅</div>
-      <div>
-        <div style="font-size:12px;font-weight:500;color:white;margin-bottom:3px">DSGVO-konform</div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:1.6">Gutachteninhalte werden zur Analyse an unseren KI-Anbieter übertragen und nicht dauerhaft gespeichert. <a href="datenschutz.html" style="color:rgba(255,255,255,0.3);text-decoration:underline">Datenschutzerklärung</a></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="sbar">
-  <div class="si"><div class="sdot" id="sDot"></div><span id="sText">Bereit</span></div>
-  <div style="margin-left:auto;display:flex;gap:12px">
-    <a href="impressum.html?back=app" style="font-size:10px;color:rgba(255,255,255,0.25);text-decoration:none">Impressum</a>
-    <a href="datenschutz.html?back=app" style="font-size:10px;color:rgba(255,255,255,0.25);text-decoration:none">Datenschutz</a>
-    <a href="agb.html" style="font-size:10px;color:rgba(255,255,255,0.25);text-decoration:none">AGB</a>
-  </div>
-</div>
-
-<div class="toast" id="toastEl"></div>
-
-<!-- DISCLAIMER MODAL – shown once on first visit -->
+<div class="toast" id="toast"></div>
 
 <script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+const TOKEN = localStorage.getItem('kfzgut_token');
+if(!TOKEN) location.href = '/login.html';
+let TEXT = '';
+let ERGEBNIS = null;
 
-const API='';
-var fileText = null;
-var pruefMode = 'file';
+function kopf(){ return { 'Content-Type':'application/json', Authorization:'Bearer ' + TOKEN }; }
+function melde(t, art){ const m = document.getElementById('meldung'); m.className = 'meldung zeigen m-' + art; m.textContent = t; }
+function versteckeMeldung(){ document.getElementById('meldung').className = 'meldung'; }
+function toast(t){ const el = document.getElementById('toast'); el.textContent = t; el.style.display='block'; setTimeout(()=>el.style.display='none', 2600); }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-var activeCat = 'auftrag';   // erste Kategorie als Standard
-var CATS=[
-  {id:'auftrag',label:'📋 Auftrag',keys:['auftrag_gegenstand','auftraggeber_abschn','gutachtenzweck','besichtigung','unterlagen','stichtag','vorbemerkung']},
-  {id:'fahrzeug',label:'🚗 Fahrzeug',keys:['fahrzeugidentifikation','ausstattung_beschreibung','laufleistung_pruefung','allgemeinzustand','bereifung','hu_au','wartungszustand','vorschaeden_abgrenzung','altschaeden']},
-  {id:'schaden',label:'💥 Schaden',keys:['schadenhergang','schadenbild','schadenumfang','anstossbereich_beschr','deformation','lichtbilddoku','schadenskizze']},
-  {id:'plausi',label:'🔍 Plausibilität',keys:['kompatibilitaet','plausibilitaet_ies','ees_bewertung','kollisionsgeschwindigkeit','vereinbarkeit_hergang','manipulationspruefung']},
-  {id:'reparatur',label:'🔧 Reparatur',keys:['reparaturweg','kalkulationsgrundlage','stundenverrechnungssaetze','lackierung','ersatzteile','beilackierung','reparaturdauer']},
-  {id:'wert',label:'💶 Wertermittlung',keys:['wiederbeschaffungswert','restwert','totalschaden','regel130','merkantiler_minderwert','nutzungsausfall','wiederbeschaffungsdauer']},
-  {id:'recht',label:'⚖️ Recht & Honorar',keys:['rechtsgrundlagen','honorar','nebenkosten','mehrwertsteuer','abtretung','haftungsausschluss']},
-  {id:'sonder',label:'✨ Sonderfälle',keys:['zusammenfassung','leasing','oldtimer','motorrad','gewerblich','risiken_einschraenkungen']},
-];
-// pdf.js – load eagerly with fallback CDNs
-var PDFJS_CDNS = [
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
-  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
-  'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
-];
-var PDFJS_WORKERS = [
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
-  'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js',
-  'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js'
-];
-var pdfJsReady = false;
-var pdfJsLoading = null;
-
-function loadScriptFrom(urls, idx){
-  if(idx >= urls.length) return Promise.reject(new Error('Alle CDN-Quellen fehlgeschlagen'));
-  return new Promise(function(resolve, reject){
-    var s = document.createElement('script');
-    s.src = urls[idx];
-    s.onload = resolve;
-    s.onerror = function(){ loadScriptFrom(urls, idx+1).then(resolve).catch(reject); };
-    document.head.appendChild(s);
+function abmelden(){
+  fetch('/api/logout',{method:'POST',headers:kopf()}).finally(()=>{
+    localStorage.removeItem('kfzgut_token'); location.href='/login.html';
   });
 }
 
-async function ensurePdfJs(){
-  if(pdfJsReady) return;
-  if(pdfJsLoading) return pdfJsLoading;
-  pdfJsLoading = (async function(){
-    if(typeof pdfjsLib === 'undefined'){
-      await loadScriptFrom(PDFJS_CDNS, 0);
-    }
-    // Try to set worker from first available CDN
-    var workerSet = false;
-    for(var w of PDFJS_WORKERS){
-      try {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = w;
-        workerSet = true;
-        break;
-      } catch(e) { continue; }
-    }
-    if(!workerSet) throw new Error('PDF-Worker konnte nicht geladen werden');
-    pdfJsReady = true;
-  })();
-  return pdfJsLoading;
-}
-const ST={sections:{},styleDocs:JSON.parse(localStorage.getItem('kg_styledocs')||'[]'),pendingLoad:null};
-const elDatum = document.getElementById('datum');
-if(elDatum) elDatum.value=new Date().toISOString().split('T')[0];
-renderStyleDocs();
-
-// ── AUTH ──────────────────────────────────────────────────────────────────────
-(async function checkAuth(){
-  const token = localStorage.getItem('kg_token');
-  if(!token){ window.location.href='login.html'; return; }
-
-  // ── SOFORT: gecachten User laden und UI zeigen ──────────────────────────────
-  const cachedUser = JSON.parse(localStorage.getItem('kg_user') || 'null');
-  if(cachedUser && cachedUser.hasAccess){
-    document.getElementById('loadingOverlay').style.display = 'none';
-    const nb = document.getElementById('tbUserName');
-    if(nb) nb.textContent = cachedUser.name || cachedUser.email;
-    const badge = document.getElementById('tbBadge');
-    if(badge && cachedUser.plan === 'trial'){
-      badge.style.display = 'inline-block';
-      if(cachedUser.trialEndsAt){
-        const days = Math.max(0, Math.ceil((cachedUser.trialEndsAt - Math.floor(Date.now()/1000))/86400));
-        badge.textContent = 'Trial – ' + days + ' Tage';
-      }
-    }
-    const lastMode = localStorage.getItem('kg_last_mode');
-    if(lastMode === 'pruef' || lastMode === 'gen') startMode(lastMode, true);
-  }
-
-  // ── HINTERGRUND: Server-Verifikation mit Timeout ────────────────────────────
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000); // 8s Timeout
-
-  try {
-    const r = await fetch(API + '/api/me', {
-      headers: { 'Authorization': 'Bearer ' + token },
-      signal: controller.signal
-    });
-    clearTimeout(timeout);
-
-    if(!r.ok){
-      // Token ungültig
-      localStorage.removeItem('kg_token');
-      localStorage.removeItem('kg_user');
-      window.location.href = 'login.html';
-      return;
-    }
-
-    const user = await r.json();
-    localStorage.setItem('kg_user', JSON.stringify(user));
-
-    if(new URLSearchParams(location.search).get('checkout') === 'success'){
-      history.replaceState({}, '', location.pathname);
-      setTimeout(() => toast('✓ Zahlungsmittel hinterlegt – Trial läuft!'), 500);
-      if(!user.hasAccess){
-        setTimeout(async () => {
-          try{
-            const r2 = await fetch(API+'/api/me',{headers:{'Authorization':'Bearer '+token}});
-            if(r2.ok){ const u2=await r2.json(); if(u2.hasAccess){ localStorage.setItem('kg_user',JSON.stringify(u2)); location.reload(); }}
-          }catch{}
-        }, 3000);
-      }
-    }
-
-    if(!user.hasAccess){
-      document.getElementById('paywallOverlay').classList.add('open');
-      document.getElementById('loadingOverlay').style.display = 'none';
-      return;
-    }
-
-    // Wenn noch nicht aus Cache geladen: jetzt UI zeigen
-    if(document.getElementById('loadingOverlay').style.display !== 'none'){
-      document.getElementById('loadingOverlay').style.display = 'none';
-      const nb = document.getElementById('tbUserName');
-      if(nb) nb.textContent = user.name || user.email;
-      const badge = document.getElementById('tbBadge');
-      if(badge && user.plan === 'trial'){
-        badge.style.display = 'inline-block';
-        if(user.trialEndsAt){
-          const days = Math.max(0, Math.ceil((user.trialEndsAt - Math.floor(Date.now()/1000))/86400));
-          badge.textContent = 'Trial – ' + days + ' Tage';
-        }
-      }
-      const lastMode = localStorage.getItem('kg_last_mode');
-      if(lastMode === 'pruef' || lastMode === 'gen') startMode(lastMode, true);
-    }
-
-  } catch(err) {
-    clearTimeout(timeout);
-    if(err.name === 'AbortError'){
-      // Timeout – wenn Cache vorhanden trotzdem App zeigen
-      if(cachedUser && cachedUser.hasAccess){
-        toast('⚠ Server antwortet langsam – offline Modus');
-        return;
-      }
-    }
-    // Kein Cache, kein Server – zum Login
-    if(!cachedUser){
-      window.location.href = 'login.html';
-    }
-  }
+// --- Konto laden
+(async function(){
+  const r = await fetch('/api/me',{headers:kopf()});
+  if(r.status === 401){ localStorage.removeItem('kfzgut_token'); location.href='/login.html'; return; }
+  const { user } = await r.json();
+  const b = document.getElementById('planBadge');
+  if(user.plan === 'aktiv'){ b.textContent = 'Aktiv'; b.className = 'badge b-gruen'; }
+  else if(user.zugriff){
+    const tage = Math.ceil((new Date(user.trial_ends_at) - new Date())/86400000);
+    b.textContent = `Test · ${tage} Tage`; b.className = 'badge b-gelb';
+  } else { b.textContent = 'Kein Zugang'; b.className = 'badge b-rot'; }
+  if(!user.zugriff) document.getElementById('paywall').classList.add('zeigen');
 })();
 
-async function goCheckout(plan){
-  plan = plan || 'solo';
-  const token=localStorage.getItem('kg_token');
-  try{const r=await fetch(API+'/api/checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plan})});const d=await r.json();if(d.url)window.location.href=d.url;}catch{toast('Fehler beim Weiterleiten');}
-}
+// --- Drag and Drop
+const ablage = document.getElementById('ablage');
+['dragenter','dragover'].forEach(e => ablage.addEventListener(e, ev => {
+  ev.preventDefault(); ablage.classList.add('drueber');
+}));
+['dragleave','drop'].forEach(e => ablage.addEventListener(e, ev => {
+  ev.preventDefault(); ablage.classList.remove('drueber');
+}));
+ablage.addEventListener('drop', ev => {
+  const f = ev.dataTransfer.files[0];
+  if(f) dateiGewaehlt(f);
+});
 
-// ── MODE SWITCHING ────────────────────────────────────────────────────────────
-var currentMode = null;
+async function dateiGewaehlt(f){
+  if(!f) return;
+  versteckeMeldung();
+  if(f.type !== 'application/pdf'){ melde('Bitte eine PDF-Datei auswählen.', 'fehler'); return; }
+  if(f.size > 30 * 1024 * 1024){ melde('Die Datei ist größer als 30 MB.', 'fehler'); return; }
 
-// Update free checks display in UI
-function updateFreeChecksUI(days){
-  var el = document.getElementById('freeChecksHint');
-  if(!el) return;
-  var user = JSON.parse(localStorage.getItem('kg_user')||'{}');
-  if(user.plan === 'active_sub'){el.style.display='none';return;}
-  if(typeof days === 'undefined') days = user.trialDaysRemaining;
-  if(days > 0){
-    el.style.display='block';
-    el.innerHTML = '<span style="color:var(--blue)">Testzugang: noch <strong>'+days+' Tag'+(days===1?'':'e')+'</strong> kostenlos</span> · danach ab 69 € / Monat · <a href="#" onclick="goCheckout();return false;" style="color:var(--blue)">Jetzt abonnieren</a>';
-  } else {
-    el.style.display='block';
-    el.innerHTML = '<span style="color:var(--orange)">Testzeitraum abgelaufen</span> · <a href="#" onclick="goCheckout();return false;" style="color:var(--orange)">Jetzt abonnieren – ab 69 € / Monat →</a>';
-  }
-}
-function startMode(mode, silent){
-  currentMode = mode;
-  document.getElementById('modeSelector').style.display='none';
-  document.getElementById('mainPruef').style.display = mode==='pruef' ? 'grid' : 'none';
-  document.getElementById('mainGen').style.display = mode==='gen' ? 'grid' : 'none';
-  if(mode==='gen' && typeof renderCatGrid === 'function') renderCatGrid();
-  localStorage.setItem('kg_last_mode', mode);
-  if(!silent) window.scrollTo({top:0,behavior:'smooth'});
-}
-function backToSelector(){
-  currentMode = null;
-  document.getElementById('modeSelector').style.display='block';
-  document.getElementById('mainPruef').style.display='none';
-  document.getElementById('mainGen').style.display='none';
-  localStorage.removeItem('kg_last_mode');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function dOverP(e){e.preventDefault();document.getElementById('dropZone').classList.add('over')}
-function dLeaveP(){document.getElementById('dropZone').classList.remove('over')}
-function dDropP(e){e.preventDefault();dLeaveP();if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);}
+  document.getElementById('dateiName').textContent = f.name;
+  document.getElementById('dateiZeile').classList.add('zeigen');
+  document.getElementById('fortschritt').classList.add('zeigen');
+  document.getElementById('status').classList.add('zeigen');
 
-async function handleFile(file){
-  if(!file)return;
-  if(file.size > 20*1024*1024){toast('Datei zu groß – max. 20 MB');return;}
-  const dz=document.getElementById('dropZone');
-  const origHTML=dz.innerHTML;
-  dz.innerHTML='<div style="display:flex;align-items:center;gap:10px;justify-content:center;color:var(--blue);padding:8px 0"><div style="width:14px;height:14px;border:2px solid rgba(26,86,160,0.2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0"></div><span id="extractMsg">Datei wird gelesen…</span></div>';
-  try{
-    var text='';
-    var isPDF=file.name.toLowerCase().endsWith('.pdf')||file.type==='application/pdf';
-    if(!isPDF){
-      text=await file.text();
-    } else {
-      // Load pdf.js with timeout fallback
-      try {
-        await Promise.race([
-          ensurePdfJs(),
-          new Promise((_,reject)=>setTimeout(()=>reject(new Error('PDF-Bibliothek konnte nicht geladen werden – bitte Text manuell einfügen oder einen anderen Browser verwenden')),20000))
-        ]);
-      } catch(e) {
-        dz.innerHTML=origHTML;
-        toast(e.message);
-        return;
-      }
-      var ab=await file.arrayBuffer();
-      var pdf=await pdfjsLib.getDocument({data:ab}).promise;
-      var maxPages=pdf.numPages;
-      var parts=[];
-      for(var i=1;i<=maxPages;i++){
-        var el=document.getElementById('extractMsg');
-        if(el)el.textContent='Seite '+i+' von '+maxPages+' wird gelesen…';
-        var page=await pdf.getPage(i);
-        var tc=await page.getTextContent();
-        var pt=tc.items.map(function(x){return x.str;}).join(' ').trim();
-        if(pt.length>20)parts.push('[Seite '+i+']\n'+pt);
-      }
-      text=parts.join('\n\n');
-      if(!text||text.length<100){
-        dz.innerHTML=origHTML;
-        toast('Kein lesbarer Text im PDF – bitte Text manuell einfügen oder ein anderes PDF versuchen');
-        return;
-      }
+  try {
+    const puffer = await f.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: puffer }).promise;
+    let text = '';
+    for(let i = 1; i <= pdf.numPages; i++){
+      const seite = await pdf.getPage(i);
+      const inhalt = await seite.getTextContent();
+      text += `\n\n--- Seite ${i} ---\n` + inhalt.items.map(it => it.str).join(' ');
+      const proz = Math.round(i / pdf.numPages * 100);
+      document.getElementById('balken').style.width = proz + '%';
+      document.getElementById('status').textContent = `Seite ${i} von ${pdf.numPages} gelesen`;
     }
-    text=text.replace(/\s{3,}/g,'\n').replace(/  +/g,' ').trim();
-    if(text.length<100){toast('Kein lesbarer Text – bitte Text manuell einfügen');dz.innerHTML=origHTML;return;}
-    fileText=text;
-    pruefMode='file';
-    var chars=Math.round(fileText.length/100)/10;
-    var pages=(fileText.match(/\[Seite \d+\]/g)||[]).length;
-    document.getElementById('fileName').textContent=file.name+' ('+chars+'k Zeichen'+(pages?', '+pages+' Seiten':'')+')';
-    document.getElementById('fileLoaded').classList.add('open');
-    dz.style.display='none';
-    document.getElementById('fileInput').value='';
-    toast('✓ '+chars+'k Zeichen extrahiert'+(pages?' ('+pages+' Seiten)':''));
-  }catch(err){
-    console.error('handleFile error:', err);
-    dz.innerHTML=origHTML;
-    dz.style.display='block';
-    toast('Fehler beim Lesen: '+err.message+' – bitte Text manuell einfügen');
+    TEXT = text.trim();
+    if(TEXT.length < 200){
+      melde('Aus dieser PDF konnte kaum Text gelesen werden. Vermutlich ein Scan ohne Texterkennung (OCR).', 'fehler');
+      return;
+    }
+    document.getElementById('status').textContent = `${pdf.numPages} Seiten gelesen · ${TEXT.length.toLocaleString('de-DE')} Zeichen`;
+    document.getElementById('pruefBtn').style.display = 'block';
+  } catch(e){
+    melde('Die PDF konnte nicht gelesen werden.', 'fehler');
   }
 }
 
-function setModeText(){
-  var t=document.getElementById('textInput').value.trim();
-  if(!t){toast('Bitte Text eingeben');return;}
-  fileText=t;pruefMode='text';
-  toast('✓ Text übernommen – jetzt "Jetzt prüfen" klicken');
-}
-
-function clearFile(){
-  fileText=null;pruefMode='file';
-  var dz=document.getElementById('dropZone');
-  dz.style.display='block';
-  dz.innerHTML='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><h4>PDF hierher ziehen</h4><p>oder klicken zum Auswählen<br>PDF oder TXT · Max. 20 MB</p>';
-  document.getElementById('fileLoaded').classList.remove('open');document.getElementById('fileLoaded').classList.remove('v');document.getElementById('fileName').textContent='—';
-}
-
-async function runCheck(){
-  var fullText = pruefMode==='file' ? fileText : document.getElementById('textInput').value.trim();
-  if(!fullText){toast(pruefMode==='file'?'Bitte Datei hochladen':'Bitte Text eingeben');return;}
-  var btn=document.getElementById('runBtn');
-  var loading=document.getElementById('loadingBox');
-  var results=document.getElementById('results');
-  var empty=document.getElementById('pruefEmpty');
-  btn.disabled=true;
-  loading.classList.add('v');
-  results.classList.remove('open');
-  if(empty)empty.style.display='none';
-  setTimeout(function(){var pb=document.getElementById('progressBar');if(pb){pb.style.width='0%';setTimeout(function(){pb.style.width='85%';},100);}},200);
-  var msgs=['Seiten 1–15 werden analysiert…','Rechtschreibung wird geprüft…','Seiten 16–30 werden analysiert…','Inhaltliche Konsistenz wird geprüft…','Seiten 31–50 werden analysiert…','Kompatibilität und Plausibilität…','Seiten 51–70 werden analysiert…','Wertansätze werden geprüft…','Seiten 71–90 werden analysiert…','Honorar und Formales werden geprüft…','Seiten 90+ werden analysiert…','Ergebnisse werden zusammengefasst…'];
-  var mi=0;
-  var timer=setInterval(function(){mi=(mi+1)%msgs.length;var el=document.getElementById('loadingMsg');if(el)el.textContent=msgs[mi];},8000);
-  try{
-    var token=localStorage.getItem('kg_token');
-    var r=await fetch(API+'/api/review',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({prompt:fullText})});
-    clearInterval(timer);
-    var pb=document.getElementById('progressBar');if(pb){pb.style.transition='width 0.5s';pb.style.width='100%';}
+async function pruefen(){
+  const btn = document.getElementById('pruefBtn');
+  btn.disabled = true; btn.textContent = 'Prüfung läuft …';
+  versteckeMeldung();
+  try {
+    const r = await fetch('/api/review', { method:'POST', headers:kopf(), body: JSON.stringify({ text: TEXT }) });
+    const d = await r.json();
     if(!r.ok){
-      let errMsg='Fehler '+r.status;
-      try{
-        const e=await r.json();
-        errMsg=e.error||errMsg;
-        if(e.code==='UPGRADE_REQUIRED'){
-          document.getElementById('paywallOverlay').classList.add('open');
-          setStatus('Bereit');
-          return;
-        }
-      }catch{}
-      if(r.status===413) errMsg='Gutachten zu groß – bitte kürzen oder Text manuell einfügen';
-      if(r.status===400) errMsg='Kein Text erkannt – bitte Datei erneut hochladen';
-      if(r.status===403) errMsg='Zugriff verweigert – bitte neu einloggen';
-      throw new Error(errMsg);
+      melde(d.error || 'Die Prüfung ist fehlgeschlagen.', 'fehler');
+      if(r.status === 402) document.getElementById('paywall').classList.add('zeigen');
+      return;
     }
-    var data=await r.json();
-    if(!data.result)throw new Error('Keine Antwort');
-    document.getElementById('afterPruefCard').style.display='block';
-    // Keep filename visible after check
-    document.getElementById('fileLoaded').classList.add('open');
-    // Refresh user to get updated free checks count
-    try{
-      const token=localStorage.getItem('kg_token');
-      const r2=await fetch(API+'/api/me',{headers:{'Authorization':'Bearer '+token}});
-      if(r2.ok){const u2=await r2.json();localStorage.setItem('kg_user',JSON.stringify(u2));updateFreeChecksUI(u2.trialDaysRemaining);}
-    }catch{}
-    renderResults(data.result);
-  }catch(err){
-    clearInterval(timer);
-    toast('Fehler: '+err.message);
-    if(empty)empty.style.display='block';
-  }finally{
-    btn.disabled=false;
-    loading.classList.remove('v');
-  }
+    ERGEBNIS = d;
+    zeigeErgebnis(d);
+  } catch { melde('Verbindung fehlgeschlagen.', 'fehler'); }
+  finally { btn.disabled = false; btn.textContent = 'Prüfung starten'; }
 }
 
-// ── PRÜFBERICHT RENDERING ─────────────────────────────────────────────────────
-function extractPageNum(text){var m=text.match(/Seite (\d+)/i);return m?parseInt(m[1]):999;}
+function zeigeErgebnis(d){
+  const bef = d.befunde || [];
+  const n = a => bef.filter(b => b.ampel === a).length;
+  document.getElementById('zaehler').innerHTML =
+    (n('rot')   ? `<span class="badge b-rot">${n('rot')} kritisch</span>` : '') +
+    (n('gelb')  ? `<span class="badge b-gelb">${n('gelb')} Hinweise</span>` : '') +
+    (n('gruen') ? `<span class="badge b-gruen">${n('gruen')} geprüft</span>` : '');
+  document.getElementById('zus').textContent = d.zusammenfassung || '';
 
-function renderResults(r){
-  var results=document.getElementById('results');
-  results.classList.add('v');
-  results.scrollIntoView({behavior:'smooth',block:'start'});
-  var labels={gruen:'✓ Gut',orange:'⚠ Hinweise',gelb:'⚠ Hinweise',rot:'✕ Überarbeiten'};
-  var sc={gruen:'green',orange:'orange',gelb:'gelb',rot:'red'};
-  var dotBg={gruen:'#22c55e',orange:'#d95f1a',gelb:'#c9a000',rot:'#ef4444'};
-  var badge=document.getElementById('scoreBadge');
-  badge.textContent=labels[r.gesamtbewertung]||'Geprüft';
-  badge.className='score-badge '+(sc[r.gesamtbewertung]||'green');
-  document.getElementById('resultSummary').textContent=r.zusammenfassung||'';
-
-  // Unvollständige Prüfung deutlich sichtbar machen – eine falsche Entwarnung
-  // wäre für den Nutzer gefährlicher als gar kein Ergebnis.
-  var warnBox=document.getElementById('coverageWarn');
-  if(!warnBox){
-    warnBox=document.createElement('div');
-    warnBox.id='coverageWarn';
-    var sumEl=document.getElementById('resultSummary');
-    sumEl.parentNode.insertBefore(warnBox, sumEl.nextSibling);
-  }
-  // KI-Kennzeichnung des Prüfergebnisses (Art. 50 AI Act)
-  var aiTag=document.getElementById('aiResultTag');
-  if(!aiTag){
-    aiTag=document.createElement('div');
-    aiTag.id='aiResultTag';
-    aiTag.className='ai-notice';
-    aiTag.style.marginTop='14px';
-    aiTag.innerHTML='<span style="flex-shrink:0;font-size:14px">🤖</span>'
-      +'<span>Dieser Prüfbericht wurde von künstlicher Intelligenz erstellt. Er dient als '
-      +'zweite Instanz und ersetzt nicht Ihre fachliche Beurteilung.</span>';
-    var res=document.getElementById('results');
-    if(res) res.appendChild(aiTag);
-  }
-
-  if(r.warnung){
-    warnBox.style.cssText='display:flex;gap:10px;align-items:flex-start;margin:12px 0;padding:12px 14px;'
-      +'background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25);'
-      +'border-radius:var(--radius);font-size:12.5px;color:var(--ink2);line-height:1.6';
-    warnBox.innerHTML='<span style="flex-shrink:0;font-size:15px">⚠️</span><span><strong>Prüfung unvollständig</strong><br>'
-      +String(r.warnung).replace(/</g,'&lt;')+'</span>';
-  } else {
-    warnBox.style.display='none';
-    warnBox.innerHTML='';
-  }
-  var kats=(r.kategorien||[]).slice().sort(function(a,b){var o={rot:0,orange:1,gruen:2};return(o[a.ampel]||1)-(o[b.ampel]||1);});
-  var html='';
-  for(var i=0;i<kats.length;i++){
-    var kat=kats[i];var id='kat'+i;var a=kat.ampel||'gruen';
-    var pts=kat.punkte||[];
-    var hasItems=pts.length>0&&!(pts.length===1&&pts[0].toLowerCase().indexOf('keine')>=0);
-    var isOpen=a==='orange'||a==='gelb'||a==='rot';
-    var sortedPts=hasItems?pts.slice().sort(function(x,y){return extractPageNum(x)-extractPageNum(y);}):pts;
-    var bodyHtml='';
-    if(hasItems){
-      bodyHtml=sortedPts.map(function(p,pi){
-        var itemId='item_'+i+'_'+pi;
-        var pFormatted=p.replace(/^(Seite \d+:?)/i,'<strong style="color:var(--blue);font-size:11px;margin-right:3px">$1</strong>');
-        var dotColor=dotBg[a]||dotBg['orange']||'#22c55e';
-        var safeP=p.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        var safeKat=kat.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-        return '<div class="kat-item" id="'+itemId+'">'
-          +'<button class="check-btn" id="cb_'+itemId+'" onclick="toggleDone(this)" data-id="'+itemId+'" title="Erledigt">✓</button>'
-          +'<div class="kat-dot" style="background:'+dotColor+';margin-top:5px"></div>'
-          +'<div class="kat-text">'+pFormatted+'</div>'
-          +'<button class="fix-btn" onclick="openFixPanelEl(this)" data-id="'+itemId+'" data-problem="'+safeP+'" data-kat="'+safeKat+'" title="KI-Formulierungshilfe">🔧 Hilfe</button>'
-          +'<button class="feedback-btn" onclick="markFalsePositive(this,\''+itemId+'\')" title="Nicht zutreffend melden" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--ink4);padding:2px 4px;flex-shrink:0;transition:color .15s" onmouseover="this.style.color=\'var(--orange)\'" onmouseout="this.style.color=\'var(--ink4)\'">✕</button>'
-          +'</div>';
-      }).join('');
-    } else {
-      bodyHtml='<div class="ok-msg">✓ Keine Beanstandungen.</div>';
-    }
-    var countBg=a==='rot'?'var(--red-tint)':a==='gelb'?'var(--gelb-tint)':a==='orange'?'var(--orange-tint)':'var(--green-tint)';
-    var countColor=a==='rot'?'var(--red)':a==='gelb'?'var(--gelb)':a==='orange'?'var(--orange)':'var(--green)';
-    var countText=hasItems?'<span style="font-size:10px;padding:2px 8px;border-radius:4px;background:'+countBg+';color:'+countColor+'">'+pts.length+' Punkt'+(pts.length>1?'e':'')+'</span>':'<span style="font-size:10px;color:var(--green)">OK</span>';
-    html+='<div class="kat-card">'
-      +'<div class="kat-hd" onclick="toggleKat(this)" data-id="'+id+'">'
-      +'<div class="ampel '+(a==='gruen'?'green':a==='orange'?'orange':'red')+'"></div>'
-      +'<span class="kat-name">'+kat.name+'</span>'
-      +countText
-      +'<span class="kat-arr '+(isOpen?'open':'')+'" id="arr'+id+'">›</span>'
-      +'</div>'
-      +'<div class="kat-body '+(isOpen?'v':'')+'" id="'+id+'">'+bodyHtml+'</div>'
-      +'</div>';
-  }
-  document.getElementById('katList').innerHTML=html;
-  document.getElementById('doneHint').style.display='none';
-}
-
-function toggleKat(elOrId){var id=elOrId.dataset?elOrId.dataset.id:elOrId;var el=document.getElementById(id);var arr=document.getElementById('arr'+id);var open=el.classList.contains('v');el.classList.toggle('v',!open);if(arr)arr.classList.toggle('open',!open);}
-function runAndShowEl(btn){runAndShow(btn.dataset.id);}
-function setCatEl(btn){setCat(btn.dataset.id);}
-function expandAll(){document.querySelectorAll('.kat-body').forEach(function(b){b.classList.add('open');});document.querySelectorAll('.kat-arr').forEach(function(a){a.classList.add('open');});}
-function collapseAll(){document.querySelectorAll('.kat-body').forEach(function(b){b.classList.remove('v');});document.querySelectorAll('.kat-arr').forEach(function(a){a.classList.remove('open');});}
-
-function markFalsePositive(btn, itemId){
-  var item=document.getElementById(itemId);
-  if(!item)return;
-  item.style.opacity='0.35';
-  item.style.background='rgba(239,68,68,0.04)';
-  btn.textContent='✕ gemeldet';
-  btn.style.color='var(--orange)';
-  btn.disabled=true;
-  toast('Als nicht zutreffend gemeldet – danke für das Feedback');
-  try{
-    var text=item.querySelector('.kat-text')?item.querySelector('.kat-text').innerText:'';
-    var stored=JSON.parse(localStorage.getItem('kg_false_positives')||'[]');
-    stored.push({text:text.slice(0,200),ts:Date.now()});
-    if(stored.length>50)stored=stored.slice(-50);
-    localStorage.setItem('kg_false_positives',JSON.stringify(stored));
-  }catch(e){}
-}
-
-function toggleDone(btn){
-  var itemId=btn.dataset.id;
-  var item=document.getElementById(itemId);
-  if(!item)return;
-  var isDone=item.classList.contains('done');
-  item.classList.toggle('done',!isDone);btn.classList.toggle('checked',!isDone);
-  var total=document.querySelectorAll('.kat-item').length;
-  var done=document.querySelectorAll('.kat-item.done').length;
-  var hint=document.getElementById('doneHint');
-  if(hint){hint.textContent=done+' von '+total+' Punkten erledigt';hint.style.display=done>0?'block':'none';}
-}
-
-async function exportChecklist(){
-  var items=document.querySelectorAll('.kat-item');
-  if(!items.length){toast('Kein Prüfbericht vorhanden');return;}
-
-  // Build kategorien array from DOM
-  var kategorien=[];
-  document.querySelectorAll('.kat-card').forEach(function(card){
-    var name=card.querySelector('.kat-name');
-    var ampelEl=card.querySelector('.ampel');
-    var ampel='gruen';
-    if(ampelEl){
-      if(ampelEl.classList.contains('red')) ampel='rot';
-      else if(ampelEl.classList.contains('gelb')) ampel='gelb';
-      else if(ampelEl.classList.contains('orange')) ampel='orange';
-    }
-    var punkte=[];
-    card.querySelectorAll('.kat-item').forEach(function(item){
-      var text=item.querySelector('.kat-text');
-      if(text) punkte.push((text.textContent||'').trim());
-    });
-    if(!punkte.length) punkte=['Keine Beanstandungen'];
-    if(name) kategorien.push({ name:name.textContent.trim(), ampel:ampel, punkte:punkte });
-  });
-
-  // Get summary from DOM
-  var summaryEl=document.getElementById('resultSummary');
-  var badgeEl=document.getElementById('scoreBadge');
-  var zusammenfassung=summaryEl?summaryEl.textContent:'';
-  var gesamtbewertung='gelb';
-  if(badgeEl){
-    if(badgeEl.classList.contains('red')) gesamtbewertung='rot';
-    else if(badgeEl.classList.contains('green')) gesamtbewertung='gruen';
-    else if(badgeEl.classList.contains('gelb')) gesamtbewertung='gelb';
-  }
-
-  toast('⏳ Word-Datei wird erstellt…');
-  try{
-    var token=localStorage.getItem('kg_token');
-    var r=await fetch(API+'/api/checklist',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({ kategorien, zusammenfassung, gesamtbewertung })
-    });
-    if(!r.ok) throw new Error('Server Fehler '+r.status);
-    var blob=await r.blob();
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement('a');
-    a.href=url;
-    a.download='KfzGut-AI_Pruefbericht.docx';
-    a.click();
-    URL.revokeObjectURL(url);
-    toast('✓ Word-Datei heruntergeladen');
-  }catch(err){
-    console.error(err);
-    toast('Fehler: '+err.message);
-  }
-}
-
-// ── FORMULIERUNGSHILFE ────────────────────────────────────────────────────────
-var currentFixProblem = '';
-var currentFixKat = '';
-
-function openFixPanelEl(btn){
-  var problem=btn.dataset.problem||'';
-  var katName=btn.dataset.kat||'';
-  openFixPanel(btn.dataset.id, problem, katName);
-}
-
-function openFixPanel(itemId, problem, katName){
-  currentFixProblem=problem;currentFixKat=katName;
-  document.getElementById('fixHdSub').textContent=katName;
-  document.getElementById('fixProblemText').textContent=problem;
-  document.getElementById('fixResult').textContent='';
-  document.getElementById('fixResultWrap').style.display='none';
-  document.getElementById('fixGenBtn').disabled=false;
-  document.getElementById('fixGenBtn').textContent='✨ KI-Korrekturvorschlag generieren';
-  document.getElementById('fixOverlay').classList.add('open');
-}
-function closeFixPanel(){document.getElementById('fixOverlay').classList.remove('open');}
-
-async function generateFix(){
-  var btn=document.getElementById('fixGenBtn');
-  btn.disabled=true;btn.textContent='Generiere…';
-  var token=localStorage.getItem('kg_token');
-  var d=getD();
-  var prompt='Ein Sachverständiger hat folgenden Fehler/Hinweis in seinem Kfz-Schadengutachten identifiziert:\n\n'
-    +'Kategorie: '+currentFixKat+'\n'
-    +'Problem: '+currentFixProblem+'\n\n'
-    +'Schreibe einen konkreten Korrekturvorschlag – einen überarbeiteten Formulierungstext oder eine präzise Handlungsanweisung für den Gutachter. '
-    +'Fahrzeugkontext: '+d.hersteller+' '+d.modell+(d.erstzulassung?', EZ '+d.erstzulassung:'')+(d.laufleistung?', '+d.laufleistung+' km':'')+'. '
-    +'Sachlich, fachlich korrekt, maximal 150 Wörter.';
-  try{
-    var res=await fetch(API+'/api/generate',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({system:'Du bist ein öffentlich bestellter und vereidigter Sachverständiger für das Kraftfahrzeugwesen (BVSK). Erstelle präzise Korrekturvorschläge für Kfz-Schadengutachten. Beträge immer eindeutig als netto oder brutto kennzeichnen.',prompt,promptType:'fix'})
-    });
-    if(!res.ok)throw new Error('API-Fehler');
-    const reader=res.body.getReader(),dec=new TextDecoder();
-    var full='';
-    var resultEl=document.getElementById('fixResult');
-    document.getElementById('fixResultWrap').style.display='block';
-    while(true){
-      var {done,value}=await reader.read();if(done)break;
-      var chunk=dec.decode(value);
-      for(var line of chunk.split('\n')){
-        if(!line.startsWith('data: '))continue;
-        var dat=line.slice(6);if(dat==='[DONE]')continue;
-        try{var parsed=JSON.parse(dat);if(parsed.delta?.text){full+=parsed.delta.text;resultEl.textContent=full;}}catch{}
-      }
-    }
-    btn.textContent='✨ Neu generieren';btn.disabled=false;
-  }catch(err){
-    toast('Fehler: '+err.message);btn.disabled=false;btn.textContent='✨ KI-Korrekturvorschlag generieren';
-  }
-}
-
-function copyFix(){
-  var t=document.getElementById('fixResult').textContent;
-  if(t)navigator.clipboard.writeText(t).then(()=>toast('Kopiert!'));
-}
-
-function renderCatGrid(){
-  // Schutz: Bausteindefinitionen noch nicht geladen -> kurz warten und erneut versuchen
-  if(typeof P === 'undefined'){ setTimeout(renderCatGrid, 60); return; }
-  var tabs=document.getElementById('catTabs');
-  var grid=document.getElementById('catGrid');
-  var hasResults=Object.keys(ST.sections).length>0;
-  var es=document.getElementById('emptyState');
-  var rh=document.getElementById('genResultsHd');
-  if(es)es.style.display=hasResults?'none':'flex';
-  if(rh)rh.style.display=hasResults?'flex':'none';
-  if(!tabs||!grid)return;
-  tabs.innerHTML=CATS.map(function(c){return '<button class="cat-tab'+(c.id===activeCat?' active':'')+'" onclick="setCatEl(this)" data-id="'+c.id+'">'+c.label+'</button>';}).join('')
-    +'<button class="cat-tab" onclick="openCustomPrompt()" style="border-color:var(--orange);color:var(--orange)">✏️ Eigener</button>';
-  var cat=CATS.find(function(c){return c.id===activeCat;});
-  // Fallback: ungültige/leere Kategorie -> erste Kategorie anzeigen statt leerer Fläche
-  if(!cat){ activeCat = CATS[0].id; cat = CATS[0]; }
-  var html=cat.keys.map(function(key){
-    var p=P[key];if(!p||p.isMulti)return'';
-    var isDone=!!ST.sections[key];
-    return '<div class="pcard'+(isDone?' done':'')+'" id="pc-'+key+'">'
-      +'<div class="pcard-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>'
-      +'<div class="pcard-name">'+p.n+'</div>'
-      +'<div class="pcard-desc">'+getDesc(key)+'</div>'
-      +'<button class="pcard-btn" onclick="runAndShowEl(this)" data-id="'+key+'">'+(isDone?'✓ Nochmal':'Generieren →')+'</button>'
-      +'</div>';
-  }).join('');
-  html+='<div class="pcard pcard-wide" onclick="runAndShow(\'vollgutachten\')">'
-    +'<div class="pcard-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>'
-    +'<div style="flex:1"><div class="pcard-name">Vollständiges Gutachten</div><div class="pcard-desc">Alle 18 Hauptabschnitte auf einmal</div></div>'
-    +'<button class="pcard-btn" style="font-size:12px;padding:8px 16px">Alle 18 →</button>'
-    +'</div>';
-  grid.innerHTML=html;
-}
-function setCat(id){activeCat=id;renderCatGrid();}
-function getDesc(key){
-  var d={auftrag_gegenstand:'Auftragsgegenstand, Prüfumfang',auftraggeber_abschn:'Auftraggeber, Beauftragung',gutachtenzweck:'Verwendungszweck, Bindung',besichtigung:'Ort, Datum, Umfang',unterlagen:'Vorgelegte Unterlagen',stichtag:'Bewertungsstichtag',vorbemerkung:'Aufbau, Systeme',fahrzeugidentifikation:'FIN, HSN/TSN, Typschild',ausstattung_beschreibung:'Serie & Sonderausstattung',laufleistung_pruefung:'Tachostand, Plausibilität',allgemeinzustand:'Pflege, Gebrauchsspuren',bereifung:'Dimension, DOT, Profil',hu_au:'HU-Termin, Mängel',wartungszustand:'Serviceintervalle, Scheckheft',vorschaeden_abgrenzung:'Abgrenzung zum Neuschaden',altschaeden:'Nicht unfallbedingte Schäden',schadenhergang:'Schilderung des Auftraggebers',schadenbild:'Beschädigte Bauteile',schadenumfang:'Umfang, verdeckte Schäden',anstossbereich_beschr:'Erstberührung, Kontakthöhe',deformation:'Deformationstiefe, Struktur',lichtbilddoku:'Anzahl, Systematik',schadenskizze:'Kollisionsstellung',kompatibilitaet:'Schadenbilder beider Fahrzeuge',plausibilitaet_ies:'Hergang vs. Schadenbild',ees_bewertung:'EES mit Herleitung',kollisionsgeschwindigkeit:'Impuls, Differenzgeschw.',vereinbarkeit_hergang:'Zusammenfassende Beurteilung',manipulationspruefung:'Technische Auffälligkeiten',reparaturweg:'Instandsetzen oder Erneuern',kalkulationsgrundlage:'DAT/Audatex, Preisstand',stundenverrechnungssaetze:'BVSK-Korridor, Fachbetrieb',lackierung:'Lackart, Umfang, Material',ersatzteile:'Original, UPE-Aufschläge',beilackierung:'Farbtonangleichung',reparaturdauer:'Arbeitstage, Teileverfügbarkeit',wiederbeschaffungswert:'WBW brutto, USt-Art',restwert:'Drei regionale Gebote, brutto',totalschaden:'Wirtschaftlichkeitsprüfung',regel130:'130-%-Grenze, Integritätsinteresse',merkantiler_minderwert:'Methode & Herleitung',nutzungsausfall:'Fahrzeuggruppe, Tagessatz',wiederbeschaffungsdauer:'Kalendertage, Marktgängigkeit',rechtsgrundlagen:'Regelwerke, Richtlinien',honorar:'Grundhonorar, BVSK HB V',nebenkosten:'Fahrt, Fotos, Porto, Schreib',mehrwertsteuer:'Vorsteuer, Differenzbesteuerung',abtretung:'Erfüllungshalber, Fälligkeit',haftungsausschluss:'Verwendungszweck, Haftung',zusammenfassung:'Alle Ergebnisse kompakt',leasing:'Eigentümer, Rückgabe',oldtimer:'Zustandsnoten, Marktwert',motorrad:'Sturzschaden, Rahmenprüfung',gewerblich:'Verdienstausfall, Vorhaltekosten',risiken_einschraenkungen:'Grenzen der Begutachtung'};
-  return d[key]||'';
-}
-async function runAndShow(id){await runPrompt(id);renderCatGrid();}
-function setStatus(t,d){document.getElementById('sText').textContent=t;document.getElementById('sDot').className='sdot'+(d?' '+d:'');}
-var SYS=`Du bist ein öffentlich bestellter und vereidigter Sachverständiger für das Kraftfahrzeugwesen in Deutschland (BVSK). Schreibe präzise, sachliche Texte für ein Kfz-Schadengutachten. Wichtige Stilregeln: Fließtext in vollständigen Absätzen ohne Aufzählungszeichen und ohne Zwischenüberschriften. Sachliche, nüchterne Formulierungen im Sinne eines gerichtsverwertbaren Gutachtens. Konkrete Quellenangaben wenn möglich (z.B. DAT/Audatex-Kalkulation, Schwacke, BVSK-Honorarbefragung, Restwertbörse, Herstellervorgaben). Platzhalter für fehlende Daten in eckigen Klammern wie [Wiederbeschaffungswert: ___ EUR brutto]. Beträge immer eindeutig als netto oder brutto kennzeichnen. Keine wertenden Adjektive ohne Begründung.`;
-
-var P={
-  // ── AUFTRAG ──────────────────────────────────────────────
-  auftrag_gegenstand:{n:'Gegenstand des Gutachtens',p:(d)=>`Verfasse den Abschnitt "Gegenstand des Gutachtens" für ein Kfz-Schadengutachten. Fahrzeug: ${d.hersteller} ${d.modell}, ${d.fahrzeugart}, amtliches Kennzeichen ${d.kennzeichen||'[Kennzeichen]'}, FIN ${d.fin||'[FIN]'}. Schadendatum: ${d.schadendatum||'[Schadendatum]'}. Auftragsart: ${d.auftragsart}. Inhalte: Beschreibung des Auftragsgegenstands, Abgrenzung des Prüfumfangs, Hinweis dass Grundlage die Besichtigung am ${d.datum||'[Besichtigungsdatum]'} ist. Sachlicher Fließtext, ca. 150 Wörter.`},
-  auftraggeber_abschn:{n:'Auftraggeber',p:(d)=>`Schreibe "Auftraggeber und Auftragserteilung". Auftraggeber: ${d.auftraggeber||'[Auftraggeber]'}. Auftragsart: ${d.auftragsart}. Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: Wer hat beauftragt, in welcher Eigenschaft (Halter, Eigentümer, Versicherer, Gericht), Datum der Auftragserteilung [Platzhalter], Umfang der Beauftragung. Ca. 130 Wörter.`},
-  gutachtenzweck:{n:'Zweck und Verwendung',p:(d)=>`Schreibe "Zweck und Verwendung des Gutachtens". Auftragsart: ${d.auftragsart}. Inhalte: bestimmungsgemäßer Verwendungszweck, Hinweis auf Bindung an den benannten Zweck, keine Verwendung durch Dritte ohne Zustimmung. Ca. 120 Wörter.`},
-  besichtigung:{n:'Besichtigung',p:(d)=>`Schreibe "Besichtigung". Fahrzeug: ${d.hersteller} ${d.modell}, Kennzeichen ${d.kennzeichen||'[Kennzeichen]'}. Besichtigungsdatum: ${d.datum||'[Datum]'}, Besichtigungsort: ${d.besichtigungsort||'[Ort]'}. Inhalte: Ort und Zeitpunkt, Zustand bei Besichtigung (unrepariert/teilzerlegt), anwesende Personen, Lichtverhältnisse, Umfang der Inaugenscheinnahme, Hinweis auf nicht einsehbare Bereiche ohne Demontage. Ca. 160 Wörter.`},
-  unterlagen:{n:'Vorgelegte Unterlagen',p:(d)=>`Schreibe "Vorgelegte Unterlagen und Informationsquellen". Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: Zulassungsbescheinigung Teil I, Serviceheft, Vorschadenauskunft, Angaben des Auftraggebers, Kalkulationssystem, Bewertungssystem – jeweils mit Platzhaltern für konkrete Angaben. Hinweis dass Angaben Dritter nicht auf Richtigkeit geprüft wurden. Ca. 140 Wörter.`},
-  stichtag:{n:'Stichtag',p:(d)=>`Schreibe "Bewertungsstichtag". Schadendatum: ${d.schadendatum||'[Schadendatum]'}, Besichtigung: ${d.datum||'[Besichtigungsdatum]'}. Inhalte: maßgeblicher Stichtag für Wiederbeschaffungswert und Restwert, Begründung der Wahl, Hinweis auf Marktveränderungen nach dem Stichtag. Ca. 110 Wörter.`},
-  vorbemerkung:{n:'Vorbemerkung',p:(d)=>`Schreibe eine "Vorbemerkung" für ein Kfz-Schadengutachten. Auftragsart: ${d.auftragsart}. Inhalte: Aufbau des Gutachtens, verwendete Kalkulations- und Bewertungssysteme [Platzhalter], Hinweis auf die Trennung von Feststellung und Bewertung. Ca. 120 Wörter.`},
-
-  // ── FAHRZEUG ─────────────────────────────────────────────
-  fahrzeugidentifikation:{n:'Fahrzeugidentifikation',p:(d)=>`Schreibe "Fahrzeugidentifikation". Hersteller: ${d.hersteller}, Modell: ${d.modell}, Fahrzeugart: ${d.fahrzeugart}, Erstzulassung: ${d.erstzulassung||'[EZ]'}, Kennzeichen: ${d.kennzeichen||'[Kennzeichen]'}, FIN: ${d.fin||'[FIN]'}, Leistung: ${d.leistung||'[kW]'} kW. Inhalte: Identifizierung anhand FIN und Typschild, Abgleich mit Zulassungsbescheinigung, HSN/TSN [Platzhalter], Angabe zur Übereinstimmung der Fahrzeugdaten. Ca. 150 Wörter.`},
-  ausstattung_beschreibung:{n:'Ausstattung',p:(d)=>`Schreibe "Ausstattung". Fahrzeug: ${d.hersteller} ${d.modell}, Erstzulassung ${d.erstzulassung||'[EZ]'}. Bekannte Ausstattung: ${d.ausstattung||'keine Angaben'}. Inhalte: Serien- und Sonderausstattung getrennt, wertrelevante Merkmale, Grundlage der Feststellung (Sichtprüfung, Ausstattungsabfrage über FIN). Hinweis auf Auswirkung auf den Wiederbeschaffungswert. Ca. 150 Wörter.`},
-  laufleistung_pruefung:{n:'Laufleistung',p:(d)=>`Schreibe "Laufleistung". Abgelesene Laufleistung: ${d.laufleistung||'[km]'} km, Erstzulassung: ${d.erstzulassung||'[EZ]'}. Inhalte: abgelesener Tachostand, Plausibilitätsbetrachtung im Verhältnis zu Alter und Zustand (durchschnittliche Jahresfahrleistung), Hinweis auf fehlende Manipulationsprüfmöglichkeit ohne Auslesen, Beleglage (Serviceheft, HU-Berichte). Ca. 140 Wörter.`},
-  allgemeinzustand:{n:'Allgemeinzustand',p:(d)=>`Schreibe "Allgemeiner Fahrzeugzustand". Fahrzeug: ${d.hersteller} ${d.modell}, Erstzulassung ${d.erstzulassung||'[EZ]'}, Laufleistung ${d.laufleistung||'[km]'} km, Zustand: ${d.zustand}. Inhalte: Pflege- und Erhaltungszustand von Karosserie, Lack, Innenraum und Unterboden, alters- und laufleistungstypische Gebrauchsspuren, Korrosionsbefund. Abgrenzung zum Unfallschaden. Ca. 170 Wörter.`},
-  bereifung:{n:'Bereifung',p:(d)=>`Schreibe "Bereifung". Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: Reifendimension [Platzhalter], Hersteller, DOT-Nummern, Profiltiefen je Rad in mm [Platzhalter], Bewertung des Restwerts der Bereifung, Hinweis auf gesetzliche Mindestprofiltiefe. Ca. 120 Wörter.`},
-  hu_au:{n:'HU / AU',p:(d)=>`Schreibe "Hauptuntersuchung". Fahrzeug: ${d.hersteller} ${d.modell}, Erstzulassung ${d.erstzulassung||'[EZ]'}. Inhalte: letzte HU [Platzhalter Monat/Jahr], Fälligkeit der nächsten HU, festgestellte Mängel, Auswirkung auf Wiederbeschaffungswert. Ca. 110 Wörter.`},
-  wartungszustand:{n:'Wartungszustand',p:(d)=>`Schreibe "Wartungs- und Pflegezustand". Fahrzeug: ${d.hersteller} ${d.modell}, Laufleistung ${d.laufleistung||'[km]'} km. Inhalte: Nachweislage der Serviceintervalle (Serviceheft, digitale Servicehistorie), letzter dokumentierter Service [Platzhalter], scheckheftgepflegt ja/nein, Einfluss auf die Bewertung. Ca. 130 Wörter.`},
-  vorschaeden_abgrenzung:{n:'Vorschäden – Abgrenzung',p:(d)=>`Schreibe "Vorschäden und deren Abgrenzung". Fahrzeug: ${d.hersteller} ${d.modell}. Bekannte Vorschäden: ${d.vorschaeden||'keine angegeben'}. Aktueller Anstoßbereich: ${d.anstoss}. Inhalte: Feststellung erkennbarer Vorschäden, räumliche Abgrenzung zum streitgegenständlichen Schaden, Beurteilung der fachgerechten Instandsetzung, ausdrückliche Aussage ob sich Vorschaden und aktueller Schaden überlagern. Falls Überschneidung: Hinweis auf erforderliche Abzüge. Sehr sorgfältig und gerichtsfest formulieren. Ca. 200 Wörter.`},
-  altschaeden:{n:'Altschäden',p:(d)=>`Schreibe "Alt- und Gebrauchsschäden". Fahrzeug: ${d.hersteller} ${d.modell}, Zustand: ${d.zustand}. Inhalte: nicht unfallbedingte Schäden (Steinschläge, Parkremplern, Kratzer, Korrosion) mit Lokalisierung [Platzhalter], ausdrückliche Feststellung dass diese nicht Gegenstand der Kalkulation sind. Ca. 140 Wörter.`},
-
-  // ── SCHADEN ──────────────────────────────────────────────
-  schadenhergang:{n:'Schadenhergang',p:(d)=>`Schreibe "Schadenhergang nach Angaben des Auftraggebers". Schadendatum: ${d.schadendatum||'[Datum]'}, Schadenort: ${d.schadenort||'[Ort]'}. Hergang: ${d.hergang||'[Hergang]'}. Unfallgegner: ${d.gegner||'[Unfallgegner]'}. Inhalte: Wiedergabe der Schilderung, ausdrücklicher Hinweis dass die Angaben ungeprüft übernommen wurden und die technische Überprüfung gesondert erfolgt. Ca. 160 Wörter.`},
-  schadenbild:{n:'Schadenbild',p:(d)=>`Schreibe "Festgestelltes Schadenbild". Fahrzeug: ${d.hersteller} ${d.modell}. Anstoßbereich: ${d.anstoss}. Inhalte: systematische Beschreibung der Beschädigungen von außen nach innen, betroffene Bauteile [Platzhalter], Art der Beschädigung (Deformation, Riss, Bruch, Lackschaden), Verweis auf die Lichtbilddokumentation. Sachlich, ohne Bewertung des Reparaturwegs. Ca. 200 Wörter.`},
-  schadenumfang:{n:'Schadenumfang',p:(d)=>`Schreibe "Schadenumfang". Fahrzeug: ${d.hersteller} ${d.modell}, Anstoßbereich: ${d.anstoss}. Inhalte: Zusammenfassung des unfallbedingten Schadenumfangs, Abgrenzung zu Vor- und Altschäden, Hinweis auf verdeckte Schäden die erst bei Demontage feststellbar sind, Vorbehalt der Nachbegutachtung. Ca. 160 Wörter.`},
-  anstossbereich_beschr:{n:'Anstoßbereich',p:(d)=>`Schreibe "Anstoßbereich und Anstoßrichtung". Fahrzeug: ${d.hersteller} ${d.modell}, Anstoßbereich: ${d.anstoss}. Unfallgegner: ${d.gegner||'[Unfallgegner]'}. Inhalte: exakte Lokalisierung der Erstberührung, Höhe über Fahrbahnniveau [Platzhalter cm], Anstoßrichtung, Kraftrichtungsverlauf, Ausbreitung der Deformation. Ca. 170 Wörter.`},
-  deformation:{n:'Deformationsanalyse',p:(d)=>`Schreibe "Deformationsanalyse". Fahrzeug: ${d.hersteller} ${d.modell}, Anstoßbereich: ${d.anstoss}. Inhalte: Deformationstiefe [Platzhalter cm], Verformungsrichtung, Beteiligung von Längsträgern und tragenden Strukturbauteilen, Beurteilung ob Rahmen- oder Achsvermessung erforderlich ist. Ca. 170 Wörter.`},
-  lichtbilddoku:{n:'Lichtbilddokumentation',p:(d)=>`Schreibe "Lichtbilddokumentation". Fahrzeug: ${d.hersteller} ${d.modell}, Besichtigung am ${d.datum||'[Datum]'}. Inhalte: Anzahl gefertigter Lichtbilder [Platzhalter], Systematik (Übersicht, Kennzeichen, FIN, Tachostand, Detailaufnahmen), Verweis auf die Anlage. Ca. 110 Wörter.`},
-  schadenskizze:{n:'Schadenskizze',p:(d)=>`Schreibe "Schaden- und Unfallskizze". Anstoßbereich: ${d.anstoss}. Hergang: ${d.hergang||'[Hergang]'}. Inhalte: Beschreibung der Skizze, Kollisionsstellung der Fahrzeuge, Hinweis dass die Skizze nicht maßstabsgetreu ist und der Veranschaulichung dient. Ca. 110 Wörter.`},
-
-  // ── PLAUSIBILITÄT ────────────────────────────────────────
-  kompatibilitaet:{n:'Kompatibilitätsprüfung',p:(d)=>`Schreibe "Kompatibilitätsprüfung". Fahrzeug: ${d.hersteller} ${d.modell}, Anstoßbereich: ${d.anstoss}. Unfallgegner: ${d.gegner||'[Unfallgegner]'}. Inhalte: Abgleich der Schadenbilder beider Fahrzeuge, Übereinstimmung von Kontakthöhen und Konturen, Korrespondenz der Deformationsrichtungen, Spurenübertragungen (Lackantragungen, Abriebspuren). Abschließende Aussage ob die Schadenbilder zueinander kompatibel sind. Kernabschnitt – besonders sorgfältig und begründet formulieren. Ca. 220 Wörter.`},
-  plausibilitaet_ies:{n:'Plausibilität i.e.S.',p:(d)=>`Schreibe "Plausibilität im engeren Sinne". Fahrzeug: ${d.hersteller} ${d.modell}, Anstoßbereich: ${d.anstoss}. Geschilderter Hergang: ${d.hergang||'[Hergang]'}. Inhalte: Prüfung ob das festgestellte Schadenbild mit dem geschilderten Unfallhergang technisch vereinbar ist, Betrachtung von Bewegungsrichtung, Geschwindigkeit und Schadenintensität, physikalische Schlüssigkeit. Abschließende, begründete Aussage. Ca. 220 Wörter.`},
-  ees_bewertung:{n:'EES-Bewertung',p:(d)=>`Schreibe "Energy Equivalent Speed (EES)". Fahrzeug: ${d.hersteller} ${d.modell}, ${d.fahrzeugart}, Anstoßbereich: ${d.anstoss}. Inhalte: Herleitung des EES-Wertes aus Deformationstiefe und betroffener Fahrzeugstruktur, Bezug auf EES-Vergleichskataloge und Crashdatenbanken [Platzhalter Quelle], Angabe als Bandbreite mit Toleranz, ausdrücklicher Hinweis dass es sich um eine sachverständige Schätzung handelt. Kein EES-Wert ohne Herleitung. Ca. 190 Wörter.`},
-  kollisionsgeschwindigkeit:{n:'Kollisionsgeschwindigkeit',p:(d)=>`Schreibe "Kollisions- und Differenzgeschwindigkeit". Fahrzeug: ${d.hersteller} ${d.modell}, Unfallgegner: ${d.gegner||'[Unfallgegner]'}, Anstoßbereich: ${d.anstoss}. Inhalte: Herleitung aus EES-Werten und Massenverhältnis, Impuls- und Energiebetrachtung, Angabe als Bandbreite [Platzhalter km/h], Hinweis auf Toleranzen und Grenzen der Rekonstruktion. Ca. 180 Wörter.`},
-  vereinbarkeit_hergang:{n:'Vereinbarkeit mit dem Hergang',p:(d)=>`Schreibe "Zusammenfassende Beurteilung der Vereinbarkeit". Fahrzeug: ${d.hersteller} ${d.modell}, Hergang: ${d.hergang||'[Hergang]'}. Inhalte: Zusammenführung von Kompatibilitätsprüfung und Plausibilität, klare Aussage ob der Schaden dem geschilderten Ereignis zuzuordnen ist, Benennung verbleibender Unsicherheiten. Ca. 170 Wörter.`},
-  manipulationspruefung:{n:'Auffälligkeiten',p:(d)=>`Schreibe "Technische Auffälligkeiten". Fahrzeug: ${d.hersteller} ${d.modell}, Anstoßbereich: ${d.anstoss}. Inhalte: sachliche Benennung etwaiger Auffälligkeiten (nicht korrespondierende Spuren, untypische Schadenkombination, Hinweise auf Zweitereignis), ausdrücklich ohne Unterstellung einer Absicht, Beschränkung auf technische Feststellungen. Sehr zurückhaltend formulieren. Ca. 160 Wörter.`},
-
-  // ── REPARATUR ────────────────────────────────────────────
-  reparaturweg:{n:'Reparaturweg',p:(d)=>`Schreibe "Erforderlicher Reparaturweg". Fahrzeug: ${d.hersteller} ${d.modell}, Erstzulassung ${d.erstzulassung||'[EZ]'}, Anstoßbereich: ${d.anstoss}. Inhalte: Begründung der Entscheidung Instandsetzung oder Erneuerung je Bauteil, Bezug auf Herstellervorgaben und Reparaturrichtlinien, Hinweis auf sicherheitsrelevante Bauteile die zwingend zu erneuern sind. Ca. 190 Wörter.`},
-  kalkulationsgrundlage:{n:'Kalkulationsgrundlage',p:(d)=>`Schreibe "Grundlage der Reparaturkostenkalkulation". Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: verwendetes Kalkulationssystem [DAT/Audatex – Platzhalter], herstellerspezifische Arbeitswerte, Referenzbetrieb [Platzhalter], Stichtag der Preisstände. Ausdrückliche Kennzeichnung ob die ausgewiesenen Reparaturkosten netto oder brutto sind. Ca. 160 Wörter.`},
-  stundenverrechnungssaetze:{n:'Stundenverrechnungssätze',p:(d)=>`Schreibe "Stundenverrechnungssätze". Fahrzeug: ${d.hersteller} ${d.modell}, Region: ${d.schadenort||'[Region]'}. Inhalte: angesetzte Sätze für Mechanik, Karosserie und Lack [Platzhalter EUR netto], Grundlage der Ansätze (markengebundener Fachbetrieb der Region), Bezug auf die BVSK-Honorarbefragung und den dortigen Korridor, Begründung warum keine freien Werkstattsätze angesetzt werden. Ca. 180 Wörter.`},
-  lackierung:{n:'Lackierung',p:(d)=>`Schreibe "Lackierung". Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: Lackart (Uni, Metallic, Perleffekt, Mehrschicht) [Platzhalter], Lackierumfang je Bauteil, verwendetes Lackkalkulationssystem, Materialkostenansatz. Ca. 150 Wörter.`},
-  ersatzteile:{n:'Ersatzteile',p:(d)=>`Schreibe "Ersatzteile". Fahrzeug: ${d.hersteller} ${d.modell}, Erstzulassung ${d.erstzulassung||'[EZ]'}. Inhalte: Ansatz von Originalersatzteilen mit Begründung (Fahrzeugalter, Scheckheftpflege, Gewährleistung), Auseinandersetzung mit Identteilen und Gebrauchtteilen, UPE-Aufschläge [Platzhalter Prozent] und deren regionale Üblichkeit. Ca. 180 Wörter.`},
-  beilackierung:{n:'Beilackierung',p:(d)=>`Schreibe "Beilackierung". Fahrzeug: ${d.hersteller} ${d.modell}, Lackart [Platzhalter]. Inhalte: technische Notwendigkeit der Beilackierung angrenzender Bauteile zur Farbtonangleichung, betroffene Bauteile, Begründung anhand des Lacktyps. Ca. 140 Wörter.`},
-  reparaturdauer:{n:'Reparaturdauer',p:(d)=>`Schreibe "Voraussichtliche Reparaturdauer". Fahrzeug: ${d.hersteller} ${d.modell}, Schadenumfang: Anstoß ${d.anstoss}. Inhalte: Angabe in Arbeitstagen [Platzhalter], Grundlage der Schätzung, Hinweis auf Ersatzteilverfügbarkeit und dass Wochenenden und Feiertage nicht enthalten sind. Ca. 120 Wörter.`},
-
-  // ── WERTERMITTLUNG ───────────────────────────────────────
-  wiederbeschaffungswert:{n:'Wiederbeschaffungswert',p:(d)=>`Schreibe "Wiederbeschaffungswert". Fahrzeug: ${d.hersteller} ${d.modell}, ${d.fahrzeugart}, Erstzulassung ${d.erstzulassung||'[EZ]'}, Laufleistung ${d.laufleistung||'[km]'} km, Zustand: ${d.zustand}, Ausstattung: ${d.ausstattung||'k.A.'}, Besonderheiten: ${d.besonderheiten||'keine'}. Inhalte: Herleitung des Wiederbeschaffungswerts, verwendetes Bewertungssystem und Marktrecherche mit Vergleichsangeboten [Platzhalter Anzahl und Quelle], wertbeeinflussende Faktoren, ausdrückliche Angabe als Bruttobetrag mit Nennung der enthaltenen Umsatzsteuerart (Regelbesteuerung, Differenzbesteuerung oder umsatzsteuerneutral). Ca. 210 Wörter.`},
-  restwert:{n:'Restwert',p:(d)=>`Schreibe "Restwert". Fahrzeug: ${d.hersteller} ${d.modell}, Anstoßbereich: ${d.anstoss}, Laufleistung ${d.laufleistung||'[km]'} km. Inhalte: Ermittlung im beschädigten Zustand, im Regelfall drei konkret aufgeführte Angebote des allgemeinen regionalen Marktes mit Anbieter und Betrag [Platzhalter] – pauschale Restwertangaben genügen nach der Rechtsprechung nicht. Angabe des Höchstgebots als Bruttobetrag, Bindefrist der Gebote, Hinweis dass eine Pflicht zur Einholung von Angeboten über überregionale Restwertbörsen nicht besteht. Ca. 200 Wörter.`},
-  totalschaden:{n:'Totalschaden',p:(d)=>`Schreibe "Wirtschaftlicher Totalschaden". Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: Definition des Wiederbeschaffungsaufwands als Wiederbeschaffungswert brutto abzüglich Restwert brutto, rechnerische Gegenüberstellung mit Platzhaltern. Beide maßgeblichen Schwellen sauber trennen: Reparaturkosten oberhalb des Wiederbeschaffungsaufwands, aber innerhalb des Wiederbeschaffungswerts, sowie Reparaturkosten oberhalb des Wiederbeschaffungswerts. Abschließende Feststellung der Schadenart. Netto- und Bruttobeträge strikt getrennt ausweisen und nicht miteinander vergleichen. Ca. 200 Wörter.`},
-  regel130:{n:'130-%-Regel',p:(d)=>`Schreibe "Prüfung der 130-Prozent-Grenze". Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: Definition der Grenze, Gegenüberstellung Reparaturkosten zuzüglich merkantilem Minderwert zum Wiederbeschaffungswert, rechnerische Darstellung mit Platzhaltern, Ergebnis ob die Grenze eingehalten ist, Hinweis auf die Voraussetzungen des Integritätsinteresses (fachgerechte Reparatur, sechsmonatige Weiternutzung). Ca. 190 Wörter.`},
-  merkantiler_minderwert:{n:'Merkantiler Minderwert',p:(d)=>`Schreibe "Merkantiler Minderwert". Fahrzeug: ${d.hersteller} ${d.modell}, Erstzulassung ${d.erstzulassung||'[EZ]'}, Laufleistung ${d.laufleistung||'[km]'} km, Anstoßbereich: ${d.anstoss}. Inhalte: ausdrückliche Benennung der angewandten Ermittlungsmethode und Begründung der Methodenwahl. Gebräuchlich sind unter anderem Ruhkopf/Sahm, Halbgewachs, Hamburger Modell, Bremer Modell, BVSK, MFM und HTS; der BGH hat keine Methode verbindlich vorgeschrieben, weshalb die Wahl zu begründen ist. Häufig wird auch eine Mehrfachberechnung vorgenommen und der Wert daraus sachverständig festgesetzt – dann alle herangezogenen Modelle mit Einzelergebnis ausweisen. Hinweis dass der merkantile Minderwert keine rein rechnerische Größe ist, sondern eine Schätzung auf Basis von Marktkenntnis. Einflussgrößen (Alter, Laufleistung, Schadenumfang, betroffene tragende Bauteile, Marktgängigkeit, Reparaturqualität), Angabe des Betrags [Platzhalter]. Ca. 220 Wörter.`},
-  nutzungsausfall:{n:'Nutzungsausfall',p:(d)=>`Schreibe "Nutzungsausfallentschädigung". Fahrzeug: ${d.hersteller} ${d.modell}, Erstzulassung ${d.erstzulassung||'[EZ]'}. Inhalte: Einstufung in die Fahrzeuggruppe nach Sanden/Danner/Küppersbusch mit Begründung, ggf. Herabstufung wegen Fahrzeugalter, Tagessatz [Platzhalter EUR], anzusetzender Zeitraum, Hinweis dass die Entschädigung nur bei tatsächlichem Nutzungswillen und Nutzungsmöglichkeit anfällt. Ca. 180 Wörter.`},
-  wiederbeschaffungsdauer:{n:'Wiederbeschaffungsdauer',p:(d)=>`Schreibe "Wiederbeschaffungsdauer". Fahrzeug: ${d.hersteller} ${d.modell}, ${d.fahrzeugart}. Inhalte: Angabe in Kalendertagen [Platzhalter], Begründung anhand der Marktgängigkeit des Fahrzeugtyps, Abgrenzung zur Reparaturdauer, Hinweis auf zusätzliche Überlegungsfrist. Ca. 130 Wörter.`},
-
-  // ── RECHT & HONORAR ──────────────────────────────────────
-  rechtsgrundlagen:{n:'Grundlagen & Normen',p:(d)=>`Schreibe "Grundlagen der Begutachtung". Auftragsart: ${d.auftragsart}. Inhalte: angewandte technische Regelwerke, Herstellerrichtlinien, BVSK-Empfehlungen, einschlägige Rechtsprechung zur Schadenabrechnung in allgemeiner Form, Hinweis dass die rechtliche Würdigung dem Gericht bzw. den Parteien vorbehalten bleibt. Ca. 160 Wörter.`},
-  honorar:{n:'Sachverständigenhonorar',p:(d)=>`Schreibe "Sachverständigenhonorar". Ermittelte Schadenhöhe: [Platzhalter EUR]. Inhalte: Grundhonorar in Abhängigkeit von der Schadenhöhe, Bezug auf die BVSK-Honorarbefragung und den Korridor HB V [Platzhalter Befragungsjahr], Hinweis dass es sich um eine statistische Erhebung und keine Gebührenordnung handelt, die der BGH als Schätzgrundlage nach § 287 ZPO anerkannt hat, alternativ Verweis auf die individuelle Honorarvereinbarung, Angabe netto zuzüglich Umsatzsteuer. Ca. 170 Wörter.`},
-  nebenkosten:{n:'Nebenkosten',p:(d)=>`Schreibe "Nebenkosten". Besichtigungsort: ${d.besichtigungsort||'[Ort]'}. Inhalte: aufgeschlüsselte Darstellung von Fahrtkosten je Kilometer, Lichtbildkosten für Erst- und Zweitsatz, Porto- und Telefonpauschale, Schreib- und Kopierkosten je Seite – jeweils mit Platzhaltern für die konkreten Sätze und Bezug auf die BVSK-Nebenkostentabelle. Keine Pauschalierung ohne Aufschlüsselung. Ca. 160 Wörter.`},
-  mehrwertsteuer:{n:'Umsatzsteuer',p:(d)=>`Schreibe "Umsatzsteuer". Fahrzeug: ${d.hersteller} ${d.modell}, Auftraggeber: ${d.auftraggeber||'[Auftraggeber]'}. Inhalte: Vorsteuerabzugsberechtigung des Geschädigten [Platzhalter], Auswirkung auf die Erstattungsfähigkeit, Umsatzsteuerart im Wiederbeschaffungswert (Regelbesteuerung, Differenzbesteuerung, umsatzsteuerneutral) mit Begründung, Hinweis auf § 249 Abs. 2 Satz 2 BGB bei fiktiver Abrechnung. Ca. 170 Wörter.`},
-  abtretung:{n:'Abtretung & Zahlung',p:(d)=>`Schreibe "Abtretung und Zahlungsabwicklung". Auftraggeber: ${d.auftraggeber||'[Auftraggeber]'}. Inhalte: etwaige Abtretung des Erstattungsanspruchs erfüllungshalber, Hinweis auf fortbestehende Zahlungspflicht des Auftraggebers bei Nichtzahlung des Versicherers, Fälligkeit. Ca. 130 Wörter.`},
-  haftungsausschluss:{n:'Haftungsausschluss',p:(d)=>`Schreibe "Haftungsausschluss und Hinweise". Fahrzeug: ${d.hersteller} ${d.modell}, Besichtigung am ${d.datum||'[Datum]'}. Inhalte: Beschränkung auf die zum Besichtigungszeitpunkt erkennbaren Schäden, Vorbehalt verdeckter Schäden, ungeprüfte Übernahme von Angaben Dritter, Gültigkeit nur für den benannten Zweck, Urheberrecht am Gutachten, keine Weitergabe an Dritte ohne Zustimmung. Ca. 190 Wörter.`},
-
-  // ── SONDERFÄLLE ──────────────────────────────────────────
-  zusammenfassung:{n:'Zusammenfassung',p:(d)=>`Schreibe eine "Zusammenfassung der Ergebnisse". Fahrzeug: ${d.hersteller} ${d.modell}, Kennzeichen ${d.kennzeichen||'[Kennzeichen]'}, Erstzulassung ${d.erstzulassung||'[EZ]'}, Laufleistung ${d.laufleistung||'[km]'} km. Schadendatum: ${d.schadendatum||'[Datum]'}, Anstoßbereich: ${d.anstoss}. Inhalte: kompakte Darstellung von Reparaturkosten netto und brutto, Wiederbeschaffungswert brutto, Restwert brutto, merkantilem Minderwert, Nutzungsausfall, Reparatur- und Wiederbeschaffungsdauer – alle als Platzhalter. Abschließende Feststellung zur Schadenart (Reparaturschaden, 130-Prozent-Fall, wirtschaftlicher Totalschaden). Ca. 230 Wörter.`},
-  leasing:{n:'Leasingfahrzeug',p:(d)=>`Schreibe "Besonderheiten bei Leasingfahrzeugen". Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: Eigentümerstellung der Leasinggesellschaft, Anspruchsberechtigung, Vorsteuerabzug, Anforderungen an die fachgerechte Reparatur zur Vermeidung von Minderwertansprüchen bei Rückgabe. Ca. 160 Wörter.`},
-  oldtimer:{n:'Oldtimer / Youngtimer',p:(d)=>`Schreibe "Besonderheiten bei Oldtimern". Fahrzeug: ${d.hersteller} ${d.modell}, Erstzulassung ${d.erstzulassung||'[EZ]'}. Inhalte: abweichende Wertermittlung über Zustandsnoten 1 bis 5, Marktwert statt Wiederbeschaffungswert, Ersatzteilverfügbarkeit und Restaurationskosten, Bedeutung der Originalität. Ca. 170 Wörter.`},
-  motorrad:{n:'Zweirad',p:(d)=>`Schreibe "Besonderheiten bei Krafträdern". Fahrzeug: ${d.hersteller} ${d.modell}. Inhalte: Sturzschadenbild, Rahmenprüfung, sicherheitsrelevante Bauteile die zwingend zu erneuern sind (Helm, Gabel, Rahmen), saisonale Marktgängigkeit und deren Einfluss auf den Wiederbeschaffungswert. Ca. 160 Wörter.`},
-  gewerblich:{n:'Gewerbliche Nutzung',p:(d)=>`Schreibe "Gewerblich genutztes Fahrzeug". Fahrzeug: ${d.hersteller} ${d.modell}, ${d.fahrzeugart}. Inhalte: Vorsteuerabzugsberechtigung, Nutzungsausfall versus konkreter Verdienstausfall, Vorhaltekosten, besondere Anforderungen bei Sonderaufbauten. Ca. 170 Wörter.`},
-  risiken_einschraenkungen:{n:'Risiken & Einschränkungen',p:(d)=>`Schreibe "Einschränkungen der Begutachtung". Fahrzeug: ${d.hersteller} ${d.modell}, Besichtigung am ${d.datum||'[Datum]'} in ${d.besichtigungsort||'[Ort]'}. Inhalte: nicht durchgeführte Demontage, keine Achsvermessung, keine Auslesung des Fehlerspeichers, keine Probefahrt – jeweils mit Begründung und Hinweis auf mögliche Auswirkungen auf das Ergebnis. Ca. 160 Wörter.`},
-
-  vollgutachten:{isMulti:true,sections:['auftrag_gegenstand','auftraggeber_abschn','besichtigung','unterlagen','fahrzeugidentifikation','ausstattung_beschreibung','allgemeinzustand','vorschaeden_abgrenzung','schadenhergang','schadenbild','kompatibilitaet','plausibilitaet_ies','reparaturweg','kalkulationsgrundlage','wiederbeschaffungswert','restwert','merkantiler_minderwert','zusammenfassung','haftungsausschluss']}
-};
-function buildStyleCtx(){
-  if(!ST.styleDocs.length)return'';
-  const refs=ST.styleDocs.map(d=>`=== Referenzgutachten: ${d.name} ===\n${d.text}`).join('\n\n');
-  return `\n\nSCHREIBSTIL-ANPASSUNG (HÖCHSTE PRIORITÄT):\nAnalysiere die folgenden Referenzgutachten und übernehme EXAKT:\n- Satzbau und Satzlänge\n- Formulierungsmuster\n- Formalitätsgrad und Distanz\n- Bevorzugte Fachbegriffe\n- Absatzstruktur und Textlänge\n\nPasse AUSSCHLIESSLICH die Inhalte an das aktuelle Objekt an.\n\n${refs}\n\n=== Ende der Referenzen ===\n`;
-}
-
-function getD(){return{hersteller:v('hersteller')||'Volkswagen',modell:v('modell')||'Passat Variant 2.0 TDI',fahrzeugart:v('fahrzeugart')||'PKW',kennzeichen:v('kennzeichen'),fin:v('fin'),erstzulassung:v('erstzulassung'),laufleistung:v('laufleistung'),leistung:v('leistung'),zustand:v('zustand'),ausstattung:v('ausstattung'),vorschaeden:v('vorschaeden'),besonderheiten:v('besonderheiten'),schadendatum:v('schadendatum'),schadenort:v('schadenort'),anstoss:v('anstoss')||'Heck',hergang:v('hergang'),gegner:v('gegner'),auftragsart:v('auftragsart')||'Haftpflichtschaden',auftraggeber:v('auftraggeber'),besichtigungsort:v('besichtigungsort'),datum:v('datum'),gutachter:v('gutachter')}}
-function v(id){const el=document.getElementById(id);return el?el.value:'';}
-
-async function runPrompt(id){
-  const p=P[id];if(!p)return;
-  if(p.isMulti){for(const sid of p.sections){await runPrompt(sid);await new Promise(r=>setTimeout(r,350))}goStep(3);return}
-  setStatus('Generiere: '+p.n+'…','o');
-  addSec(id,p.n,'');
-  const sys=SYS+buildStyleCtx();
-  const d=getD();
-  try{
-    const token=localStorage.getItem('kg_token');
-    const res=await fetch(API+'/api/generate',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({system:sys,prompt:p.p(d),promptType:id})
-    });
-    if(!res.ok){
-      const e=await res.json();
-      if(res.status===403&&e.code==='UPGRADE_REQUIRED'){document.getElementById('paywallOverlay').classList.add('open');return;}
-      throw new Error(e.error||'API-Fehler '+res.status);
-    }
-    const reader=res.body.getReader(),dec=new TextDecoder();
-    let full='';
-    const el=document.getElementById('sb-'+id);
-    if(el)el.classList.add('open');
-    while(true){
-      const{done,value}=await reader.read();if(done)break;
-      const chunk=dec.decode(value);
-      for(const line of chunk.split('\n')){
-        if(!line.startsWith('data: '))continue;
-        const dat=line.slice(6);if(dat==='[DONE]')continue;
-        try{const parsed=JSON.parse(dat);if(parsed.delta?.text){full+=parsed.delta.text;if(el)el.textContent=full}}catch{}
-      }
-    }
-    ST.sections[id]={n:p.n,text:full};
-    setSt(id,'done');
-    updCnt();
-    setStatus('Bereit');
-    // Update card state
-    const card=document.getElementById('pc-'+id);
-    if(card){card.classList.add('done');const btn=card.querySelector('.pcard-btn');if(btn){btn.textContent='✓ Nochmal';btn.style.background='var(--green)';}}
-    if(!document.getElementById('histName').value&&!document.getElementById('histName')?.value){const dd=getD();document.getElementById('histName').value=`${dd.hersteller} ${dd.modell}${dd.kennzeichen?' · '+dd.kennzeichen:''}`}
-  }catch(err){
-    setSt(id,'error');
-    const el=document.getElementById('sb-'+id);if(el)el.textContent='Fehler: '+err.message;
-    setStatus('Fehler','o');toast('Fehler: '+err.message);
-  }
-}
-
-function addSec(id,name,text){
-  const c=document.getElementById('genSecs');
-  document.getElementById('emptyState').style.display='none';
-  if(document.getElementById('s-'+id)){
-    ST.sections[id]={n:name,text:''};
-    const el=document.getElementById('sb-'+id);
-    if(el){el.textContent='';el.classList.add('open');}
-    const st=document.getElementById('gst-'+id);
-    if(st){st.className='gsec-st loading';st.innerHTML='<span class="spin"></span> Generiert…';}
-    return;
-  }
-  const el=document.createElement('div');el.className='gsec';el.id='s-'+id;
-  el.innerHTML=`
-    <div class="gsec-hd" onclick="togSec('${id}')">
-      <div class="gsec-info">
-        <div class="gsec-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <span class="gsec-name">${name}</span>
+  const rang = { rot:0, gelb:1, gruen:2 };
+  document.getElementById('befunde').innerHTML = bef
+    .sort((a,b) => (rang[a.ampel] ?? 3) - (rang[b.ampel] ?? 3))
+    .map(b => `<div class="befund ${esc(b.ampel)}">
+      <div class="zeile">
+        <span class="badge b-${b.ampel === 'rot' ? 'rot' : b.ampel === 'gelb' ? 'gelb' : 'gruen'}">${esc(b.feld || '')}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <span class="gsec-st loading" id="gst-${id}"><span class="spin"></span> Generiert…</span>
-        <span class="gsec-arr open" id="garr-${id}">›</span>
-      </div>
-    </div>
-    <div class="gsec-body v" id="sb-${id}" data-ai-generated="true">${text}</div>
-    <div class="ai-tag"><span class="ai-tag-dot"></span>KI-generierter Entwurf – bitte fachlich prüfen und vor Verwendung anpassen.</div>
-    <div class="gsec-btns">
-      <button class="gs-btn" onclick="copySec('${id}')">Kopieren</button>
-      <button class="gs-btn" onclick="runAndShow('${id}')">Neu generieren</button>
-      <button class="gs-btn" onclick="delSec('${id}')">Löschen</button>
-    </div>`;
-  c.appendChild(el);
-  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+      <h3>${esc(b.titel || '')}</h3>
+      <p>${esc(b.text || '')}</p>
+      ${b.fundstelle ? `<div class="fund">Fundstelle: ${esc(b.fundstelle)}</div>` : ''}
+    </div>`).join('');
+
+  document.getElementById('ergebnis').style.display = 'block';
+  document.getElementById('ergebnis').scrollIntoView({ behavior:'smooth' });
 }
 
-function setSt(id,st){const e=document.getElementById('gst-'+id);if(!e)return;if(st==='done'){e.className='gsec-st done';e.textContent='✓ Fertig'}else{e.className='gsec-st';e.style.color='#c02828';e.textContent='Fehler'}}
-function togSec(id){const b=document.getElementById('sb-'+id),a=document.getElementById('garr-'+id);const o=b.classList.contains('v');b.classList.toggle('v',!o);if(a)a.classList.toggle('open',!o)}
-function copySec(id){const t=ST.sections[id]?.text;if(t)navigator.clipboard.writeText(t).then(()=>toast('Kopiert!'))}
-function delSec(id){document.getElementById('s-'+id)?.remove();delete ST.sections[id];updCnt();if(!Object.keys(ST.sections).length)document.getElementById('emptyState').style.display='flex';}
-function copyAll(){const t=Object.values(ST.sections).map(s=>`=== ${s.n} ===\n\n${s.text}`).join('\n\n---\n\n');if(!t){toast('Keine Texte');return}navigator.clipboard.writeText(t).then(()=>toast('Alles kopiert!'))}
-function updateResultCount(){
-  const n=Object.keys(ST.sections).length;
-  const el=document.getElementById('secCnt');
-  if(el)el.textContent=n===0?'Noch keine Texte':n+' Baustein'+(n===1?'':'e')+' generiert';
+function kopieren(){
+  if(!ERGEBNIS) return;
+  const t = 'PRÜFPROTOKOLL — KfzGut-AI\n\n' + (ERGEBNIS.zusammenfassung || '') + '\n\n' +
+    (ERGEBNIS.befunde || []).map(b =>
+      `[${(b.ampel || '').toUpperCase()}] ${b.feld} — ${b.titel}\n${b.text}` +
+      (b.fundstelle ? `\nFundstelle: ${b.fundstelle}` : '')).join('\n\n') +
+    '\n\nHinweis: Unverbindliche Hinweise eines Assistenzwerkzeugs. Die fachliche Verantwortung liegt beim Sachverständigen.';
+  navigator.clipboard.writeText(t).then(() => toast('In die Zwischenablage kopiert.'));
 }
 
-function clearAll(){
-  if(!Object.keys(ST.sections).length)return;
-  showConfirm('Neu starten','Möchten Sie die aktuellen Texte vorher speichern?',
-    ()=>{saveHistory();doActualClear();},
-    ()=>doActualClear(),
-    'Speichern & Neu','Ohne Speichern'
-  );
+function zuruecksetzen(){
+  TEXT = ''; ERGEBNIS = null;
+  document.getElementById('datei').value = '';
+  document.getElementById('dateiZeile').classList.remove('zeigen');
+  document.getElementById('fortschritt').classList.remove('zeigen');
+  document.getElementById('status').classList.remove('zeigen');
+  document.getElementById('balken').style.width = '0';
+  document.getElementById('pruefBtn').style.display = 'none';
+  document.getElementById('ergebnis').style.display = 'none';
+  versteckeMeldung();
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
-function doActualClear(){ST.sections={};document.getElementById('genSecs').innerHTML='';document.getElementById('emptyState').style.display='flex';document.getElementById('histName').value='';updCnt();setStatus('Bereit');goStep(1);}
-
-// Export
-function exportDoc(){
-  const secs=Object.values(ST.sections);if(!secs.length){toast('Keine Texte zum Exportieren');return}
-  const d=getD();
-  let txt=`KFZ-SCHADENGUTACHTEN\n${'='.repeat(50)}\nFahrzeug: ${d.hersteller} ${d.modell} (${d.fahrzeugart})\nKennzeichen: ${d.kennzeichen||'—'} | FIN: ${d.fin||'—'}\nEZ: ${d.erstzulassung||'—'} | Laufleistung: ${d.laufleistung||'—'} km\nSchadendatum: ${d.schadendatum||'—'} | Anstoß: ${d.anstoss}\nBesichtigung: ${d.datum||'—'} | Sachverständiger: ${d.gutachter||'—'}\n${'='.repeat(50)}\n\n`;
-  secs.forEach(s=>{txt+=`${s.n.toUpperCase()}\n${'-'.repeat(s.n.length)}\n\n${s.text}\n\n`});
-  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=`KfzGut-AI_${d.kennzeichen||d.modell||'Gutachten'}_${d.datum||'export'}.txt`;a.click();
-  URL.revokeObjectURL(url);toast('Export gestartet!');
-}
-
-// History
-function saveHistory(){
-  const name=document.getElementById('histName').value.trim()||document.getElementById('histName')?.value.trim();
-  if(!name){toast('Bitte Gutachten benennen');return}
-  if(!Object.keys(ST.sections).length){toast('Keine Texte zum Speichern');return}
-  const d=getD();
-  const hist=JSON.parse(localStorage.getItem('kg_history')||'[]');
-  const entry={id:Date.now(),name,date:new Date().toLocaleDateString('de-DE'),fahrzeug:(d.hersteller+' '+d.modell).trim(),kennzeichen:d.kennzeichen,laufleistung:d.laufleistung,sections:ST.sections,formData:d};
-  hist.unshift(entry);
-  if(hist.length>50)hist.splice(50);
-  localStorage.setItem('kg_history',JSON.stringify(hist));
-  toast('✓ Gespeichert: '+name);
-}
-
-async function handleStyleFiles(files){
-  let loaded=0;
-  for(const f of files){
-    if(f.size>5*1024*1024){toast('Datei zu groß: max 5 MB');continue}
-    toast('Lese '+f.name+'…');
-    const text=await extractTxt(f);
-    if(!text||text.length<100){toast('⚠️ Kein lesbarer Text in '+f.name);continue}
-    const idx=ST.styleDocs.findIndex(d=>d.name===f.name);
-    const doc={name:f.name,size:fmtSz(f.size),text:text.slice(0,8000),chars:text.length};
-    if(idx>=0)ST.styleDocs[idx]=doc;else ST.styleDocs.push(doc);
-    loaded++;
-  }
-  if(loaded>0){
-    localStorage.setItem('kg_styledocs',JSON.stringify(ST.styleDocs));
-    renderStyleDocs();
-    toast('✓ Schreibstil aus '+loaded+' Datei'+(loaded>1?'en':'')+' gespeichert');
-  }
-}
-
-function clearStyleDocs(){ST.styleDocs=[];localStorage.setItem('kg_styledocs','[]');renderStyleDocs();toast('Schreibstil gelöscht');}
-function rmStyle(i){ST.styleDocs.splice(i,1);localStorage.setItem('kg_styledocs',JSON.stringify(ST.styleDocs));renderStyleDocs();}
-
-// Custom prompt
-async function extractTxt(f){
-  try{
-    const isPDF=f.name.toLowerCase().endsWith('.pdf')||f.type==='application/pdf';
-    if(!isPDF){const t=await f.text();return t.replace(/\s{3,}/g,'\n').replace(/[ \t]+/g,' ').trim().slice(0,8000);}
-    await ensurePdfJs();
-    const ab=await f.arrayBuffer();
-    const pdf=await pdfjsLib.getDocument({data:ab}).promise;
-    const maxPages=Math.min(pdf.numPages,20);
-    const parts=[];
-    for(let i=1;i<=maxPages;i++){
-      const page=await pdf.getPage(i);
-      const tc=await page.getTextContent();
-      const pt=tc.items.map(x=>x.str).join(' ').trim();
-      if(pt.length>30)parts.push(pt);
-    }
-    return parts.join('\n\n').replace(/[ \t]+/g,' ').trim().slice(0,8000);
-  }catch(e){console.error('extractTxt:',e);return'';}
-}
-function fmtSz(b){if(b<1024)return b+' B';if(b<1048576)return Math.round(b/1024)+' KB';return(b/1048576).toFixed(1)+' MB'}
-function renderStyleDocs(){
-  const c=document.getElementById('styleDocs'),a=document.getElementById('styleActive'),n=document.getElementById('styleCount');
-  n.textContent=ST.styleDocs.length?(ST.styleDocs.length+(ST.styleDocs.length===1?' Referenz-Gutachten':' Referenz-Gutachten')):'Kein Referenz-Gutachten';
-  a.style.display=ST.styleDocs.length?'block':'none';
-  c.innerHTML=ST.styleDocs.map((d,i)=>`<div class="sdoc"><span class="sdoc-name" title="${d.name}">${d.name}</span><span class="sdoc-size">${d.chars?Math.round(d.chars/100)/10+'k Z':d.size}</span><button class="sdoc-del" onclick="rmStyle(${i})">×</button></div>`).join('');
-}
-const CP_DAILY_LIMIT=5;
-function getCpUsage(){const today=new Date().toISOString().split('T')[0];const s=JSON.parse(localStorage.getItem('kg_cp_usage')||'{}');return s.date!==today?0:s.count||0;}
-function incCpUsage(){const today=new Date().toISOString().split('T')[0];const c=getCpUsage()+1;localStorage.setItem('kg_cp_usage',JSON.stringify({date:today,count:c}));}
-function openCustomPrompt(){
-  document.getElementById('cpInput').value='';
-  updateCpCounter();
-  const rem=Math.max(0,CP_DAILY_LIMIT-getCpUsage());
-  document.getElementById('cpRemaining').textContent=rem;
-  document.getElementById('cpSubmit').disabled=rem===0;
-  document.getElementById('cpOverlay').classList.add('open');
-  setTimeout(()=>document.getElementById('cpInput').focus(),100);
-}
-function closeCustomPrompt(){document.getElementById('cpOverlay').classList.remove('open')}
-function updateCpCounter(){const l=document.getElementById('cpInput').value.length;document.getElementById('cpCounter').textContent=l+'/400';}
-async function runCustomPrompt(){
-  const userPrompt=document.getElementById('cpInput').value.trim();
-  if(!userPrompt){toast('Bitte Prompt eingeben');return}
-  if(getCpUsage()>=CP_DAILY_LIMIT){toast('Tageslimit erreicht');return}
-  closeCustomPrompt();incCpUsage();
-  const d=getD();
-  const id='custom_'+Date.now();
-  const name='Eigener Baustein';
-  setStatus('Generiere eigenen Baustein…','o');
-  addSec(id,name,'');
-  const sys=SYS+buildStyleCtx();
-  const fullPrompt=userPrompt+'\n\nFahrzeugdaten: '+d.hersteller+' '+d.modell+', '+d.fahrzeugart+', EZ '+(d.erstzulassung||'unbekannt')+', '+(d.laufleistung||'k.A.')+' km, Zustand: '+d.zustand+'. Schaden: Anstoß '+d.anstoss+', Schadendatum '+(d.schadendatum||'k.A.')+'. Sachlicher Fließtext, ca. 150-200 Wörter.';
-  try{
-    const token=localStorage.getItem('kg_token');
-    const res=await fetch(API+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({system:sys,prompt:fullPrompt,promptType:'custom'})});
-    if(!res.ok){const e=await res.json();if(res.status===403&&e.code==='UPGRADE_REQUIRED'){document.getElementById('paywallOverlay').classList.add('open');return;}throw new Error(e.error||'Fehler');}
-    const reader=res.body.getReader(),dec=new TextDecoder();
-    let full='';
-    const el=document.getElementById('sb-'+id);
-    if(el)el.classList.add('open');
-    while(true){
-      const{done,value}=await reader.read();if(done)break;
-      const chunk=dec.decode(value);
-      for(const line of chunk.split('\n')){
-        if(!line.startsWith('data: '))continue;
-        const dat=line.slice(6);if(dat==='[DONE]')continue;
-        try{const parsed=JSON.parse(dat);if(parsed.delta?.text){full+=parsed.delta.text;if(el)el.textContent=full}}catch{}
-      }
-    }
-    ST.sections[id]={n:name,text:full};
-    setSt(id,'done');updCnt();setStatus('Bereit');
-    goStep(3);
-  }catch(err){setSt(id,'error');const el=document.getElementById('sb-'+id);if(el)el.textContent='Fehler: '+err.message;setStatus('Fehler','o');toast('Fehler: '+err.message);}
-}
-
-
-function updCnt(){
-  var n=Object.keys(ST.sections).length;
-  var e=document.getElementById('secCnt');if(e)e.textContent=n>0?'('+n+' Baustein'+(n>1?'e':'')+')':'';
-  var rh=document.getElementById('genResultsHd');if(rh)rh.style.display=n>0?'flex':'none';
-  var es=document.getElementById('emptyState');if(es)es.style.display=n>0?'none':'flex';
-  var eb=document.getElementById('exportBtnGen');if(eb){eb.style.background=n>0?'var(--orange)':'';eb.style.borderColor=n>0?'var(--orange)':'';}
-}
-
-// Confirm dialog
-function showConfirm(title,text,onOk,onSkip,okLabel,skipLabel){
-  document.getElementById('confTitle').textContent=title;document.getElementById('confText').textContent=text;
-  var ok=document.getElementById('confOk');ok.textContent=okLabel||'OK';ok.onclick=function(){closeConfirm();if(onOk)onOk();};
-  var skip=document.getElementById('confSkip');
-  if(onSkip){skip.style.display='inline-block';skip.textContent=skipLabel||'Überspringen';skip.onclick=function(){closeConfirm();if(onSkip)onSkip();};}else skip.style.display='none';
-  document.getElementById('confirmModal').classList.add('open');
-}
-function closeConfirm(){document.getElementById('confirmModal').classList.remove('open');}
-
-// History
-function openHistModal(){
-  var hist=JSON.parse(localStorage.getItem('kg_history')||'[]');
-  var le=document.getElementById('histList'),ee=document.getElementById('histEmpty');
-  if(!hist.length){ee.style.display='block';le.innerHTML='';document.getElementById('histModal').classList.add('open');return;}
-  ee.style.display='none';
-  le.innerHTML=hist.map(function(e){return '<div class="hitem"><div class="hitem-hd"><span class="hitem-name">'+e.name+'</span><span class="hitem-date">'+e.date+'</span></div><div class="hitem-tags">'+(e.fahrzeug?'<span class="htag">'+e.fahrzeug+'</span>':'')+(e.kennzeichen?'<span class="htag">'+e.kennzeichen+'</span>':'')+'<span class="htag">'+Object.keys(e.sections||{}).length+' Bausteine</span></div><div class="hitem-btns"><button class="gs-btn" style="color:var(--blue)" onclick="loadHist('+e.id+')">Laden</button><button class="gs-btn" onclick="delHist('+e.id+')">Löschen</button></div></div>';}).join('');
-  document.getElementById('histModal').classList.add('open');
-}
-function closeHistModal(){document.getElementById('histModal').classList.remove('open');}
-function loadHist(id){
-  closeHistModal();
-  var hist=JSON.parse(localStorage.getItem('kg_history')||'[]');
-  var e=hist.find(function(x){return x.id===id;});if(!e)return;
-  if(e.formData)Object.entries(e.formData).forEach(function([k,val]){var el=document.getElementById(k);if(el&&val)el.value=val;});
-  ST.sections=e.sections||{};
-  var c=document.getElementById('genSecs');if(c)c.innerHTML='';
-  if(Object.keys(ST.sections).length){
-    var es=document.getElementById('emptyState');if(es)es.style.display='none';
-    Object.entries(ST.sections).forEach(function([id,sec]){
-      addSec(id,sec.n,'');setSt(id,'done');
-      setTimeout(function(){var el=document.getElementById('sb-'+id);if(el){el.textContent=sec.text;el.classList.add('open');}},50);
-    });
-    startMode('gen',true);
-  }
-  updCnt();toast('✓ Geladen: '+e.name);
-}
-function delHist(id){var h=JSON.parse(localStorage.getItem('kg_history')||'[]');h=h.filter(function(x){return x.id!==id;});localStorage.setItem('kg_history',JSON.stringify(h));openHistModal();}
-
-// Leitfaden
-function openLeitfaden(){document.getElementById('lgOverlay').classList.add('open');}
-function closeLeitfaden(){document.getElementById('lgOverlay').classList.remove('open');}
-
-// Feedback
-var fbRating=0;
-function openFeedback(){document.getElementById('fbOverlay').classList.add('open');}
-function closeFeedback(){document.getElementById('fbOverlay').classList.remove('open');}
-function setRating(n){fbRating=n;document.querySelectorAll('.star').forEach(function(s,i){s.classList.toggle('active',i<n);});}
-async function submitFeedback(){
-  var cats=[...document.querySelectorAll('.fb-cat.sel')].map(function(c){return c.textContent;});
-  var msg=document.getElementById('fbText').value;
-  var token=localStorage.getItem('kg_token');
-  try{await fetch(API+'/api/feedback',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({rating:fbRating,categories:cats,message:msg})});}catch{}
-  document.getElementById('fbBody').innerHTML='<div style="text-align:center;padding:24px"><div style="font-size:28px;margin-bottom:10px">🙏</div><p style="color:var(--ink3)">Danke!</p></div>';
-  setTimeout(function(){closeFeedback();},1500);
-}
-
-function toast(msg){var t=document.getElementById('toastEl');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
-
-// Style drag
-function dOver(e){e.preventDefault();var dz=document.getElementById('styleDropZone');if(dz)dz.style.borderColor='var(--blue)';}
-function dLeave(){var dz=document.getElementById('styleDropZone');if(dz)dz.style.borderColor='';}
-function dDrop(e){e.preventDefault();dLeave();if(e.dataTransfer.files[0])handleStyleFiles(e.dataTransfer.files);}
-
 </script>
 </body>
 </html>
