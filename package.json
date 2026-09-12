@@ -1,17 +1,14 @@
 {
-  "name": "kfzgut-ai-landing",
+  "name": "kfzgut-ai",
   "version": "1.0.0",
-  "description": "Landing Page fuer KfzGut-AI",
+  "description": "KfzGut-AI — Pruefassistent fuer Kfz-Schadengutachten",
   "private": true,
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": ">=18"
-  },
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
   "dependencies": {
     "bcryptjs": "^3.0.3",
-    "pg": "^8.23.0"
+    "pg": "^8.23.0",
+    "stripe": "^22.6.2"
   }
 }
