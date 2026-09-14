@@ -65,7 +65,7 @@ body{display:flex;align-items:center;justify-content:center;min-height:100vh;pad
   </div>
 
   <p class="klein" style="margin-top:20px">
-    <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a>
+    <a href="/ki-transparenz.html">KI-Transparenz</a> · <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a>
   </p>
 </div>
 
@@ -105,7 +105,7 @@ async function login(){
       return;
     }
     localStorage.setItem('kfzgut_token', d.token);
-    location.href = '/app.html';
+    location.href = localStorage.getItem('kfzgut_onboarding') ? '/app.html' : '/onboarding.html';
   } catch { melde('Verbindung fehlgeschlagen.', 'fehler'); }
   finally { btn.disabled = false; }
 }

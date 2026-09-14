@@ -1,0 +1,79 @@
+/* KfzGut-AI — gemeinsames Stylesheet */
+:root{
+  --stahl:#1B2530;--stahl-70:#46525F;--papier:#FAFAF8;--blatt:#FFFFFF;
+  --linie:#DDE1E4;--signal:#E8590C;--signal-dark:#B84508;--signal-tint:#FFF0E6;
+  --gruen:#2F9E44;--gelb:#E8A000;--rot:#D9363E;
+  --gruen-bg:#EBF7EE;--gelb-bg:#FFF6E0;--rot-bg:#FDEEEE;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+  --display:'Archivo',var(--sans);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--papier);color:var(--stahl);font-size:16px;line-height:1.6}
+a{color:var(--signal)}
+h1,h2,h3{font-family:var(--display);line-height:1.15;letter-spacing:-.01em}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px;border-radius:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.wrap-schmal{max-width:780px;margin:0 auto;padding:0 24px}
+
+/* Marke */
+.mark{width:26px;height:26px;border-radius:5px;background:var(--stahl);position:relative;flex:none;display:inline-block}
+.mark::after{content:'';position:absolute;left:5px;top:5px;width:16px;height:16px;border-radius:3px;background:var(--signal)}
+.logo{font-family:var(--display);font-weight:800;font-size:20px;text-decoration:none;color:var(--stahl);display:flex;align-items:center;gap:9px}
+.logo .ai{color:var(--signal)}
+
+/* Kopfzeile */
+.kopf{background:var(--blatt);border-bottom:1px solid var(--linie);position:sticky;top:0;z-index:40}
+.kopf .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+.kopf nav{display:flex;gap:20px;align-items:center;font-size:14.5px}
+.kopf nav a{color:var(--stahl-70);text-decoration:none;font-weight:500}
+.kopf nav a:hover{color:var(--stahl)}
+
+/* Buttons */
+.btn{display:inline-block;font-family:var(--display);font-weight:700;font-size:15.5px;text-decoration:none;padding:13px 24px;border-radius:6px;border:none;cursor:pointer;transition:transform .12s,box-shadow .12s;text-align:center}
+.btn-primary{background:var(--signal);color:#fff;box-shadow:0 2px 0 var(--signal-dark)}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 4px 0 var(--signal-dark)}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--stahl);border:1.5px solid var(--linie)}
+.btn-ghost:hover{border-color:var(--stahl)}
+.btn-danger{background:var(--rot-bg);color:var(--rot)}
+.btn-voll{width:100%;display:block}
+
+/* Formulare */
+input,select,textarea{font-family:inherit;font-size:15px;padding:12px 13px;border:1.5px solid var(--linie);border-radius:6px;background:#fff;width:100%;color:var(--stahl)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--signal)}
+label{display:block;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--stahl-70);margin-bottom:6px}
+.feld{margin-bottom:16px}
+
+/* Karten und Meldungen */
+.karte{background:var(--blatt);border:1px solid var(--linie);border-radius:12px;padding:28px}
+.meldung{padding:12px 14px;border-radius:6px;font-size:14.5px;margin-bottom:16px;display:none}
+.meldung.zeigen{display:block}
+.m-fehler{background:var(--rot-bg);color:var(--rot)}
+.m-ok{background:var(--gruen-bg);color:var(--gruen)}
+.m-info{background:var(--signal-tint);color:var(--signal-dark)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;font-family:var(--mono)}
+.b-gruen{background:var(--gruen-bg);color:var(--gruen)}
+.b-gelb{background:var(--gelb-bg);color:var(--gelb)}
+.b-rot{background:var(--rot-bg);color:var(--rot)}
+.b-grau{background:#EEF0F1;color:var(--stahl-70)}
+
+/* Rechtstexte */
+.recht{padding:56px 0 80px}
+.recht h1{font-size:32px;margin-bottom:28px}
+.recht h2{font-size:20px;margin:34px 0 10px}
+.recht h3{font-size:16.5px;margin:22px 0 8px}
+.recht p,.recht li{font-size:15.5px;color:var(--stahl-70);margin-bottom:12px}
+.recht ul{padding-left:22px}
+.recht strong{color:var(--stahl)}
+.recht .stand{font-family:var(--mono);font-size:13px;color:var(--stahl-70);margin-top:40px;padding-top:18px;border-top:1px solid var(--linie)}
+
+/* Fußzeile */
+.fuss{background:#141C24;color:#8A97A3;padding:40px 0;font-size:13.5px;margin-top:60px}
+.fuss a{color:#AFB8C1;text-decoration:none}
+.fuss a:hover{color:#fff}
+.fuss-zeile{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:22px}
+.fuss .klein{border-top:1px solid #2A3540;padding-top:18px;font-size:12.5px;line-height:1.7;color:#6E7B87}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--stahl);color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;z-index:200;display:none}
+@media(max-width:700px){.kopf nav a.verstecken{display:none}}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI-Transparenz — KfzGut-AI</title>
+<meta name="description" content="Wie KfzGut-AI arbeitet, was die KI kann und wo ihre Grenzen liegen.">
+<link rel="stylesheet" href="/stil.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+.kasten{border-radius:10px;padding:20px 22px;margin:18px 0}
+.k-kann{background:var(--gruen-bg);border-left:4px solid var(--gruen)}
+.k-kann-nicht{background:var(--rot-bg);border-left:4px solid var(--rot)}
+.kasten h3{margin:0 0 12px;font-size:17px}
+.kasten ul{padding-left:20px;margin:0}
+.kasten li{margin-bottom:8px;font-size:15px;color:var(--stahl)}
+.fluss{background:var(--blatt);border:1px solid var(--linie);border-radius:10px;padding:22px;margin:20px 0}
+.fluss-schritt{display:flex;gap:14px;padding:12px 0;border-bottom:1px dashed var(--linie)}
+.fluss-schritt:last-child{border:none}
+.fluss-nr{font-family:var(--mono);font-size:12px;color:var(--signal);font-weight:600;flex:none;padding-top:3px;width:26px}
+.fluss-text{font-size:15px}
+.fluss-text strong{display:block;margin-bottom:3px}
+.fluss-text span{color:var(--stahl-70);font-size:14px}
+</style>
+</head>
+<body>
+<header class="kopf">
+  <div class="wrap">
+    <a class="logo" href="/"><span class="mark"></span>KfzGut<span class="ai">-AI</span></a>
+    <nav><a href="/">Startseite</a><a href="/login.html">Anmelden</a></nav>
+  </div>
+</header>
+
+<main class="recht">
+<div class="wrap-schmal">
+<h1>KI-Transparenz</h1>
+<p style="font-size:17px">
+  Sie arbeiten mit einem System, das künstliche Intelligenz einsetzt. Diese Seite erklärt offen,
+  wie es funktioniert, was es leistet und wo es an Grenzen stößt — damit Sie einschätzen können,
+  wie viel Gewicht Sie den Befunden geben.
+</p>
+
+<h2>Wie die Prüfung abläuft</h2>
+<div class="fluss">
+  <div class="fluss-schritt">
+    <span class="fluss-nr">01</span>
+    <span class="fluss-text"><strong>PDF wird lokal gelesen</strong>
+    <span>Ihr Browser öffnet die Datei und extrahiert den Text. Die PDF selbst wird nicht übertragen.</span></span>
+  </div>
+  <div class="fluss-schritt">
+    <span class="fluss-nr">02</span>
+    <span class="fluss-text"><strong>Text geht an ein Sprachmodell</strong>
+    <span>Wir nutzen ein großes Sprachmodell (Claude von Anthropic) über dessen kommerzielle Schnittstelle.
+    Der Text wird zusammen mit einer festen Prüfanweisung übermittelt.</span></span>
+  </div>
+  <div class="fluss-schritt">
+    <span class="fluss-nr">03</span>
+    <span class="fluss-text"><strong>Befunde werden erzeugt</strong>
+    <span>Das Modell bewertet entlang von sechs Prüffeldern und gibt zu jedem Befund eine Ampel,
+    eine Begründung und — soweit erkennbar — eine Fundstelle aus.</span></span>
+  </div>
+  <div class="fluss-schritt">
+    <span class="fluss-nr">04</span>
+    <span class="fluss-text"><strong>Sie entscheiden</strong>
+    <span>Das Protokoll wird angezeigt und nicht gespeichert. Ob ein Befund zutrifft, beurteilen Sie.</span></span>
+  </div>
+</div>
+
+<h2>Was das System leisten kann</h2>
+<div class="kasten k-kann">
+  <h3>Stärken</h3>
+  <ul>
+    <li>Rechnerische Zusammenhänge quer durch ein langes Dokument abgleichen — etwa ob Wiederbeschaffungswert und Reparaturkosten auf derselben Steuerbasis verglichen werden</li>
+    <li>Fehlende Angaben erkennen: Quellenangaben zu Stundenverrechnungssätzen, Berechnungsgrundlagen beim merkantilen Minderwert, EES-Werte ohne Herleitung</li>
+    <li>Widersprüche zwischen Schilderung und Feststellungen auffallen lassen</li>
+    <li>Vollständigkeit gegen die üblichen Bestandteile eines Schadengutachtens prüfen</li>
+    <li>Gleichbleibende Aufmerksamkeit — auch beim zwölften Gutachten am Freitagnachmittag</li>
+  </ul>
+</div>
+
+<h2>Was es nicht kann</h2>
+<div class="kasten k-kann-nicht">
+  <h3>Grenzen — bitte ernst nehmen</h3>
+  <ul>
+    <li><strong>Keine eigene Sachkunde.</strong> Das System beurteilt Texte, nicht Fahrzeuge. Es war nicht am Ortstermin und sieht keine Lichtbilder.</li>
+    <li><strong>Keine Rechtsberatung.</strong> Hinweise auf Rechtsprechung ersetzen keine juristische Prüfung im Einzelfall.</li>
+    <li><strong>Sprachmodelle können irren.</strong> Befunde können falsch sein, Zahlen können falsch gelesen werden, und ein Fehler kann übersehen werden. Ein grüner Befund ist keine Garantie.</li>
+    <li><strong>Keine Bilderkennung.</strong> Nur Text wird ausgewertet. Reine Scans ohne Texterkennung kann das System nicht lesen.</li>
+    <li><strong>Kein aktueller Marktdatenzugriff.</strong> Es prüft die Schlüssigkeit Ihrer Angaben, nicht deren Übereinstimmung mit aktuellen DAT- oder Schwacke-Werten.</li>
+    <li><strong>Wissensstand des Modells.</strong> Sehr aktuelle Rechtsprechung oder frisch veröffentlichte Honorarbefragungen sind dem Modell womöglich nicht bekannt.</li>
+  </ul>
+</div>
+
+<h2>Keine automatisierte Entscheidung</h2>
+<p>
+  KfzGut-AI trifft keine Entscheidungen mit rechtlicher Wirkung im Sinne des Art. 22 DSGVO.
+  Jeder Befund ist ein Hinweis zur eigenen Prüfung. Das Gutachten bleibt Ihr Werk, Ihre Feststellung
+  und Ihre Verantwortung — auch haftungsrechtlich.
+</p>
+
+<h2>Umgang mit Ihren Inhalten</h2>
+<p>
+  Übermittelte Gutachtentexte werden ausschließlich zur Erzeugung des Prüfprotokolls verarbeitet
+  und nicht dauerhaft gespeichert. Sie werden nicht zum Training von KI-Modellen verwendet.
+  Wir speichern lediglich, wie viele Prüfungen durchgeführt wurden — nicht, was geprüft wurde.
+  Einzelheiten in der <a href="/datenschutz.html">Datenschutzerklärung</a>.
+</p>
+
+<h2>Fehler gefunden?</h2>
+<p>
+  Wenn ein Befund fachlich danebenliegt, melden Sie es über das Feedback-Feld in Ihrem Konto.
+  Rückmeldungen aus der Praxis sind der wichtigste Hebel, um die Prüfanweisungen zu schärfen.
+</p>
+
+<p class="stand">Stand: September 2026</p>
+</div>
+</main>
+
+<footer class="fuss">
+  <div class="wrap">
+    <div class="fuss-zeile">
+      <div><strong style="color:#fff">KfzGut-AI</strong><br>Der Prüfassistent für Kfz-Schadengutachten.</div>
+      <div><a href="/ki-transparenz.html">KI-Transparenz</a> · <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a></div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -81,7 +81,7 @@ h2{font-size:20px;margin-bottom:16px}
     </div>
 
     <p style="text-align:center;font-size:13px;color:var(--stahl-70);margin-top:30px">
-      <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a>
+      <a href="/ki-transparenz.html">KI-Transparenz</a> · <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a>
     </p>
   </div>
 </main>
@@ -109,6 +109,8 @@ async function laden(){
   if(r.status === 401){ localStorage.removeItem('kfzgut_token'); location.href='/login.html'; return; }
   const d = await r.json();
   USER = d.user;
+  const LAUNCH_MOEGLICH = d.launch_moeglich;
+  const LAUNCH_FREI = d.launch_frei;
 
   let statusZeile;
   if(USER.plan === 'aktiv') statusZeile = '<span class="badge b-gruen">Aktiv</span>';
@@ -130,11 +132,18 @@ async function laden(){
   document.getElementById('kaufBox').style.display = USER.plan === 'aktiv' ? 'none' : 'block';
   document.getElementById('aboBox').style.display = USER.hat_abo ? 'block' : 'none';
 
-  if(!USER.launch_preis){
+  // Launch-Preis zeigen, wenn er bereits gewaehrt wurde oder noch Plaetze frei sind
+  if(USER.launch_preis){
+    document.getElementById('preisAnzeige').innerHTML = '79 € <span style="font-size:15px;font-weight:500;color:var(--stahl-70)">/ Monat</span>';
+    document.getElementById('preisText').textContent = 'Einführungspreis — für dich dauerhaft garantiert · zzgl. USt. · monatlich kündbar';
+  } else if(LAUNCH_MOEGLICH){
+    document.getElementById('preisAnzeige').innerHTML =
+      '<span style="font-size:22px;color:#A8AFB6;text-decoration:line-through;margin-right:8px">99 €</span>79 € <span style="font-size:15px;font-weight:500;color:var(--stahl-70)">/ Monat</span>';
+    document.getElementById('preisText').textContent =
+      `Mit Code LAUNCH79 — noch ${LAUNCH_FREI} von 50 Plätzen frei, Preis bleibt dauerhaft · zzgl. USt.`;
+  } else {
     document.getElementById('preisAnzeige').innerHTML = '99 € <span style="font-size:15px;font-weight:500;color:var(--stahl-70)">/ Monat</span>';
     document.getElementById('preisText').textContent = 'zzgl. USt. · monatlich kündbar';
-  } else {
-    document.getElementById('preisText').textContent = 'Einführungspreis — für dich dauerhaft garantiert · zzgl. USt. · monatlich kündbar';
   }
 }
 

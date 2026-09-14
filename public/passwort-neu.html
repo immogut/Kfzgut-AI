@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neues Passwort — KfzGut-AI</title>
+<link rel="stylesheet" href="/stil.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.box{width:100%;max-width:400px}
+.kopfzeile{text-align:center;margin-bottom:24px}
+.kopfzeile .logo{justify-content:center}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="kopfzeile">
+    <a class="logo" href="/"><span class="mark"></span>KfzGut<span class="ai">-AI</span></a>
+  </div>
+  <div class="karte">
+    <h1 style="font-size:21px;margin-bottom:18px">Neues Passwort vergeben</h1>
+    <div class="meldung" id="meldung"></div>
+    <div class="feld">
+      <label for="pw1">Neues Passwort</label>
+      <input type="password" id="pw1" autocomplete="new-password">
+    </div>
+    <div class="feld">
+      <label for="pw2">Wiederholen</label>
+      <input type="password" id="pw2" autocomplete="new-password">
+    </div>
+    <button class="btn btn-primary btn-voll" id="btn" onclick="setzen()">Passwort speichern</button>
+  </div>
+</div>
+
+<script>
+const TOKEN = new URLSearchParams(location.search).get('token');
+function melde(t, art){ const m = document.getElementById('meldung'); m.className = 'meldung zeigen m-' + art; m.textContent = t; }
+
+if(!TOKEN) melde('Dieser Link ist unvollständig. Bitte fordere einen neuen an.', 'fehler');
+
+async function setzen(){
+  const a = document.getElementById('pw1').value;
+  const b = document.getElementById('pw2').value;
+  if(a.length < 8) return melde('Das Passwort muss mindestens 8 Zeichen haben.', 'fehler');
+  if(a !== b) return melde('Die beiden Passwörter stimmen nicht überein.', 'fehler');
+
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  const r = await fetch('/api/passwort-neu', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ token: TOKEN, passwort: a })
+  });
+  const d = await r.json();
+  if(r.ok){
+    melde('Passwort gespeichert. Du wirst zur Anmeldung weitergeleitet …', 'ok');
+    setTimeout(()=> location.href = '/login.html', 1800);
+  } else {
+    melde(d.error || 'Das hat nicht geklappt.', 'fehler');
+    btn.disabled = false;
+  }
+}
+document.addEventListener('keydown', e => { if(e.key === 'Enter') setzen(); });
+</script>
+</body>
+</html>

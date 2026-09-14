@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Willkommen — KfzGut-AI</title>
+<link rel="stylesheet" href="/stil.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.box{width:100%;max-width:520px}
+.kopfzeile{text-align:center;margin-bottom:22px}
+.kopfzeile .logo{justify-content:center}
+.punkte{display:flex;gap:7px;justify-content:center;margin-bottom:22px}
+.punkt{width:8px;height:8px;border-radius:50%;background:var(--linie)}
+.punkt.on{background:var(--signal);width:22px;border-radius:4px}
+.schritt{display:none}
+.schritt.on{display:block}
+.schritt h2{font-size:22px;margin-bottom:10px}
+.schritt p{color:var(--stahl-70);font-size:15px;margin-bottom:18px}
+.liste{list-style:none;margin-bottom:20px}
+.liste li{display:flex;gap:11px;padding:11px 0;border-bottom:1px dashed var(--linie);font-size:14.5px}
+.liste li:last-child{border:none}
+.liste .nr{font-family:var(--mono);font-size:12px;color:var(--signal);font-weight:600;flex:none;padding-top:2px}
+.fuesse{display:flex;gap:10px;margin-top:24px}
+.fuesse .btn{flex:1}
+.merk{background:var(--signal-tint);border-radius:8px;padding:14px 16px;font-size:14px;color:var(--stahl);margin-bottom:18px}
+.ueber{text-align:center;font-size:13px;color:var(--stahl-70);margin-top:16px}
+.ueber a{cursor:pointer}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="kopfzeile">
+    <a class="logo" href="/"><span class="mark"></span>KfzGut<span class="ai">-AI</span></a>
+  </div>
+
+  <div class="punkte">
+    <div class="punkt on" data-p="0"></div>
+    <div class="punkt" data-p="1"></div>
+    <div class="punkt" data-p="2"></div>
+  </div>
+
+  <div class="karte">
+    <!-- 1 -->
+    <div class="schritt on" data-s="0">
+      <h2>Willkommen bei KfzGut-AI</h2>
+      <p>Dein Testzeitraum läuft ab jetzt sieben Tage. In drei kurzen Schritten weißt du, wie das Werkzeug arbeitet.</p>
+      <div class="merk">
+        <strong>Wichtig vorweg:</strong> KfzGut-AI prüft, es begutachtet nicht. Jeder Befund ist ein
+        Hinweis zur eigenen Prüfung — die fachliche Verantwortung bleibt bei dir. <a href="/ki-transparenz.html">Stärken und Grenzen im Detail</a>.
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="schritt" data-s="1">
+      <h2>Was geprüft wird</h2>
+      <p>Sechs Prüffelder, jeweils mit Ampel, Fundstelle und Korrekturvorschlag:</p>
+      <ul class="liste">
+        <li><span class="nr">01</span><span><strong>Schadensbild &amp; Kompatibilität</strong> — passen die Schadenbilder beider Fahrzeuge, ist der Hergang plausibel</span></li>
+        <li><span class="nr">02</span><span><strong>WBW &amp; Restwert</strong> — Konsistenz, Marktreferenzen, netto/brutto sauber getrennt</span></li>
+        <li><span class="nr">03</span><span><strong>130%-Regel &amp; Totalschaden</strong> — Vergleichsbasis und Abrechnungsweg</span></li>
+        <li><span class="nr">04</span><span><strong>Merkantiler Minderwert</strong> — aktuelles Modell, Berechnung offengelegt</span></li>
+        <li><span class="nr">05</span><span><strong>Vor- &amp; Altschäden</strong> — erfasst, abgegrenzt, herausgerechnet</span></li>
+        <li><span class="nr">06</span><span><strong>Formales &amp; Honorar</strong> — Quellen, Stundensätze, BVSK-Bezug</span></li>
+      </ul>
+    </div>
+
+    <!-- 3 -->
+    <div class="schritt" data-s="2">
+      <h2>Deine Daten bleiben bei dir</h2>
+      <p>Das PDF wird in deinem Browser geöffnet und der Text lokal ausgelesen. Die Datei selbst wird nicht hochgeladen.</p>
+      <div class="merk">
+        Gutachten enthalten Halterdaten Dritter. An den Server geht nur der extrahierte Text — und der
+        wird nicht gespeichert. Details in der <a href="/datenschutz.html">Datenschutzerklärung</a>.
+      </div>
+      <p style="font-size:14.5px">Am besten funktionieren durchsuchbare PDFs. Reine Scans ohne
+      Texterkennung kann das Werkzeug nicht lesen.</p>
+    </div>
+
+    <div class="fuesse">
+      <button class="btn btn-ghost" id="zurueck" onclick="blaettern(-1)" style="display:none">Zurück</button>
+      <button class="btn btn-primary" id="weiter" onclick="blaettern(1)">Weiter</button>
+    </div>
+  </div>
+
+  <p class="ueber"><a onclick="fertig()">Überspringen</a></p>
+  <p class="ueber" style="margin-top:8px"><a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a></p>
+</div>
+
+<script>
+if(!localStorage.getItem('kfzgut_token')) location.href = '/login.html';
+let S = 0;
+const MAX = 2;
+
+function zeichne(){
+  document.querySelectorAll('.schritt').forEach(e => e.classList.toggle('on', +e.dataset.s === S));
+  document.querySelectorAll('.punkt').forEach(e => e.classList.toggle('on', +e.dataset.p === S));
+  document.getElementById('zurueck').style.display = S === 0 ? 'none' : 'block';
+  document.getElementById('weiter').textContent = S === MAX ? 'Erstes Gutachten prüfen' : 'Weiter';
+}
+function blaettern(r){
+  if(S === MAX && r === 1) return fertig();
+  S = Math.max(0, Math.min(MAX, S + r));
+  zeichne();
+}
+function fertig(){
+  localStorage.setItem('kfzgut_onboarding', '1');
+  location.href = '/app.html';
+}
+zeichne();
+</script>
+</body>
+</html>
