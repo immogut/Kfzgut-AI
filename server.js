@@ -28,8 +28,13 @@ const PRUEFUNGEN_PRO_TAG = 25; // Fair-Use-Grenze
 
 const stripe = STRIPE_SECRET ? require('stripe')(STRIPE_SECRET) : null;
 
+// SSL nur bei entfernten Datenbanken — lokal (Entwicklung) laeuft Postgres ohne SSL
+const lokal = /localhost|127\.0\.0\.1/.test(process.env.DATABASE_URL || '');
 const pool = process.env.DATABASE_URL
-  ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: lokal ? false : { rejectUnauthorized: false }
+    })
   : null;
 
 // ------------------------------------------------------------- Datenbank
@@ -53,6 +58,7 @@ async function initDb() {
       pruefungen_heute INTEGER NOT NULL DEFAULT 0,
       pruefungen_datum DATE,
       notiz TEXT,
+      warn_gesendet SMALLINT NOT NULL DEFAULT 0,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       last_login_at TIMESTAMPTZ
     );
@@ -99,6 +105,28 @@ function readBody(req, roh = false) {
 }
 
 function token() { return crypto.randomBytes(32).toString('hex'); }
+
+// Einfache Sperre gegen Passwort-Durchprobieren und Massenregistrierung.
+// Haelt die Zaehler im Arbeitsspeicher — reicht fuer einen einzelnen Service.
+const versuche = new Map();
+function zuVieleVersuche(schluessel, max = 10, fensterMs = 15 * 60 * 1000) {
+  const jetzt = Date.now();
+  const e = versuche.get(schluessel);
+  if (!e || jetzt > e.bis) { versuche.set(schluessel, { n: 1, bis: jetzt + fensterMs }); return false; }
+  e.n++;
+  return e.n > max;
+}
+function versucheZuruecksetzen(schluessel) { versuche.delete(schluessel); }
+// Alte Eintraege stuendlich aufraeumen, damit die Map nicht waechst
+setInterval(() => {
+  const jetzt = Date.now();
+  for (const [k, v] of versuche) if (jetzt > v.bis) versuche.delete(k);
+}, 60 * 60 * 1000).unref();
+
+function ipVon(req) {
+  const f = req.headers['x-forwarded-for'];
+  return (f ? String(f).split(',')[0] : req.socket.remoteAddress || '').trim();
+}
 function gueltigeMail(m) { return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(String(m || '').trim()); }
 
 function adminOk(req) {
@@ -173,6 +201,9 @@ async function handleAuth(req, res, p) {
     const b = await readBody(req);
     const email = String(b.email || '').trim().toLowerCase();
     const pw = String(b.passwort || '');
+    if (zuVieleVersuche('reg:' + ipVon(req), 5, 60 * 60 * 1000)) {
+      return json(res, 429, { error: 'Zu viele Registrierungen von dieser Verbindung. Bitte später erneut versuchen.' });
+    }
     if (!gueltigeMail(email)) return json(res, 400, { error: 'Bitte eine gültige E-Mail-Adresse angeben.' });
     if (pw.length < 8) return json(res, 400, { error: 'Das Passwort muss mindestens 8 Zeichen haben.' });
 
@@ -181,14 +212,13 @@ async function handleAuth(req, res, p) {
 
     const hash = await bcrypt.hash(pw, 10);
     const vt = token();
-    // Die ersten 50 zahlenden Kunden bekommen den Launch-Preis dauerhaft
-    const { rows: z } = await pool.query(`SELECT COUNT(*)::int AS n FROM users WHERE plan = 'aktiv'`);
-    const launch = z[0].n < LAUNCH_KONTINGENT ? 1 : 0;
-
+    // Der Launch-Preis wird erst bei der Zahlung vergeben (siehe Webhook) —
+    // sonst bekaemen beliebig viele Testnutzer eine Zusage, die der
+    // Stripe-Coupon mit 50 Einloesungen gar nicht einhalten kann.
     const { rows } = await pool.query(
-      `INSERT INTO users (email, password_hash, name, firma, verify_token, trial_ends_at, launch_preis)
-       VALUES ($1,$2,$3,$4,$5, NOW() + ($6 || ' days')::interval, $7) RETURNING *`,
-      [email, hash, b.name || null, b.firma || null, vt, TRIAL_TAGE, launch]);
+      `INSERT INTO users (email, password_hash, name, firma, verify_token, trial_ends_at)
+       VALUES ($1,$2,$3,$4,$5, NOW() + ($6 || ' days')::interval) RETURNING *`,
+      [email, hash, b.name || null, b.firma || null, vt, TRIAL_TAGE]);
 
     await mailSenden(email, 'Willkommen bei KfzGut-AI — E-Mail bestätigen',
       mailRahmen('Nur noch ein Klick',
@@ -212,6 +242,9 @@ async function handleAuth(req, res, p) {
   if (p === '/api/login' && req.method === 'POST') {
     const b = await readBody(req);
     const email = String(b.email || '').trim().toLowerCase();
+    if (zuVieleVersuche('login:' + ipVon(req), 10) || zuVieleVersuche('login:' + email, 10)) {
+      return json(res, 429, { error: 'Zu viele Anmeldeversuche. Bitte in 15 Minuten erneut versuchen.' });
+    }
     const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     const u = rows[0];
     // Gleiche Meldung fuer beide Faelle — verraet nicht, ob die Adresse existiert
@@ -220,6 +253,7 @@ async function handleAuth(req, res, p) {
     }
     if (!u.email_verified) return json(res, 403, { error: 'Bitte bestätige zuerst deine E-Mail-Adresse.', unbestaetigt: true });
 
+    versucheZuruecksetzen('login:' + email);
     const t = token();
     await pool.query('INSERT INTO sessions (token, user_id) VALUES ($1,$2)', [t, u.id]);
     await pool.query('UPDATE users SET last_login_at = NOW() WHERE id = $1', [u.id]);
@@ -252,6 +286,9 @@ async function handleAuth(req, res, p) {
   if (p === '/api/passwort-vergessen' && req.method === 'POST') {
     const b = await readBody(req);
     const email = String(b.email || '').trim().toLowerCase();
+    if (zuVieleVersuche('pw:' + ipVon(req), 5, 60 * 60 * 1000)) {
+      return json(res, 429, { error: 'Zu viele Anfragen. Bitte später erneut versuchen.' });
+    }
     const { rows } = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
     if (rows.length) {
       const rt = token();
@@ -285,7 +322,11 @@ async function handleKonto(req, res, p) {
   const u = await nutzerAusSession(req);
   if (!u) return json(res, 401, { error: 'Nicht angemeldet' });
 
-  if (p === '/api/me' && req.method === 'GET') return json(res, 200, { user: oeffentlich(u) });
+  if (p === '/api/me' && req.method === 'GET') {
+    const { rows } = await pool.query(`SELECT COUNT(*)::int AS n FROM users WHERE plan = 'aktiv'`);
+    const frei = Math.max(0, LAUNCH_KONTINGENT - rows[0].n);
+    return json(res, 200, { user: oeffentlich(u), launch_frei: frei, launch_moeglich: frei > 0 });
+  }
 
   if (p === '/api/me' && req.method === 'PATCH') {
     const b = await readBody(req);
@@ -335,6 +376,10 @@ async function handleKonto(req, res, p) {
   // ---- Gutachten pruefen
   if (p === '/api/review' && req.method === 'POST') {
     if (!zugriffOk(u)) return json(res, 402, { error: 'Dein Testzeitraum ist beendet. Bitte schalte den Zugang frei.' });
+
+    const b = await readBody(req);
+    const text = String(b.text || '').trim();
+    if (text.length < 200) return json(res, 400, { error: 'Der Text ist zu kurz für eine sinnvolle Prüfung.' });
     if (!ANTHROPIC_API_KEY) return json(res, 503, { error: 'Die Prüfung ist noch nicht eingerichtet.' });
 
     const heute = new Date().toISOString().slice(0, 10);
@@ -342,10 +387,6 @@ async function handleKonto(req, res, p) {
     if (zaehler >= PRUEFUNGEN_PRO_TAG) {
       return json(res, 429, { error: `Tagesgrenze von ${PRUEFUNGEN_PRO_TAG} Prüfungen erreicht (Fair Use). Morgen geht es weiter.` });
     }
-
-    const b = await readBody(req);
-    const text = String(b.text || '').trim();
-    if (text.length < 200) return json(res, 400, { error: 'Der Text ist zu kurz für eine sinnvolle Prüfung.' });
 
     const system = `Du bist ein erfahrener Prüfer für Kfz-Schadengutachten in Deutschland.
 Prüfe das Gutachten in genau diesen sechs Feldern:
@@ -371,10 +412,25 @@ Sei fachlich präzise und formuliere in der Sprache der Sachverständigenpraxis.
       });
       if (!r.ok) { console.error('Anthropic:', r.status, await r.text()); return json(res, 502, { error: 'Die Prüfung ist fehlgeschlagen. Bitte erneut versuchen.' }); }
       const d = await r.json();
-      const roh = (d.content || []).filter(c => c.type === 'text').map(c => c.text).join('').replace(/```json|```/g, '').trim();
+      const roh = (d.content || []).filter(c => c.type === 'text').map(c => c.text).join('')
+        .replace(/```json|```/g, '').trim();
       let erg;
-      try { erg = JSON.parse(roh); }
-      catch { return json(res, 502, { error: 'Antwort konnte nicht gelesen werden. Bitte erneut versuchen.' }); }
+      try {
+        erg = JSON.parse(roh);
+      } catch {
+        // Modelle stellen gelegentlich eine Vorrede voran — dann das aeussere
+        // JSON-Objekt herausschneiden statt die ganze Pruefung zu verwerfen
+        const a = roh.indexOf('{');
+        const b2 = roh.lastIndexOf('}');
+        if (a === -1 || b2 <= a) {
+          return json(res, 502, { error: 'Antwort konnte nicht gelesen werden. Bitte erneut versuchen.' });
+        }
+        try { erg = JSON.parse(roh.slice(a, b2 + 1)); }
+        catch { return json(res, 502, { error: 'Antwort konnte nicht gelesen werden. Bitte erneut versuchen.' }); }
+      }
+      if (!erg || !Array.isArray(erg.befunde)) {
+        return json(res, 502, { error: 'Antwort war unvollständig. Bitte erneut versuchen.' });
+      }
 
       await pool.query(
         `UPDATE users SET pruefungen_gesamt = pruefungen_gesamt + 1,
@@ -405,9 +461,13 @@ async function handleWebhook(req, res) {
   const o = ev.data.object;
   try {
     if (ev.type === 'checkout.session.completed') {
+      // Launch-Preis nur vergeben, solange von den 50 Plaetzen noch welche frei sind
+      const { rows: z } = await pool.query(`SELECT COUNT(*)::int AS n FROM users WHERE plan = 'aktiv'`);
+      const launch = z[0].n < LAUNCH_KONTINGENT ? 1 : 0;
       await pool.query(
-        `UPDATE users SET plan = 'aktiv', plan_status = 'aktiv', stripe_subscription_id = $1
-         WHERE stripe_customer_id = $2`, [o.subscription, o.customer]);
+        `UPDATE users SET plan = 'aktiv', plan_status = 'aktiv', stripe_subscription_id = $1,
+         launch_preis = GREATEST(launch_preis, $3)
+         WHERE stripe_customer_id = $2`, [o.subscription, o.customer, launch]);
     }
     if (ev.type === 'invoice.payment_failed') {
       await pool.query(`UPDATE users SET plan_status = 'gesperrt' WHERE stripe_customer_id = $1`, [o.customer]);
@@ -422,7 +482,12 @@ async function handleWebhook(req, res) {
 
 // ------------------------------------------------------------- Admin
 async function handleAdmin(req, res, p, q) {
-  if (!adminOk(req)) return json(res, 401, { error: 'Nicht autorisiert' });
+  if (!adminOk(req)) {
+    if (zuVieleVersuche('admin:' + ipVon(req), 15)) {
+      return json(res, 429, { error: 'Zu viele Versuche. Bitte in 15 Minuten erneut versuchen.' });
+    }
+    return json(res, 401, { error: 'Nicht autorisiert' });
+  }
   if (!pool) return json(res, 503, { error: 'Keine Datenbank verbunden' });
 
   if (p === '/api/admin/stats' && req.method === 'GET') {
@@ -497,26 +562,6 @@ async function handleAdmin(req, res, p, q) {
   return json(res, 404, { error: 'Unbekannter Admin-Endpunkt' });
 }
 
-// ------------------------------------------------------------- Tagesjob
-// Warnung 2 Tage vor Testende, Sperrung danach. Laeuft stuendlich.
-async function tagesJob() {
-  if (!pool) return;
-  try {
-    const { rows: warnen } = await pool.query(
-      `SELECT email FROM users WHERE plan='trial' AND plan_status='aktiv' AND email_verified=1
-       AND trial_ends_at BETWEEN NOW() + INTERVAL '47 hours' AND NOW() + INTERVAL '48 hours'`);
-    for (const w of warnen) {
-      await mailSenden(w.email, 'Dein Test bei KfzGut-AI endet in 2 Tagen',
-        mailRahmen('Noch 2 Tage',
-          `<p>Dein kostenloser Test läuft in zwei Tagen aus. Wenn du weitermachen möchtest, schalte den Zugang für ${PREIS_LAUNCH} € im Monat frei — als einer der ersten ${LAUNCH_KONTINGENT} Kunden dauerhaft zu diesem Preis.</p>`,
-          'Zugang freischalten', `${BASIS_URL}/konto.html`));
-    }
-    const { rowCount } = await pool.query(
-      `UPDATE users SET plan='beendet' WHERE plan='trial' AND trial_ends_at < NOW()`);
-    if (rowCount) console.log(`${rowCount} abgelaufene Tests beendet.`);
-  } catch (e) { console.error('Tagesjob:', e.message); }
-}
-
 // ------------------------------------------------------------- Statisch
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -587,8 +632,6 @@ server.listen(PORT, '0.0.0.0', async () => {
   if (!STRIPE_SECRET) fehlt.push('STRIPE_SECRET_KEY');
   if (fehlt.length) console.warn('Fehlende Variablen (Funktionen eingeschraenkt):', fehlt.join(', '));
   try { await initDb(); } catch (e) { console.error('DB-Init fehlgeschlagen:', e.message); }
-  setInterval(tagesJob, 60 * 60 * 1000);
-  setTimeout(tagesJob, 30000);
 });
 
 process.on('SIGTERM', () => server.close(() => process.exit(0)));
