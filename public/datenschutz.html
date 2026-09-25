@@ -3,138 +3,188 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Datenschutzerklärung — KfzGut-AI</title>
-<link rel="stylesheet" href="/stil.css">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Datenschutzerklärung – KfzGut-AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56a0'/><text y='70' x='50' text-anchor='middle' font-size='58' font-family='Georgia,serif' fill='white'>K</text></svg>">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1e2433;--ink2:#3a4155;--ink3:#5a6478;--ink4:#9aa0ae;
+  --bg:#eef0f5;--white:#fff;--blue:#1a56a0;--orange:#d95f1a;
+  --border:rgba(30,36,51,0.1);
+  --serif:'Fraunces',Georgia,serif;--sans:'Instrument Sans',system-ui,sans-serif;
+  --radius:10px;--radius-lg:16px;
+}
+html,body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.65}
+.topbar{background:var(--ink);height:54px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--serif);font-size:20px;color:white;text-decoration:none;display:flex;align-items:center;gap:9px}
+.logo-mark{width:30px;height:30px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:white}
+.logo-ai{color:var(--orange)}
+.tb-link{font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);transition:all .15s}
+.tb-link:hover{background:rgba(255,255,255,0.08);color:white}
+.page{max-width:740px;margin:0 auto;padding:56px 24px 100px}
+.page-title{font-family:var(--serif);font-size:38px;font-weight:400;letter-spacing:-0.01em;color:var(--ink);margin-bottom:6px}
+.page-date{font-size:12px;color:var(--ink4);margin-bottom:20px}
+.toc{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:32px}
+.toc-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink4);margin-bottom:14px}
+.toc-links{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.toc a{font-size:13px;color:var(--blue);text-decoration:none;padding:3px 0;display:block}
+.toc a:hover{text-decoration:underline}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:14px}
+h2{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--ink);margin-bottom:14px}
+h3{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;margin-top:22px}
+h3:first-child{margin-top:0}
+p{font-size:14px;color:var(--ink3);line-height:1.8;margin-bottom:10px}
+p:last-child{margin-bottom:0}
+ul{margin:6px 0 10px 18px;color:var(--ink3);font-size:14px;line-height:1.8}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.highlight{background:var(--bg);border-left:3px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0;padding:12px 16px;margin:14px 0;font-size:13px;color:var(--ink2);line-height:1.7}
+.caps{font-size:12px;color:var(--ink3);line-height:1.75;margin-bottom:10px;font-weight:500}
+footer{background:var(--ink);padding:20px 28px}
+.footer-inner{max-width:740px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{font-family:var(--serif);font-size:14px;color:rgba(255,255,255,0.35)}
+.footer-logo em{color:var(--orange);font-style:normal}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color .15s}
+.footer-links a:hover,.footer-links a.active{color:rgba(255,255,255,0.65)}
+</style>
 </head>
 <body>
-<header class="kopf">
-  <div class="wrap">
-    <a class="logo" href="/"><span class="mark"></span>KfzGut<span class="ai">-AI</span></a>
-    <nav><a href="/">Startseite</a><a href="/login.html">Anmelden</a></nav>
-  </div>
-</header>
 
-<main class="recht">
-<div class="wrap-schmal">
-<h1>Datenschutzerklärung</h1>
-
-<h2>1. Verantwortlicher</h2>
-<p>
-  Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br>
-  Johan Petersen, Täubchenweg 85, 04317 Leipzig<br>
-  E-Mail: johanpetersen@t-online.de
-</p>
-
-<h2>2. Grundsatz: Ihre Gutachten bleiben bei Ihnen</h2>
-<p>
-  <strong>Das von Ihnen ausgewählte PDF wird nicht auf unsere Server hochgeladen.</strong>
-  Die Datei wird ausschließlich im Arbeitsspeicher Ihres Browsers geöffnet und der enthaltene Text
-  wird lokal ausgelesen. An unseren Server wird nur der extrahierte Textinhalt übermittelt, der für
-  die Prüfung erforderlich ist. Die PDF-Datei selbst verlässt Ihren Rechner nicht und wird von uns
-  weder gespeichert noch archiviert.
-</p>
-<p>
-  <strong>Wichtiger Hinweis für Sachverständige:</strong> Schadengutachten enthalten regelmäßig
-  personenbezogene Daten Dritter (Halter, Geschädigte, Kennzeichen, Anschriften). Der übermittelte
-  Text kann solche Daten enthalten. Prüfen Sie daher vor der Nutzung, ob Sie zur Übermittlung dieser
-  Daten an einen Auftragsverarbeiter befugt sind, und schwärzen Sie im Zweifel nicht erforderliche
-  Angaben. Wir speichern den übermittelten Text nicht dauerhaft; er wird nur zur Erzeugung des
-  Prüfprotokolls verarbeitet und anschließend verworfen.
-</p>
-
-<h2>3. Verarbeitete Daten und Rechtsgrundlagen</h2>
-
-<h3>a) Nutzerkonto</h3>
-<p>
-  Bei der Registrierung verarbeiten wir Ihre E-Mail-Adresse, ein von Ihnen gewähltes Passwort
-  (ausschließlich als kryptografischer Hash, nie im Klartext) sowie freiwillige Angaben zu Büro und
-  Ansprechpartner. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung).
-</p>
-
-<h3>b) Gutachtenprüfung</h3>
-<p>
-  Der aus Ihrem PDF extrahierte Text wird zur Erstellung des Prüfprotokolls verarbeitet.
-  Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Wir speichern lediglich die Anzahl durchgeführter
-  Prüfungen, nicht deren Inhalt.
-</p>
-
-<h3>c) Server-Logdateien</h3>
-<p>
-  Beim Aufruf der Website werden technisch notwendige Daten (IP-Adresse, Zeitpunkt, abgerufene Seite,
-  Browsertyp) verarbeitet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an
-  Betriebssicherheit).
-</p>
-
-<h3>d) Zahlungsabwicklung</h3>
-<p>
-  Für kostenpflichtige Zugänge werden Zahlungsdaten durch unseren Zahlungsdienstleister verarbeitet.
-  Wir selbst erhalten und speichern keine vollständigen Zahlungsdaten. Rechtsgrundlage ist
-  Art. 6 Abs. 1 lit. b DSGVO.
-</p>
-
-<h2>4. Empfänger und Auftragsverarbeiter</h2>
-<p>Wir setzen folgende Dienstleister ein, mit denen jeweils ein Auftragsverarbeitungsvertrag besteht:</p>
-<ul>
-  <li><strong>Railway Corp.</strong> (Hosting und Datenbank) — Serverstandort Europa</li>
-  <li><strong>Anthropic PBC</strong> (KI-gestützte Analyse des übermittelten Textes) — Verarbeitung nach den Bedingungen der kommerziellen API; die Inhalte werden nicht zum Training von Modellen verwendet</li>
-  <li><strong>Resend, Inc.</strong> (Versand von System- und Benachrichtigungs-E-Mails)</li>
-  <li><strong>Stripe Payments Europe, Ltd.</strong> (Zahlungsabwicklung und Abo-Verwaltung)</li>
-</ul>
-<p>
-  Soweit dabei Daten in Drittländer übermittelt werden, erfolgt dies auf Grundlage der
-  EU-Standardvertragsklauseln nach Art. 46 Abs. 2 lit. c DSGVO.
-</p>
-
-<h2>5. Speicherung im Browser</h2>
-<p>
-  Wir setzen keine Tracking-Cookies und keine Analysedienste ein. Zur Aufrechterhaltung Ihrer
-  Anmeldung speichern wir ein Sitzungs-Token im lokalen Speicher Ihres Browsers (localStorage).
-  Dieses wird beim Abmelden gelöscht. Eine Einwilligung ist hierfür nicht erforderlich, da es sich um
-  eine technisch notwendige Speicherung nach § 25 Abs. 2 Nr. 2 TDDDG handelt.
-</p>
-
-<h2>6. Speicherdauer</h2>
-<p>
-  Kontodaten werden bis zur Löschung Ihres Kontos gespeichert. Nach Kündigung löschen wir Ihre Daten,
-  soweit keine gesetzlichen Aufbewahrungspflichten (insbesondere handels- und steuerrechtlich,
-  6 bzw. 10 Jahre) entgegenstehen. Übermittelte Gutachtentexte werden nicht dauerhaft gespeichert.
-</p>
-
-<h2>7. Ihre Rechte</h2>
-<p>Sie haben jederzeit das Recht auf:</p>
-<ul>
-  <li>Auskunft über die zu Ihrer Person gespeicherten Daten (Art. 15 DSGVO)</li>
-  <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
-  <li>Löschung (Art. 17 DSGVO)</li>
-  <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-  <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
-  <li>Widerspruch gegen Verarbeitungen auf Grundlage berechtigter Interessen (Art. 21 DSGVO)</li>
-</ul>
-<p>
-  Zur Ausübung genügt eine formlose E-Mail an die oben genannte Adresse. Ferner steht Ihnen ein
-  Beschwerderecht bei einer Aufsichtsbehörde zu, für uns zuständig ist der Sächsische
-  Datenschutzbeauftragte.
-</p>
-
-<h2>8. Automatisierte Entscheidungsfindung</h2>
-<p>
-  Eine automatisierte Entscheidungsfindung mit rechtlicher Wirkung im Sinne des Art. 22 DSGVO findet
-  nicht statt. Die von KfzGut-AI erzeugten Befunde sind unverbindliche Hinweise; jede Bewertung und
-  Entscheidung trifft der Sachverständige selbst.
-</p>
-
-<p class="stand">Stand: September 2026</p>
+<div class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-mark">K</div>
+    Kfz<span style="color:rgba(255,255,255,0.65)">Gut</span>-<span class="logo-ai">AI</span>
+  </a>
+  <a href="javascript:history.back()" class="tb-link">← Zurück</a>
 </div>
-</main>
 
-<footer class="fuss">
-  <div class="wrap">
-    <div class="fuss-zeile">
-      <div><strong style="color:#fff">KfzGut-AI</strong><br>Der Prüfassistent für Kfz-Schadengutachten.</div>
-      <div><a href="/ki-transparenz.html">KI-Transparenz</a> · <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a></div>
+<div class="page">
+  <div class="page-title">Datenschutzerklärung</div>
+  <div class="page-date">Stand: 21. April 2026 · Gemäß DSGVO, BDSG und TDDDG</div>
+
+  <div class="toc">
+    <div class="toc-title">Inhaltsverzeichnis</div>
+    <div class="toc-links">
+      <a href="#s1">1. Überblick</a>
+      <a href="#s2">2. Verantwortliche Stelle</a>
+      <a href="#s3">3. Hosting & Infrastruktur</a>
+      <a href="#s4">4. Registrierung & Nutzerkonto</a>
+      <a href="#s5">5. KI-Verarbeitung (Anthropic)</a>
+      <a href="#s6">6. Zahlungsabwicklung (Stripe)</a>
+      <a href="#s7">7. Besonderheit: Fahrzeug- und Schadendaten</a>
+      <a href="#s8">8. Einsatz künstlicher Intelligenz</a>
+        <a href="#s9">9. Ihre Rechte</a>
+    </div>
+  </div>
+
+  <div class="card" id="s1">
+    <h2>1. Überblick</h2>
+    <div class="highlight">
+      <strong>Das Wichtigste in Kürze:</strong> Gutachtentexte, Fahrzeug- und Schadendaten bleiben lokal in Ihrem Browser – sie werden nicht dauerhaft auf unseren Servern gespeichert. Zur Analyse wird der von Ihnen eingegebene Text an Anthropic PBC (USA) übermittelt, mit der KfzGut-AI einen Auftragsverarbeitungsvertrag (DPA) inkl. EU-Standardvertragsklauseln abgeschlossen hat. Bitte vermeiden Sie nach Möglichkeit die Eingabe personenbezogener Daten von Haltern, Unfallbeteiligten, Zeugen oder sonstigen Beteiligten (z. B. durch Schwärzen vor dem Upload) – Details siehe Abschnitt 7.
+    </div>
+    <h3>Was wird erfasst?</h3>
+    <p>Bei der Nutzung von KfzGut-AI verarbeiten wir folgende Daten: Registrierungsdaten (E-Mail, Name), Zahlungsdaten (über Stripe), technische Verbindungsdaten (IP-Adresse, Browser) sowie die von Ihnen eingegebenen sachlichen Fahrzeug- und Schadendaten während einer aktiven Sitzung.</p>
+    <h3>Was wird nicht erfasst?</h3>
+    <p>Wir speichern keine Gutachtentexte, keinen Bearbeitungsverlauf und keine Schreibstil-Referenzen auf unseren Servern. Diese Daten verbleiben ausschließlich lokal in Ihrem Browser.</p>
+  </div>
+
+  <div class="card" id="s2">
+    <h2>2. Verantwortliche Stelle</h2>
+    <p>Verantwortlich für die Datenverarbeitung auf dieser Website im Sinne der DSGVO:</p>
+    <p>
+      <strong>KfzGut-AI</strong><br>
+      Inhaber: Johan Petersen<br>
+      Täubchenweg 85, 04317 Leipzig<br><br>
+      E-Mail: <a href="mailto:info@kfzgut-ai.de">info@kfzgut-ai.de</a><br>
+      Steuernummer: 99 762 513 402
+    </p>
+  </div>
+
+  <div class="card" id="s3">
+    <h2>3. Hosting &amp; Infrastruktur</h2>
+    <h3>Railway (Backend-Server)</h3>
+    <p>Der Backend-Server wird bei Railway Technologies Inc., San Francisco, USA, gehostet. Der Dienst läuft auf einem Server in der Region Europe West (Frankfurt). Bei jedem Aufruf werden technische Verbindungsdaten (IP-Adresse, Zeitstempel, aufgerufene Ressource) erfasst. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Datenübertragung in die USA auf Basis der EU-Standardvertragsklauseln.</p>
+    <h3>IONOS (Domain)</h3>
+    <p>Die Domain kfzgut-ai.de wird über die IONOS SE, Elgendorfer Str. 57, 56410 Montabaur, verwaltet. Details: <a href="https://www.ionos.de/terms-gtc/terms-privacy" target="_blank" rel="noopener">ionos.de/terms-gtc/terms-privacy</a></p>
+    <h3>SSL-Verschlüsselung</h3>
+    <p>Alle Verbindungen zu kfzgut-ai.de sind mit TLS verschlüsselt (erkennbar am „https://" und dem Schloss-Symbol in Ihrem Browser).</p>
+  </div>
+
+  <div class="card" id="s4">
+    <h2>4. Registrierung &amp; Nutzerkonto</h2>
+    <h3>Erfasste Daten</h3>
+    <p>Bei der Registrierung erheben wir: E-Mail-Adresse (Pflichtfeld), Name (optional), verschlüsseltes Passwort. Nach der Registrierung wird eine Bestätigungs-E-Mail versandt. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung).</p>
+    <h3>Speicherdauer</h3>
+    <p>Ihre Kontodaten werden gespeichert, solange das Konto aktiv ist. Nach Kündigung und Ablauf etwaiger gesetzlicher Aufbewahrungsfristen (§ 147 AO: 10 Jahre für steuerrelevante Daten) werden die Daten gelöscht. Die Löschung können Sie jederzeit über „Mein Konto" beantragen.</p>
+    <h3>E-Mail-Kommunikation (Resend)</h3>
+    <p>Transaktionale E-Mails (Registrierungsbestätigung, Zahlungshinweise, Trial-Erinnerungen) werden über den Dienst Resend von Resend Inc., 2261 Market Street #5451, San Francisco, CA 94114, USA versendet. Dabei wird Ihre E-Mail-Adresse an Resend übermittelt. Die Datenübertragung in die USA erfolgt auf Basis der EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO. Datenschutzerklärung von Resend: <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">resend.com/legal/privacy-policy</a>. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO.</p>
+  </div>
+
+  <div class="card" id="s5">
+    <h2>5. KI-Verarbeitung (Anthropic)</h2>
+    <p>Für die KI-gestützte Texterstellung und Gutachtenprüfung nutzen wir die API von Anthropic PBC, 548 Market Street, PMB 90375, San Francisco, CA 94104, USA.</p>
+    <h3>Was wird übertragen?</h3>
+    <p>Beim Aufruf der KI-Funktionen werden die von Ihnen eingegebenen sachlichen Fahrzeug- und Schadendaten (Hersteller, Modell, Erstzulassung, Laufleistung, Schadenbild etc.) sowie hochgeladene Gutachtentexte an die Anthropic-API übermittelt. Es werden ausdrücklich <strong>keine personenbezogenen Daten von Haltern, Unfallbeteiligten, Zeugen oder anderen Beteiligten</strong> übertragen.</p>
+    <h3>Kein KI-Training</h3>
+    <p>Anthropic verwendet API-Anfragen vertraglich ausdrücklich nicht zum Training von KI-Modellen. Ihre Eingaben werden nicht zur Verbesserung des Modells genutzt.</p>
+    <h3>Drittlandübertragung</h3>
+    <p>Die Datenübertragung in die USA erfolgt auf Basis der EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO. Datenschutzerklärung von Anthropic: <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">anthropic.com/privacy</a></p>
+    <div class="highlight">Hinweis gemäß KI-Verordnung (EU AI Act, ab August 2026): Die auf dieser Website generierten Texte werden mit Hilfe einer Künstlichen Intelligenz (Anthropic Claude) erstellt. Der Nutzer trägt die Verantwortung für die fachliche Prüfung und den Einsatz der generierten Inhalte.</div>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Erbringung der Hauptleistung).</p>
+  </div>
+
+  <div class="card" id="s6">
+    <h2>6. Zahlungsabwicklung (Stripe)</h2>
+    <p>Die Zahlungsabwicklung erfolgt über Stripe Payments Europe, Ltd., 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Irland. Bei einem Abonnement werden Ihre Zahlungsdaten von Stripe zum Zwecke der Zahlungsabwicklung verarbeitet. KfzGut-AI speichert keine vollständigen Kreditkartendaten.</p>
+    <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Datenschutzerklärung von Stripe: <a href="https://stripe.com/de/privacy" target="_blank" rel="noopener">stripe.com/de/privacy</a></p>
+  </div>
+
+  <div class="card" id="s7">
+    <h2>7. Besonderheit: Fahrzeug- und Schadendaten, KI-Verarbeitung und Auftragsverarbeitung</h2>
+    <p>KfzGut-AI speichert Gutachtentexte, Schreibstil-Referenzen und den Verlauf nicht dauerhaft auf eigenen Servern – diese verbleiben ausschließlich lokal im Browser des Nutzers. Zur Analyse wird der eingegebene Text jedoch zur Laufzeit an Anthropic PBC (USA) übermittelt (siehe Abschnitt zur KI-Verarbeitung).</p>
+    <p>KfzGut-AI hat mit Anthropic einen Auftragsverarbeitungsvertrag (Data Processing Addendum) inkl. EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO abgeschlossen. Anthropic ist insoweit als Unterauftragsverarbeiter eingebunden.</p>
+    <p>Sofern der von Ihnen eingegebene Gutachtentext personenbezogene Daten von Haltern, Unfallbeteiligten, Zeugen oder sonstigen Beteiligten enthält, kann hinsichtlich des Verhältnisses zwischen Ihnen und KfzGut-AI eine Auftragsverarbeitung im Sinne des Art. 28 DSGVO vorliegen. Wir empfehlen daher, vor dem Hochladen eines Gutachtens Namen, Adressen und sonstige personenbezogene Angaben zu schwärzen oder zu anonymisieren – die Plausibilitäts- und Kompatibilitätsprüfung sowie die Prüfung der Wertansätze (Wiederbeschaffungswert, Restwert, Minderwert) wird hierdurch nicht beeinträchtigt.</p>
+    <p>Wir arbeiten mit anwaltlicher Unterstützung an einem Auftragsverarbeitungsvertrag zwischen KfzGut-AI und seinen Nutzern, der die Eingabe personenbezogener Daten datenschutzkonform absichert.</p>
+  </div>
+
+  <div class="card" id="s8">
+    <h2>8. Einsatz künstlicher Intelligenz</h2>
+    <p>KfzGut-AI ist ein KI-System im Sinne der Verordnung (EU) 2024/1689 (KI-Verordnung). Prüfberichte und Textbausteine werden automatisiert durch künstliche Intelligenz erzeugt.</p>
+    <p>Sämtliche KI-generierten Inhalte sind innerhalb der Anwendung sichtbar gekennzeichnet. Exportierte Dokumente enthalten zusätzlich eine maschinenlesbare Kennzeichnung in den Dateieigenschaften.</p>
+    <p>Es findet keine automatisierte Entscheidungsfindung im Sinne des Art. 22 DSGVO statt: Die Ergebnisse sind Hinweise und Entwürfe, die inhaltliche Entscheidung trifft ausschließlich der Nutzer als sachverständige Person.</p>
+    <p>Als KI-Anbieter kommt zum Einsatz: Anthropic PBC, San Francisco, USA. Einzelheiten zur Datenübermittlung finden Sie in Abschnitt 7.</p>
+  </div>
+
+  <div class="card" id="s9">
+    <h2>9. Ihre Rechte</h2>
+    <h3>Auskunft, Berichtigung, Löschung</h3>
+    <p>Sie haben das Recht auf Auskunft über Ihre gespeicherten personenbezogenen Daten (Art. 15 DSGVO), auf Berichtigung unrichtiger Daten (Art. 16 DSGVO) sowie auf Löschung Ihrer Daten (Art. 17 DSGVO), sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+    <h3>Widerspruch und Einschränkung</h3>
+    <p>Sie haben das Recht, der Verarbeitung Ihrer Daten zu widersprechen (Art. 21 DSGVO) sowie unter bestimmten Voraussetzungen die Einschränkung der Verarbeitung zu verlangen (Art. 18 DSGVO).</p>
+    <h3>Datenübertragbarkeit</h3>
+    <p>Sie haben das Recht, Ihre Daten in einem gängigen, maschinenlesbaren Format zu erhalten (Art. 20 DSGVO).</p>
+    <h3>Beschwerderecht</h3>
+    <p>Sie haben das Recht, sich bei der zuständigen Datenschutzbehörde zu beschweren. Zuständig für Sachsen ist der Sächsische Datenschutz- und Transparenzbeauftragte: <a href="https://www.saechsdsb.de" target="_blank" rel="noopener">saechsdsb.de</a></p>
+    <h3>Kontakt für Datenschutzanfragen</h3>
+    <p>Für alle Fragen zum Datenschutz wenden Sie sich bitte an: <a href="mailto:info@kfzgut-ai.de">info@kfzgut-ai.de</a></p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">KfzGut-<em>AI</em></div>
+    <div class="footer-links">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html" class="active">Datenschutz</a>
+      <a href="agb.html">AGB</a>
     </div>
   </div>
 </footer>
+
 </body>
 </html>

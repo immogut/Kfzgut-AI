@@ -3,160 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anmelden — KfzGut-AI</title>
-<link rel="stylesheet" href="/stil.css">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>KfzGut-AI – Anmelden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56a0'/><text y='70' x='50' text-anchor='middle' font-size='58' font-family='Georgia,serif' fill='white'>K</text></svg>">
+
 <style>
-body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
-.box{width:100%;max-width:420px}
-.box .karte{box-shadow:0 20px 44px -22px rgba(27,37,48,.3)}
-.tabs{display:flex;gap:6px;background:#EEF0F1;padding:5px;border-radius:8px;margin-bottom:24px}
-.tabs button{flex:1;padding:10px;border:none;background:transparent;border-radius:6px;font-family:inherit;font-size:14.5px;font-weight:600;cursor:pointer;color:var(--stahl-70)}
-.tabs button.on{background:#fff;color:var(--stahl);box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.kopfzeile{text-align:center;margin-bottom:26px}
-.kopfzeile .logo{justify-content:center;margin-bottom:8px}
-.kopfzeile p{color:var(--stahl-70);font-size:14.5px}
-.klein{font-size:13px;color:var(--stahl-70);text-align:center;margin-top:16px}
-.klein a{cursor:pointer}
-.zurueck{display:block;text-align:center;margin-top:18px;font-size:13.5px;color:var(--stahl-70);text-decoration:none}
-.hinweis{font-size:12.5px;color:var(--stahl-70);margin-top:-8px;margin-bottom:16px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1e2433;--ink2:#3a4155;--ink3:#5a6478;--ink4:#9aa0ae;
+  --bg:#f4f5f7;--bg2:#ebedf2;--white:#fff;
+  --blue:#1a56a0;--blue2:#2e7dd1;--blue-tint:#e8edf5;
+  --orange:#d95f1a;--orange-tint:#f2e8e0;
+  --green:#1a6e3a;--green-tint:#e6f4ec;
+  --border:rgba(30,36,51,0.1);--border2:rgba(30,36,51,0.06);
+  --serif:'Fraunces',Georgia,serif;--sans:'Instrument Sans',system-ui,sans-serif;
+  --radius:10px;--radius-lg:16px;
+  --shadow:0 2px 16px rgba(30,36,51,0.08);--shadow-lg:0 8px 48px rgba(30,36,51,0.14);
+}
+html,body{height:100%;font-family:var(--sans);color:var(--ink);font-size:14px}
+body{display:grid;grid-template-columns:1fr 460px;min-height:100vh}
+
+/* LEFT */
+.left{background:var(--ink);padding:56px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.left-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 80%)}
+.left-glow{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(26,86,160,0.18) 0%,transparent 70%);top:-80px;right:-80px;pointer-events:none}
+.logo{font-family:var(--serif);font-size:21px;color:white;display:flex;align-items:center;gap:10px;position:relative;z-index:1;text-decoration:none}
+.logo-mark{width:30px;height:30px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:white}
+.logo-ai{color:var(--orange)}
+.left-main{position:relative;z-index:1}
+.left-h1{font-family:var(--serif);font-size:clamp(36px,4vw,52px);line-height:1.1;letter-spacing:-0.02em;color:white;margin-bottom:20px}
+.left-h1 em{font-style:italic;color:rgba(255,255,255,0.38)}
+.left-sub{font-size:16px;font-weight:300;color:rgba(255,255,255,0.5);line-height:1.65;max-width:380px}
+.left-features{position:relative;z-index:1;display:flex;flex-direction:column;gap:10px}
+.lf{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,0.5)}
+.lf-icon{width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lf-icon svg{width:13px;height:13px;stroke:rgba(255,255,255,0.5);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* RIGHT */
+.right{background:var(--white);border-left:1px solid var(--border);padding:56px 44px;display:flex;flex-direction:column;justify-content:center}
+.form-hd{margin-bottom:32px}
+.form-hd h2{font-family:var(--serif);font-size:26px;font-weight:400;margin-bottom:6px}
+.form-hd p{font-size:13px;color:var(--ink4)}
+.form-hd p a{color:var(--blue);text-decoration:none}
+.form-hd p a:hover{text-decoration:underline}
+
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:28px}
+.tab{font-size:13px;font-weight:500;padding:9px 18px;cursor:pointer;color:var(--ink4);border-bottom:2px solid transparent;transition:all .18s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans)}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+.panel{display:none}
+.panel.active{display:block}
+
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:11px;font-weight:500;color:var(--ink4);margin-bottom:4px;letter-spacing:0.04em;text-transform:uppercase}
+.fg input{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:var(--sans);background:var(--bg);color:var(--ink);transition:all .18s;outline:none}
+.fg input:focus{border-color:var(--blue);background:white}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.trial-box{background:var(--blue-tint);border:1px solid rgba(26,86,160,0.18);border-radius:var(--radius);padding:12px 14px;margin-bottom:20px;font-size:13px;color:var(--ink3);line-height:1.55;display:flex;gap:10px;align-items:flex-start}
+.trial-icon{color:var(--blue);flex-shrink:0;font-size:15px;margin-top:1px}
+
+.btn-submit{width:100%;padding:12px;background:var(--ink);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-submit:hover{background:#2a2e3d}
+.btn-submit:disabled{opacity:0.55;cursor:not-allowed}
+
+.error-box{background:#fdf0f0;border:1px solid rgba(200,40,40,0.18);border-radius:var(--radius);padding:10px 13px;font-size:12px;color:#c02828;margin-bottom:14px;display:none}
+.error-box.v{display:block}
+
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--ink4);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.btn-submit.loading .spin{display:block}
+.btn-submit.loading .lbl{display:none}
+
+.fine{font-size:11px;color:var(--ink4);text-align:center;margin-top:12px;line-height:1.5}
+.fine a{color:var(--ink4)}
+
+@media(max-width:860px){
+  body{grid-template-columns:1fr}
+  .left{display:none}
+  .right{padding:40px 24px}
+}
 </style>
 </head>
 <body>
-<div class="box">
-  <div class="kopfzeile">
-    <a class="logo" href="/"><span class="mark"></span>KfzGut<span class="ai">-AI</span></a>
-    <p>Der Prüfassistent für Kfz-Schadengutachten</p>
+
+<!-- LEFT -->
+<div class="left">
+  <div class="left-grid"></div>
+  <div class="left-glow"></div>
+  <a href="index.html" class="logo">
+    <div class="logo-mark">K</div>
+    KfzGut-<span class="logo-ai">AI</span>
+  </a>
+  <div class="left-main">
+    <h1 class="left-h1">Professionelle Gutachtentexte.<br><em>Auf Knopfdruck.</em></h1>
+    <p class="left-sub">55 vorgefertigte Textbausteine für alle Abschnitte Ihres Kfz-Schadengutachtens – BVSK-orientiert, sofort einsatzbereit.</p>
   </div>
-
-  <div class="karte">
-    <div class="tabs" id="tabs">
-      <button class="on" onclick="zeige('login')">Anmelden</button>
-      <button onclick="zeige('reg')">Registrieren</button>
+  <div class="left-features">
+    <div class="lf">
+      <div class="lf-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      55 Textbausteine in 8 Kategorien
     </div>
-
-    <div class="meldung" id="meldung"></div>
-
-    <!-- Login -->
-    <div id="f-login">
-      <div class="feld"><label for="lMail">E-Mail</label><input type="email" id="lMail" autocomplete="email"></div>
-      <div class="feld"><label for="lPw">Passwort</label><input type="password" id="lPw" autocomplete="current-password"></div>
-      <button class="btn btn-primary btn-voll" id="lBtn" onclick="login()">Anmelden</button>
-      <p class="klein"><a onclick="zeige('vergessen')">Passwort vergessen?</a></p>
+    <div class="lf">
+      <div class="lf-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      BVSK-orientiert & gerichtsfest
     </div>
-
-    <!-- Registrierung -->
-    <div id="f-reg" style="display:none">
-      <div class="feld"><label for="rFirma">Büro / Name</label><input type="text" id="rFirma" autocomplete="organization"></div>
-      <div class="feld"><label for="rMail">E-Mail</label><input type="email" id="rMail" autocomplete="email"></div>
-      <div class="feld"><label for="rPw">Passwort</label><input type="password" id="rPw" autocomplete="new-password"></div>
-      <p class="hinweis">Mindestens 8 Zeichen.</p>
-      <button class="btn btn-primary btn-voll" id="rBtn" onclick="registrieren()">7 Tage kostenlos testen</button>
-      <p class="klein">Keine Kreditkarte nötig. Mit der Registrierung stimmst du den
-        <a href="/agb.html">AGB</a> und der <a href="/datenschutz.html">Datenschutzerklärung</a> zu.</p>
+    <div class="lf">
+      <div class="lf-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      Texte in unter 15 Sekunden
     </div>
-
-    <!-- Passwort vergessen -->
-    <div id="f-vergessen" style="display:none">
-      <div class="feld"><label for="vMail">E-Mail</label><input type="email" id="vMail" autocomplete="email"></div>
-      <button class="btn btn-primary btn-voll" onclick="vergessen()">Link anfordern</button>
-      <a class="zurueck" onclick="zeige('login')">Zurück zur Anmeldung</a>
+    <div class="lf">
+      <div class="lf-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      Daten bleiben auf Ihrem Gerät
     </div>
   </div>
+</div>
 
-  <p class="klein" style="margin-top:20px">
-    <a href="/ki-transparenz.html">KI-Transparenz</a> · <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a>
-  </p>
+<!-- RIGHT -->
+<div class="right">
+  <div class="form-hd">
+    <h2>Willkommen zurück</h2>
+    <p>Noch kein Konto? <a href="#" onclick="showPanel('register')">7 Tage kostenlos testen</a></p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" id="t-login" onclick="showPanel('login')">Anmelden</button>
+    <button class="tab" id="t-register" onclick="showPanel('register')">Registrieren</button>
+  </div>
+
+  <div class="error-box" id="errBox"></div>
+
+  <!-- LOGIN -->
+  <div class="panel active" id="p-login">
+    <div class="fg"><label>E-Mail-Adresse</label><input type="email" id="l-email" placeholder="sv@buero.de" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="fg"><label>Passwort</label><input type="password" id="l-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-submit" id="loginBtn" onclick="doLogin()">
+      <span class="lbl">Anmelden</span><div class="spin"></div>
+    </button>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="panel" id="p-register">
+    <div class="trial-box">
+      <span class="trial-icon">★</span>
+      <div><strong>7 Tage kostenlos testen</strong> – keine Kreditkarte erforderlich. Nach dem Testzeitraum 99 €/Monat zzgl. USt., monatlich kündbar.</div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Vorname</label><input type="text" id="r-fname" placeholder="Max" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="fg"><label>Nachname</label><input type="text" id="r-lname" placeholder="Mustermann" onkeydown="if(event.key==='Enter')doRegister()"></div>
+    </div>
+    <div class="fg"><label>Büro / Unternehmen (optional)</label><input type="text" id="r-company" placeholder="Kfz-Sachverständigenbüro Mustermann" onkeydown="if(event.key==='Enter')doRegister()"></div>
+    <div class="fg"><label>E-Mail-Adresse</label><input type="email" id="r-email" placeholder="sv@buero.de" onkeydown="if(event.key==='Enter')doRegister()"></div>
+    <div class="fg"><label>Passwort (mind. 8 Zeichen)</label><input type="password" id="r-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"></div>
+    <div style="display:flex;align-items:flex-start;gap:8px;margin:4px 0 14px">
+      <input type="checkbox" id="b2b-check" style="margin-top:3px;flex-shrink:0;accent-color:#1a56a0;width:16px;height:16px;cursor:pointer">
+      <label for="b2b-check" style="font-size:12px;color:#5a6478;line-height:1.6;cursor:pointer">Ich bestätige, dass ich in Ausübung meiner gewerblichen oder selbständigen Tätigkeit handle (Unternehmer gem. § 14 BGB). Ich akzeptiere die <a href="agb.html" style="color:#1a56a0">AGB</a> und <a href="datenschutz.html" style="color:#1a56a0">Datenschutzerklärung</a>.</label>
+    </div>
+    <button class="btn-submit" id="regBtn" onclick="doRegister()">
+      <span class="lbl">Jetzt starten – 7 Tage kostenlos</span><div class="spin"></div>
+    </button>
+  </div>
 </div>
 
 <script>
-function melde(txt, art){
-  const m = document.getElementById('meldung');
-  m.className = 'meldung zeigen m-' + art;
-  m.textContent = txt;
-}
-function versteckeMeldung(){ document.getElementById('meldung').className = 'meldung'; }
+const API = ''; // leer = same origin (Railway)
 
-function zeige(was){
-  versteckeMeldung();
-  for (const id of ['login','reg','vergessen']) {
-    document.getElementById('f-' + id).style.display = (id === was) ? 'block' : 'none';
-  }
-  const btns = document.querySelectorAll('#tabs button');
-  btns[0].classList.toggle('on', was === 'login' || was === 'vergessen');
-  btns[1].classList.toggle('on', was === 'reg');
+function showPanel(p){
+  document.querySelectorAll('.tab,.panel').forEach(e=>e.classList.remove('active'));
+  document.getElementById('t-'+p).classList.add('active');
+  document.getElementById('p-'+p).classList.add('active');
+  hideErr();
+  document.querySelector('.form-hd h2').textContent = p==='login' ? 'Willkommen zurück' : 'Konto erstellen';
 }
+function showErr(msg){const e=document.getElementById('errBox');e.textContent=msg;e.classList.add('v')}
+function hideErr(){document.getElementById('errBox').classList.remove('v')}
+function setLoad(id,on){const b=document.getElementById(id);b.classList.toggle('loading',on);b.disabled=on}
 
-async function login(){
-  const btn = document.getElementById('lBtn');
-  btn.disabled = true;
-  try {
-    const r = await fetch('/api/login', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        email: document.getElementById('lMail').value,
-        passwort: document.getElementById('lPw').value
-      })
+async function doLogin(){
+  hideErr();
+  const email=document.getElementById('l-email').value.trim();
+  const pw=document.getElementById('l-pw').value;
+  if(!email||!pw){showErr('Bitte alle Felder ausfüllen.');return}
+  setLoad('loginBtn',true);
+  try{
+    const r=await fetch(API+'/api/login',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pw})
     });
-    const d = await r.json();
+    const data=await r.json();
     if(!r.ok){
-      melde(d.error || 'Anmeldung fehlgeschlagen.', 'fehler');
-      if(d.unbestaetigt) erneutSenden(document.getElementById('lMail').value);
+      const status = r.status;
+      if(status===401){showErr('E-Mail oder Passwort ist falsch. Bitte erneut versuchen.');}
+      else if(status===403){showErr('E-Mail-Adresse noch nicht bestätigt. Bitte prüfen Sie Ihr Postfach.');}
+      else{showErr(data.error||'Anmeldung fehlgeschlagen. Bitte erneut versuchen.');}
       return;
     }
-    localStorage.setItem('kfzgut_token', d.token);
-    location.href = localStorage.getItem('kfzgut_onboarding') ? '/app.html' : '/onboarding.html';
-  } catch { melde('Verbindung fehlgeschlagen.', 'fehler'); }
-  finally { btn.disabled = false; }
+    localStorage.setItem('kg_token',data.token);
+    localStorage.setItem('kg_user',JSON.stringify(data.user));
+    if(!data.user.emailVerified){
+      window.location.href='konto.html?reason=verify';
+    } else {
+      window.location.href='app.html';
+    }
+  }catch{showErr('Verbindungsfehler. Bitte erneut versuchen.');}
+  finally{setLoad('loginBtn',false)}
 }
 
-async function registrieren(){
-  const btn = document.getElementById('rBtn');
-  btn.disabled = true;
-  try {
-    const r = await fetch('/api/register', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        email: document.getElementById('rMail').value,
-        passwort: document.getElementById('rPw').value,
-        firma: document.getElementById('rFirma').value
-      })
+async function doRegister(){
+  hideErr();
+  if(!document.getElementById('b2b-check')?.checked){
+    showErr('Bitte bestätige, dass du als Unternehmer handelst.');return;
+  }
+  const fname=document.getElementById('r-fname').value.trim();
+  const lname=document.getElementById('r-lname').value.trim();
+  const company=document.getElementById('r-company').value.trim();
+  const email=document.getElementById('r-email').value.trim();
+  const pw=document.getElementById('r-pw').value;
+  if(!email||!pw){showErr('Bitte E-Mail und Passwort eingeben.');return}
+  if(pw.length<8){showErr('Passwort mindestens 8 Zeichen.');return}
+  setLoad('regBtn',true);
+  try{
+    const r=await fetch(API+'/api/register',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pw,name:(fname+' '+lname).trim(),company})
     });
-    const d = await r.json();
-    if(!r.ok){ melde(d.error || 'Registrierung fehlgeschlagen.', 'fehler'); return; }
-    zeige('login');
-    melde('Fast geschafft — bitte bestätige jetzt die E-Mail, die wir dir geschickt haben.', 'ok');
-  } catch { melde('Verbindung fehlgeschlagen.', 'fehler'); }
-  finally { btn.disabled = false; }
+    const data=await r.json();
+    if(!r.ok){
+      const msg = data.error||'Registrierung fehlgeschlagen.';
+      if(msg.toLowerCase().includes('bereits') || msg.toLowerCase().includes('exists') || msg.toLowerCase().includes('duplicate')){
+        showErr('Diese E-Mail-Adresse ist bereits registriert. Bitte anmelden.');
+      } else {
+        showErr(msg);
+      }
+      return;
+    }
+    localStorage.setItem('kg_token',data.token);
+    localStorage.setItem('kg_user',JSON.stringify(data.user));
+    localStorage.removeItem('kg_onboarding_done');
+    // Show email verification message
+    document.getElementById('p-register').innerHTML = `
+      <div style="text-align:center;padding:32px 16px">
+        <div style="width:64px;height:64px;background:#deeaf8;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:28px">📧</div>
+        <h3 style="font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:12px">E-Mail bestätigen</h3>
+        <p style="font-size:14px;color:#5a6478;line-height:1.7;margin-bottom:8px">Wir haben eine Bestätigungs-E-Mail an <strong>${data.user.email}</strong> gesendet.</p>
+        <p style="font-size:13px;color:#9aa0ae;line-height:1.6">Bitte klicken Sie auf den Link in der E-Mail um Ihren 7-tägigen Testzugang zu aktivieren.</p>
+      </div>
+    `;
+  }catch{showErr('Verbindungsfehler. Bitte erneut versuchen.');}
+  finally{setLoad('regBtn',false)}
 }
 
-async function erneutSenden(mail){
-  await fetch('/api/resend-verify', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ email: mail })
-  });
+// Redirect if already logged in
+const existingToken=localStorage.getItem('kg_token');
+if(existingToken){
+  fetch(API+'/api/me',{headers:{'Authorization':'Bearer '+existingToken}})
+    .then(r=>r.ok?r.json():null)
+    .then(u=>{
+      if(u){
+        if(!u.emailVerified){window.location.href='konto.html?reason=verify'}
+        else{window.location.href='app.html'}
+      }
+    }).catch(()=>{});
 }
 
-async function vergessen(){
-  await fetch('/api/passwort-vergessen', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ email: document.getElementById('vMail').value })
-  });
-  zeige('login');
-  melde('Falls die Adresse bei uns hinterlegt ist, findest du gleich eine E-Mail im Postfach.', 'ok');
-}
-
-// Rückmeldungen aus dem Verifizierungs-Link
-const p = new URLSearchParams(location.search);
-if(p.get('bestaetigt')) melde('E-Mail bestätigt. Du kannst dich jetzt anmelden.', 'ok');
-if(p.get('fehler') === 'token') melde('Dieser Bestätigungslink ist ungültig oder wurde schon verwendet.', 'fehler');
-if(localStorage.getItem('kfzgut_token')) location.href = '/app.html';
-
-document.addEventListener('keydown', e => {
-  if(e.key !== 'Enter') return;
-  if(document.getElementById('f-login').style.display !== 'none') login();
-  else if(document.getElementById('f-reg').style.display !== 'none') registrieren();
-});
+if(new URLSearchParams(location.search).get('tab')==='register') showPanel('register');
 </script>
 </body>
 </html>

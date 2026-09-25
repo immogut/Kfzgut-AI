@@ -3,203 +3,292 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<title>Admin — KfzGut-AI</title>
+<title>KfzGut-AI – Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56a0'/><text y='70' x='50' text-anchor='middle' font-size='58' font-family='Georgia,serif' fill='white'>K</text></svg>">
+
 <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --stahl:#1B2530;--stahl-70:#46525F;--papier:#FAFAF8;--blatt:#FFFFFF;
-  --linie:#DDE1E4;--signal:#E8590C;--signal-tint:#FFF0E6;
-  --gruen:#2F9E44;--gelb:#E8A000;--rot:#D9363E;
-  --gruen-bg:#EBF7EE;--gelb-bg:#FFF6E0;--rot-bg:#FDEEEE;
-  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
-  --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+  --ink:#1e2433;--ink2:#3a4155;--ink3:#5a6478;--ink4:#9aa0ae;
+  --bg:#f4f5f7;--bg2:#ebedf2;--white:#fff;
+  --blue:#1a56a0;--blue2:#2e7dd1;--blue-tint:#e8edf5;
+  --orange:#d95f1a;--orange-tint:#f2e8e0;
+  --green:#1a6e3a;--green-tint:#e6f4ec;
+  --red:#c02828;--red-tint:#fdf0f0;
+  --border:rgba(30,36,51,0.1);--border2:rgba(30,36,51,0.06);
+  --serif:'Fraunces',Georgia,serif;--sans:'Instrument Sans',system-ui,sans-serif;
+  --radius:10px;--radius-lg:16px;
+  --shadow:0 2px 12px rgba(30,36,51,0.08);
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--sans);background:var(--papier);color:var(--stahl);font-size:15px;line-height:1.5}
-.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
-button{font-family:inherit;font-size:14px;cursor:pointer;border:none;border-radius:6px;padding:9px 16px;font-weight:600}
-.btn-primary{background:var(--signal);color:#fff}
-.btn-ghost{background:transparent;border:1.5px solid var(--linie);color:var(--stahl)}
-.btn-ghost:hover{border-color:var(--stahl)}
-.btn-danger{background:var(--rot-bg);color:var(--rot)}
-input,select,textarea{font-family:inherit;font-size:14px;padding:9px 11px;border:1.5px solid var(--linie);border-radius:6px;background:#fff;width:100%;color:var(--stahl)}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--signal)}
-label{display:block;font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--stahl-70);margin-bottom:5px}
+html,body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:13px}
 
-/* Login */
-#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.login-box{background:var(--blatt);border:1px solid var(--linie);border-radius:12px;padding:34px;width:100%;max-width:380px;box-shadow:0 18px 40px -20px rgba(27,37,48,.3)}
-.login-box h1{font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:9px}
-.mark{width:24px;height:24px;border-radius:5px;background:var(--stahl);position:relative;flex:none}
-.mark::after{content:'';position:absolute;left:5px;top:5px;width:14px;height:14px;border-radius:3px;background:var(--signal)}
-.login-box p{color:var(--stahl-70);font-size:13.5px;margin-bottom:22px}
-.err{background:var(--rot-bg);color:var(--rot);padding:10px 12px;border-radius:6px;font-size:13.5px;margin-bottom:14px;display:none}
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;width:100%;max-width:380px;box-shadow:var(--shadow)}
+.login-logo{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:6px}
+.login-logo span{color:var(--orange)}
+.login-sub{font-size:13px;color:var(--ink4);margin-bottom:28px}
+.login-fg{margin-bottom:14px}
+.login-fg label{display:block;font-size:10px;font-weight:500;color:var(--ink4);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.login-fg input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:var(--sans);background:var(--bg);color:var(--ink);outline:none;transition:border-color .15s}
+.login-fg input:focus{border-color:var(--blue);background:white}
+.login-btn{width:100%;padding:11px;background:var(--ink);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:background .18s}
+.login-btn:hover{background:#2a3248}
+.login-err{font-size:12px;color:var(--red);margin-top:10px;display:none}
 
-/* App */
-#app{display:none}
-.topbar{background:var(--stahl);color:#fff;padding:14px 0}
-.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.topbar h1{font-size:17px;display:flex;align-items:center;gap:9px}
-.topbar .mark{background:#fff}
-.topbar button{background:rgba(255,255,255,.12);color:#fff;padding:7px 14px;font-size:13px}
+/* DASHBOARD */
+.dashboard{display:none;min-height:100vh;flex-direction:column}
+.topbar{background:var(--ink);height:52px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-logo{font-family:var(--serif);font-size:18px;color:white;display:flex;align-items:center;gap:8px}
+.topbar-logo span{color:var(--orange)}
+.topbar-badge{font-size:10px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.08);padding:3px 9px;border-radius:100px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.tb-btn{font-size:11px;font-weight:500;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:4px 12px;border-radius:6px;cursor:pointer;font-family:var(--sans);transition:all .15s}
+.tb-btn:hover{background:rgba(255,255,255,0.15);color:white}
+.main{flex:1;padding:28px 24px;max-width:1200px;margin:0 auto;width:100%}
+.page-title{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink);margin-bottom:24px}
 
-/* Kacheln */
-.kacheln{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:26px 0}
-.kachel{background:var(--blatt);border:1px solid var(--linie);border-radius:10px;padding:16px 18px}
-.kachel .k-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--stahl-70);margin-bottom:7px}
-.kachel .k-zahl{font-size:27px;font-weight:700;line-height:1}
-.kachel.akzent{border-color:var(--signal);background:var(--signal-tint)}
-.kachel.akzent .k-zahl{color:var(--signal)}
-.kachel.warn .k-zahl{color:var(--gelb)}
+/* SUMMARY CARDS */
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.sum-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.sum-label{font-size:11px;font-weight:500;color:var(--ink4);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px}
+.sum-val{font-family:var(--serif);font-size:32px;font-weight:400;color:var(--ink);line-height:1}
+.sum-sub{font-size:11px;color:var(--ink4);margin-top:4px}
+.sum-card.blue{border-left:3px solid var(--blue)}
+.sum-card.green{border-left:3px solid var(--green)}
+.sum-card.orange{border-left:3px solid var(--orange)}
+.sum-card.red{border-left:3px solid var(--red)}
 
-/* Filter */
-.filterbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-.filterbar input{max-width:280px}
-.chips{display:flex;gap:7px;flex-wrap:wrap}
-.chip{padding:7px 13px;border-radius:20px;border:1.5px solid var(--linie);background:#fff;font-size:13px;font-weight:500}
-.chip.on{background:var(--stahl);color:#fff;border-color:var(--stahl)}
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tab{font-size:12px;font-weight:500;padding:10px 16px;cursor:pointer;color:var(--ink4);border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans)}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
 
-/* Tabelle */
-.tab-wrap{background:var(--blatt);border:1px solid var(--linie);border-radius:10px;overflow:auto}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--stahl-70);padding:12px 14px;border-bottom:1px solid var(--linie);white-space:nowrap;background:#F4F5F4}
-td{padding:12px 14px;border-bottom:1px solid #EEF0F1;vertical-align:middle}
+/* TABLE */
+.table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.table-toolbar{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border2)}
+.table-search{flex:1;padding:7px 11px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;font-family:var(--sans);background:var(--bg);color:var(--ink);outline:none;max-width:280px}
+.table-search:focus{border-color:var(--blue);background:white}
+.table-count{font-size:11px;color:var(--ink4)}
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;font-weight:500;color:var(--ink4);text-transform:uppercase;letter-spacing:0.07em;padding:10px 16px;text-align:left;background:var(--bg);border-bottom:1px solid var(--border)}
+td{padding:11px 16px;border-bottom:1px solid var(--border2);font-size:12px;color:var(--ink2);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:#FCFCFB}
-.email{font-weight:600}
-.sub{font-size:12.5px;color:var(--stahl-70)}
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:600;font-family:var(--mono);white-space:nowrap}
-.b-gruen{background:var(--gruen-bg);color:var(--gruen)}
-.b-gelb{background:var(--gelb-bg);color:var(--gelb)}
-.b-rot{background:var(--rot-bg);color:var(--rot)}
-.b-grau{background:#EEF0F1;color:var(--stahl-70)}
-.zeit{font-family:var(--mono);font-size:12.5px;color:var(--stahl-70);white-space:nowrap}
-.leer{padding:50px 20px;text-align:center;color:var(--stahl-70)}
+tr:hover td{background:var(--bg)}
 
-/* Modal */
-.overlay{display:none;position:fixed;inset:0;background:rgba(27,37,48,.55);z-index:100;padding:20px;overflow:auto}
-.overlay.on{display:flex;align-items:flex-start;justify-content:center}
-.modal{background:var(--blatt);border-radius:12px;padding:28px;width:100%;max-width:480px;margin:auto}
-.modal h2{font-size:19px;margin-bottom:4px}
-.modal .m-mail{font-family:var(--mono);font-size:13px;color:var(--stahl-70);margin-bottom:20px;word-break:break-all}
-.feld{margin-bottom:15px}
-.zwei{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.check{display:flex;align-items:center;gap:9px;padding:11px;border:1.5px solid var(--linie);border-radius:6px;cursor:pointer}
-.check input{width:17px;height:17px;accent-color:var(--signal)}
-.check span{font-size:14px}
-.modal-foot{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
-.modal-foot .btn-primary{flex:1}
-.trial-zeile{display:flex;gap:8px;align-items:center;background:#F4F5F4;padding:12px;border-radius:6px;margin-bottom:15px}
-.trial-zeile input{width:70px}
-.trial-zeile span{font-size:13.5px;color:var(--stahl-70)}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--stahl);color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;z-index:200;display:none}
-@media(max-width:700px){.zwei{grid-template-columns:1fr}th,td{padding:10px}}
+/* BADGES */
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:4px}
+.badge.green{color:var(--green);background:var(--green-tint)}
+.badge.orange{color:var(--orange);background:var(--orange-tint)}
+.badge.red{color:var(--red);background:var(--red-tint)}
+.badge.gray{color:var(--ink4);background:var(--bg2)}
+.badge.blue{color:var(--blue);background:var(--blue-tint)}
+
+/* ACTION BUTTONS */
+.act-btn{font-size:10px;font-weight:500;padding:3px 9px;border-radius:5px;cursor:pointer;font-family:var(--sans);border:1px solid var(--border);background:var(--bg);color:var(--ink3);transition:all .13s;margin-right:4px}
+.act-btn:hover{color:var(--blue);border-color:var(--blue);background:var(--blue-tint)}
+.act-btn.danger:hover{color:var(--red);border-color:var(--red);background:var(--red-tint)}
+
+/* FEEDBACK */
+.fb-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px}
+.fb-card-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fb-stars{color:var(--orange);font-size:13px}
+.fb-cats{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.fb-cat{font-size:10px;color:var(--blue);background:var(--blue-tint);padding:2px 7px;border-radius:3px}
+.fb-msg{font-size:12px;color:var(--ink3);line-height:1.55}
+.fb-meta{font-size:10px;color:var(--ink4);margin-top:6px}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(30,36,51,0.45);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:white;border-radius:var(--radius-lg);padding:24px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(30,36,51,0.2)}
+.modal h3{font-family:var(--serif);font-size:18px;font-weight:400;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--ink3);margin-bottom:16px;line-height:1.55}
+.modal select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-family:var(--sans);margin-bottom:16px;background:var(--bg);outline:none}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.m-btn{padding:7px 16px;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans);border:1px solid var(--border);background:var(--bg);color:var(--ink2);transition:all .15s}
+.m-btn:hover{background:var(--bg2)}
+.m-btn.p{background:var(--blue);color:white;border-color:var(--blue)}
+.m-btn.p:hover{background:var(--blue2)}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--ink);color:white;padding:8px 16px;border-radius:var(--radius);font-size:12px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:900px){.summary-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.summary-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN ===== -->
-<div id="login">
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
   <div class="login-box">
-    <h1><span class="mark"></span>KfzGut-AI Admin</h1>
-    <p>Zugang nur mit Admin-Passwort.</p>
-    <div class="err" id="loginErr"></div>
-    <div class="feld">
-      <label for="pw">Admin-Passwort</label>
-      <input type="password" id="pw" autocomplete="current-password" autofocus>
+    <div class="login-logo">KfzGut-<span>AI</span></div>
+    <div class="login-sub">Admin-Dashboard</div>
+    <div class="login-fg">
+      <label>Admin-Passwort</label>
+      <input type="password" id="adminPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <button class="btn-primary" style="width:100%" onclick="anmelden()">Anmelden</button>
+    <button class="login-btn" onclick="doLogin()">Anmelden</button>
+    <div class="login-err" id="loginErr">Falsches Passwort</div>
   </div>
 </div>
 
-<!-- ===== APP ===== -->
-<div id="app">
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
   <div class="topbar">
-    <div class="wrap">
-      <h1><span class="mark"></span>KfzGut-AI Admin</h1>
-      <button onclick="abmelden()">Abmelden</button>
+    <div class="topbar-logo">KfzGut-<span>AI</span> <span class="topbar-badge">Admin</span></div>
+    <div class="topbar-right">
+      <button class="tb-btn" onclick="loadData()">Aktualisieren</button>
+      <button class="tb-btn" onclick="doLogout()">Abmelden</button>
     </div>
   </div>
 
-  <div class="wrap">
-    <div class="kacheln" id="kacheln"></div>
+  <div class="main">
+    <div class="page-title" id="pageTitle">Lade Daten…</div>
 
-    <div class="filterbar">
-      <input type="search" id="suche" placeholder="E-Mail, Name oder Firma suchen…" oninput="entprellt()">
-      <div class="chips" id="chips">
-        <button class="chip on" data-f="alle" onclick="setFilter('alle')">Alle</button>
-        <button class="chip" data-f="trial" onclick="setFilter('trial')">Im Test</button>
-        <button class="chip" data-f="zahlend" onclick="setFilter('zahlend')">Zahlend</button>
-        <button class="chip" data-f="unbestaetigt" onclick="setFilter('unbestaetigt')">Unbestätigt</button>
-        <button class="chip" data-f="gesperrt" onclick="setFilter('gesperrt')">Gesperrt</button>
+    <!-- Summary -->
+    <div class="summary-grid">
+      <div class="sum-card blue">
+        <div class="sum-label">Nutzer gesamt</div>
+        <div class="sum-val" id="sTotal">—</div>
+        <div class="sum-sub">Alle Registrierungen</div>
       </div>
-      <button class="btn-ghost" onclick="ladeAlles()">Aktualisieren</button>
+      <div class="sum-card green">
+        <div class="sum-label">Zahlende Kunden</div>
+        <div class="sum-val" id="sPaying">—</div>
+        <div class="sum-sub" id="sRevenue">—</div>
+      </div>
+      <div class="sum-card orange">
+        <div class="sum-label">Aktive Trials</div>
+        <div class="sum-val" id="sTrials">—</div>
+        <div class="sum-sub">7-Tage-Testphase</div>
+      </div>
+      <div class="sum-card red">
+        <div class="sum-label">API-Kosten (gesamt)</div>
+        <div class="sum-val" id="sCost">—</div>
+        <div class="sum-sub">Anthropic API</div>
+      </div>
     </div>
 
-    <div class="tab-wrap">
-      <table>
-        <thead><tr>
-          <th>Nutzer</th><th>Plan</th><th>Status</th><th>E-Mail</th>
-          <th>Test endet</th><th>Prüfungen</th><th>Registriert</th><th></th>
-        </tr></thead>
-        <tbody id="tbody"><tr><td colspan="8" class="leer">Wird geladen…</td></tr></tbody>
-      </table>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('users',this)">Nutzer</button>
+      <button class="tab" onclick="showTab('feedback',this)">Feedback</button>
     </div>
-    <div style="height:40px"></div>
+
+    <!-- USERS TAB -->
+    <div id="tab-users">
+
+      <!-- Aktivierungs-Kennzahlen -->
+      <div id="activationBar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+        <div style="background:var(--card,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px">
+          <div style="font-size:22px;font-weight:600;color:var(--ink)" id="kpiTotal">0</div>
+          <div style="font-size:11px;color:var(--ink4);margin-top:2px">Registriert</div>
+        </div>
+        <div style="background:var(--card,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px">
+          <div style="font-size:22px;font-weight:600;color:var(--blue)" id="kpiActivated">0</div>
+          <div style="font-size:11px;color:var(--ink4);margin-top:2px">Tool genutzt</div>
+        </div>
+        <div style="background:var(--card,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px">
+          <div style="font-size:22px;font-weight:600;color:#c02828" id="kpiDead">0</div>
+          <div style="font-size:11px;color:var(--ink4);margin-top:2px">Nie genutzt</div>
+        </div>
+        <div style="background:var(--card,#fff);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px">
+          <div style="font-size:22px;font-weight:600;color:var(--green,#1a6e3a)" id="kpiPaying">0</div>
+          <div style="font-size:11px;color:var(--ink4);margin-top:2px">Zahlend</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input type="text" class="table-search" placeholder="Suchen nach Name, E-Mail…" oninput="filterUsers(this.value)">
+          <span class="table-count" id="userCount"></span>
+          <select id="filterPlan" onchange="filterUsers(document.querySelector('.table-search').value)" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:11px;font-family:var(--sans);background:var(--bg);color:var(--ink3);outline:none;cursor:pointer">
+            <option value="">Alle Pläne</option>
+            <option value="trial">Trial</option>
+            <option value="active_sub">Aktiv</option>
+            <option value="cancelled">Gekündigt</option>
+            <option value="__owner">Büro-Hauptaccount</option>
+            <option value="__member">Team-Mitglied</option>
+            <option value="__unused">Nie genutzt</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Name / E-Mail</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Trial / Ablauf</th>
+                <th>Nutzung</th>
+                <th>Zuletzt aktiv</th>
+                <th>Registriert</th>
+                <th>Aktionen</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEEDBACK TAB -->
+    <div id="tab-feedback" style="display:none">
+      <div id="feedbackList"></div>
+    </div>
   </div>
 </div>
 
-<!-- ===== MODAL ===== -->
-<div class="overlay" id="overlay" onclick="if(event.target===this)zuMachen()">
+<!-- MODAL: Edit User -->
+<div class="modal-bg" id="editModal">
   <div class="modal">
-    <h2>Nutzer bearbeiten</h2>
-    <div class="m-mail" id="mMail"></div>
+    <h3>Nutzer bearbeiten</h3>
+    <p id="editModalUser">—</p>
+    <select id="editPlan">
+      <option value="trial">Trial</option>
+      <option value="active_sub">Aktiv (bezahlt)</option>
+      <option value="cancelled">Gekündigt</option>
+    </select>
+    <select id="editStatus">
+      <option value="active">Aktiv</option>
+      <option value="expired">Abgelaufen</option>
+      <option value="past_due">Zahlung ausstehend</option>
+      <option value="cancelled">Gekündigt</option>
+    </select>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-top:8px;cursor:pointer">
+      <input type="checkbox" id="editVerified"> E-Mail verifiziert
+    </label>
 
-    <div class="zwei">
-      <div class="feld">
-        <label for="mPlan">Plan</label>
-        <select id="mPlan">
-          <option value="trial">Test (7 Tage)</option>
-          <option value="aktiv">Aktiv (bezahlt)</option>
-          <option value="beendet">Beendet</option>
-        </select>
-      </div>
-      <div class="feld">
-        <label for="mStatus">Status</label>
-        <select id="mStatus">
-          <option value="aktiv">Aktiv</option>
-          <option value="gesperrt">Gesperrt</option>
-        </select>
-      </div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink4);margin-bottom:8px">Büro / Team</div>
+
+      <label style="font-size:11px;color:var(--ink4);display:block;margin-bottom:3px">Team-Zugehörigkeit</label>
+      <select id="editTeamOwner" onchange="onTeamOwnerChange()">
+        <option value="">Eigenständiger Account</option>
+      </select>
+
+      <label style="font-size:11px;color:var(--ink4);display:block;margin:10px 0 3px" id="lblSeats">Verfügbare Plätze</label>
+      <select id="editSeats">
+        <option value="1">1 – Einzelplatz</option>
+        <option value="2">2 Plätze</option>
+        <option value="3">3 Plätze</option>
+        <option value="5">5 – Büro-Tarif</option>
+        <option value="10">10 Plätze (Sonderfall)</option>
+      </select>
+
+      <div id="seatsHint" style="font-size:11px;color:var(--ink4);margin-top:6px;line-height:1.5"></div>
     </div>
 
-    <div class="feld">
-      <label for="mFirma">Firma</label>
-      <input id="mFirma" type="text">
-    </div>
-
-    <div class="feld">
-      <label class="check"><input type="checkbox" id="mVerified"><span>E-Mail verifiziert</span></label>
-    </div>
-    <div class="feld">
-      <label class="check"><input type="checkbox" id="mLaunch"><span>Launch-Preis 79&nbsp;€ dauerhaft garantiert</span></label>
-    </div>
-
-    <div class="trial-zeile">
-      <input type="number" id="mTage" value="7" min="1" max="365">
-      <span>Tage Test verlängern</span>
-      <button class="btn-ghost" style="margin-left:auto" onclick="trialVerlaengern()">Verlängern</button>
-    </div>
-
-    <div class="feld">
-      <label for="mNotiz">Interne Notiz</label>
-      <textarea id="mNotiz" rows="2"></textarea>
-    </div>
-
-    <div class="modal-foot">
-      <button class="btn-primary" onclick="speichern()">Speichern</button>
-      <button class="btn-ghost" onclick="zuMachen()">Abbrechen</button>
-      <button class="btn-danger" onclick="loeschen()">Löschen</button>
+    <div class="modal-btns">
+      <button class="m-btn" onclick="closeModal()">Abbrechen</button>
+      <button class="m-btn p" onclick="saveUser()">Speichern</button>
     </div>
   </div>
 </div>
@@ -207,164 +296,373 @@ tr:hover td{background:#FCFCFB}
 <div class="toast" id="toast"></div>
 
 <script>
-let SECRET = sessionStorage.getItem('kfzgut_admin') || '';
-let FILTER = 'alle';
-let AKTUELL = null;
-let timer = null;
+const API = ''; // same origin
+let adminSecret = '';
+let allUsers = [];
+let allFeedback = [];
+let editingUserId = null;
 
-function kopf(){ return { 'Content-Type':'application/json', 'X-Admin-Secret': SECRET }; }
-
-function toast(txt){
-  const t = document.getElementById('toast');
-  t.textContent = txt; t.style.display = 'block';
-  setTimeout(()=>{ t.style.display = 'none'; }, 2600);
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+function doLogin() {
+  const pw = document.getElementById('adminPw').value;
+  if (!pw) return;
+  adminSecret = pw;
+  loadData();
 }
 
-async function anmelden(){
-  const pw = document.getElementById('pw').value;
-  const err = document.getElementById('loginErr');
-  if(!pw){ err.textContent='Bitte Passwort eingeben.'; err.style.display='block'; return; }
-  SECRET = pw;
-  const r = await fetch('/api/admin/stats', { headers: kopf() });
-  if(r.status === 401){
-    err.textContent = 'Passwort falsch.'; err.style.display='block'; SECRET=''; return;
-  }
-  if(r.status === 503){
-    err.textContent = 'Keine Datenbank verbunden. DATABASE_URL in Railway prüfen.'; err.style.display='block'; SECRET=''; return;
-  }
-  if(!r.ok){ err.textContent='Serverfehler ('+r.status+').'; err.style.display='block'; SECRET=''; return; }
-  sessionStorage.setItem('kfzgut_admin', SECRET);
-  document.getElementById('login').style.display='none';
-  document.getElementById('app').style.display='block';
-  ladeAlles();
+function doLogout() {
+  adminSecret = '';
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
 }
 
-function abmelden(){
-  sessionStorage.removeItem('kfzgut_admin'); SECRET='';
-  document.getElementById('app').style.display='none';
-  document.getElementById('login').style.display='flex';
-  document.getElementById('pw').value='';
-}
-
-function datum(s){
-  if(!s) return '–';
-  return new Date(s).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'});
-}
-function tageBis(s){
-  if(!s) return null;
-  return Math.ceil((new Date(s) - new Date()) / 86400000);
-}
-function esc(s){
-  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-async function ladeStats(){
-  const r = await fetch('/api/admin/stats',{headers:kopf()});
-  if(!r.ok) return;
-  const s = await r.json();
-  document.getElementById('kacheln').innerHTML = `
-    <div class="kachel akzent"><div class="k-label">Zahlende Kunden</div><div class="k-zahl">${s.zahlend}</div></div>
-    <div class="kachel akzent"><div class="k-label">MRR</div><div class="k-zahl">${s.mrr} €</div></div>
-    <div class="kachel"><div class="k-label">Launch-Plätze frei</div><div class="k-zahl">${s.launch_plaetze_frei}</div></div>
-    <div class="kachel"><div class="k-label">Im Test</div><div class="k-zahl">${s.im_test}</div></div>
-    <div class="kachel warn"><div class="k-label">Test endet in 2 T.</div><div class="k-zahl">${s.test_endet_bald}</div></div>
-    <div class="kachel"><div class="k-label">Neu (7 Tage)</div><div class="k-zahl">${s.neu_7t}</div></div>
-    <div class="kachel"><div class="k-label">Unbestätigt</div><div class="k-zahl">${s.unbestaetigt}</div></div>
-    <div class="kachel"><div class="k-label">Prüfungen gesamt</div><div class="k-zahl">${s.pruefungen}</div></div>`;
-}
-
-async function ladeUsers(){
-  const q = encodeURIComponent(document.getElementById('suche').value);
-  const r = await fetch(`/api/admin/users?q=${q}&filter=${FILTER}`,{headers:kopf()});
-  const tb = document.getElementById('tbody');
-  if(!r.ok){ tb.innerHTML='<tr><td colspan="8" class="leer">Fehler beim Laden.</td></tr>'; return; }
-  const { users } = await r.json();
-  if(!users.length){ tb.innerHTML='<tr><td colspan="8" class="leer">Keine Nutzer gefunden.</td></tr>'; return; }
-
-  tb.innerHTML = users.map(u => {
-    const planB = u.plan==='aktiv' ? '<span class="badge b-gruen">Zahlend</span>'
-                : u.plan==='trial' ? '<span class="badge b-gelb">Test</span>'
-                : '<span class="badge b-grau">Beendet</span>';
-    const statB = u.plan_status==='gesperrt'
-                ? '<span class="badge b-rot">Gesperrt</span>'
-                : '<span class="badge b-gruen">Aktiv</span>';
-    const mailB = u.email_verified
-                ? '<span class="badge b-gruen">Bestätigt</span>'
-                : '<span class="badge b-rot">Offen</span>';
-    const t = tageBis(u.trial_ends_at);
-    let trialTxt = '–';
-    if(u.trial_ends_at){
-      trialTxt = t < 0 ? `<span class="badge b-rot">abgelaufen</span>`
-               : t <= 2 ? `<span class="badge b-gelb">${t} Tage</span>`
-               : `<span class="zeit">${datum(u.trial_ends_at)}</span>`;
+// ── LOAD DATA ─────────────────────────────────────────────────────────────────
+async function loadData() {
+  try {
+    const res = await fetch(API + '/api/admin/stats', {
+      headers: { 'x-admin-secret': adminSecret }
+    });
+    if (res.status === 403) {
+      document.getElementById('loginErr').style.display = 'block';
+      document.getElementById('loginErr').textContent = 'Falsches Passwort';
+      return;
     }
-    const launch = u.launch_preis ? ' <span class="badge b-grau">79 €</span>' : '';
+    if (!res.ok) {
+      let d = {};
+      try { d = await res.json(); } catch(e) {}
+      const el = document.getElementById('loginErr');
+      el.style.display = 'block';
+      el.textContent = res.status === 500
+        ? (d.error || 'Serverfehler') + ' – ADMIN_SECRET in Railway prüfen'
+        : 'Fehler ' + res.status + ': ' + (d.error || '');
+      console.error('Admin-Login fehlgeschlagen:', res.status, d);
+      return;
+    }
+    const data = await res.json();
+    document.getElementById('loginErr').style.display = 'none';
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'flex';
+
+    allUsers = data.users;
+    allFeedback = data.feedback;
+
+    // Summary
+    const s = data.summary;
+    document.getElementById('sTotal').textContent = s.totalUsers;
+    document.getElementById('sPaying').textContent = s.paying;
+    document.getElementById('sRevenue').textContent = `${s.revenue} € / Monat`;
+    document.getElementById('sTrials').textContent = s.trials;
+    document.getElementById('sCost').textContent = `${s.apiCost} €`;
+    document.getElementById('pageTitle').textContent = `Dashboard – ${new Date().toLocaleDateString('de-DE')}`;
+
+    renderUsers(allUsers);
+    renderFeedback(allFeedback);
+  } catch(err) {
+    alert('Fehler: ' + err.message);
+  }
+}
+
+// ── USERS ─────────────────────────────────────────────────────────────────────
+// Schutz vor eingeschleustem HTML: Nutzerdaten (Name, E-Mail, Firma) stammen
+// aus dem Registrierungsformular und dürfen nicht als Markup interpretiert werden.
+function esc(v){
+  if (v === null || v === undefined) return '';
+  return String(v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+// Für Werte, die in onclick="..." landen
+function escAttr(v){
+  return esc(v).replace(/\\/g,'\\\\');
+}
+
+function renderKPIs(users){
+  if(!users || !users.length) return;
+  // Team-Mitglieder zählen nicht als eigene Registrierung
+  const own = users.filter(u => !u.team_owner_id);
+  const activated = own.filter(u => (u.checks_total||0) > 0 || (u.prompts_total||0) > 0);
+  const paying = own.filter(u => u.plan === 'active_sub' && u.plan_status === 'active' && !u.team_owner_id);
+  const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  set('kpiTotal', own.length);
+  set('kpiActivated', activated.length);
+  set('kpiDead', own.length - activated.length);
+  set('kpiPaying', paying.length);
+}
+
+function renderUsers(users) {
+  document.getElementById('userCount').textContent = users.length + ' Nutzer';
+  renderKPIs(allUsers);
+  const tbody = document.getElementById('usersBody');
+  if (!users.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--ink4);padding:24px">Keine Nutzer gefunden</td></tr>';
+    return;
+  }
+  tbody.innerHTML = users.map(u => {
+    // Team-Mitglieder erben den Status des Hauptaccounts und werden einheitlich angezeigt
+    const planBadge = u.team_owner_id
+      ? (u.hasAccess
+          ? '<span class="badge green">Aktiv</span>'
+          : '<span class="badge gray">Inaktiv</span>')
+      : ({
+          trial: '<span class="badge orange">Trial</span>',
+          active_sub: '<span class="badge green">Aktiv</span>',
+          cancelled: '<span class="badge gray">Gekündigt</span>',
+          team_member: '<span class="badge gray">—</span>',
+        }[u.plan] || '<span class="badge gray">—</span>');
+
+    const statusBadge = u.hasAccess
+      ? '<span class="badge green">Zugriff</span>'
+      : '<span class="badge red">Kein Zugriff</span>';
+
+    const trialInfo = u.team_owner_id
+      ? '<span style="font-size:10px;color:var(--ink4)">über Büro</span>'
+      : (u.plan === 'trial'
+          ? (u.trialDaysLeft > 0 ? `${u.trialDaysLeft} Tage übrig` : 'Abgelaufen')
+          : '—');
+
+    const reg = new Date(u.created_at * 1000).toLocaleDateString('de-DE');
+
+    // Nutzung: Prüfungen und Textbausteine getrennt
+    const checks  = u.checks_total  || 0;
+    const prompts = u.prompts_total || 0;
+    const usedTool = checks > 0 || prompts > 0;
+    const usageCell = usedTool
+      ? `<div style="font-size:11px;color:var(--ink)">${checks} Prüfung${checks===1?'':'en'}</div>
+         <div style="font-size:10px;color:var(--ink4)">${prompts} Baustein${prompts===1?'':'e'}</div>`
+      : '<span class="badge red" style="font-size:9px">nie genutzt</span>';
+
+    // Zuletzt aktiv
+    let lastAct = '—';
+    if (u.last_activity_at) {
+      const d = Math.floor((Date.now()/1000 - u.last_activity_at) / 86400);
+      lastAct = d === 0 ? 'heute' : d === 1 ? 'gestern' : `vor ${d} Tagen`;
+    }
+
+    // Team-Kennzeichnung
+    // Defekter Zustand: als Team-Mitglied markiert, aber ohne Hauptaccount -> kein Zugang möglich
+    const isOrphan = u.isOrphan;
+    const teamTag = isOrphan
+      ? '<div style="font-size:9px;color:#c02828;font-weight:600">⚠ Kein Hauptaccount – kein Zugang</div>'
+      : (u.team_owner_id
+          ? '<div style="font-size:9px;color:var(--ink4)">↳ gehört zu ' + esc(u.ownerEmail || 'Hauptaccount') + '</div>'
+          : ((u.plan_seats||1) > 1 ? '<div style="font-size:9px;color:var(--blue)">Büro-Tarif · ' + u.plan_seats + ' Plätze</div>' : ''));
+
     return `<tr>
-      <td><div class="email">${esc(u.email)}</div><div class="sub">${esc(u.firma || u.name || '—')}${launch}</div></td>
-      <td>${planB}</td><td>${statB}</td><td>${mailB}</td>
-      <td>${trialTxt}</td>
-      <td class="zeit">${u.pruefungen_gesamt}</td>
-      <td class="zeit">${datum(u.created_at)}</td>
-      <td><button class="btn-ghost" onclick='oeffne(${JSON.stringify(u).replace(/'/g,"&#39;")})'>Bearbeiten</button></td>
+      <td>
+        <div style="font-weight:500;color:var(--ink)">${u.name || '—'}</div>
+        <div style="font-size:11px;color:var(--ink4)">${esc(u.email)}</div>
+        ${u.company ? `<div style="font-size:10px;color:var(--ink4)">${esc(u.company)}</div>` : ''}
+        ${teamTag}
+      </td>
+      <td>${planBadge}</td>
+      <td>${statusBadge}</td>
+      <td style="font-size:11px;color:var(--ink4)">${trialInfo}</td>
+      <td>${usageCell}</td>
+      <td style="font-size:11px;color:var(--ink4)">${lastAct}</td>
+      <td style="font-size:11px;color:var(--ink4)">${reg}</td>
+      <td>
+        <button class="act-btn" onclick="editUser(${u.id})">Bearbeiten</button>
+        ${isOrphan ? `<button class="act-btn" style="border-color:#c02828;color:#c02828" onclick="repairUser(${u.id}, '${escAttr(u.email)}')">Reparieren</button>` : ''}
+        <button class="act-btn danger" onclick="deleteUser(${u.id}, '${escAttr(u.email)}')">Löschen</button>
+      </td>
     </tr>`;
   }).join('');
 }
 
-function ladeAlles(){ ladeStats(); ladeUsers(); }
-function entprellt(){ clearTimeout(timer); timer = setTimeout(ladeUsers, 300); }
-function setFilter(f){
-  FILTER = f;
-  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.f === f));
-  ladeUsers();
+function filterUsers(q) {
+  const plan = document.getElementById('filterPlan').value;
+  let filtered = allUsers;
+  if (q) {
+    const lq = q.toLowerCase();
+    filtered = filtered.filter(u =>
+      u.email.toLowerCase().includes(lq) ||
+      (u.name || '').toLowerCase().includes(lq) ||
+      (u.company || '').toLowerCase().includes(lq)
+    );
+  }
+  if (plan === '__owner') {
+    filtered = filtered.filter(u => !u.team_owner_id && (u.plan_seats || 1) > 1);
+  } else if (plan === '__member') {
+    filtered = filtered.filter(u => !!u.team_owner_id);
+  } else if (plan === '__unused') {
+    filtered = filtered.filter(u => !(u.checks_total || 0) && !(u.prompts_total || 0));
+  } else if (plan) {
+    filtered = filtered.filter(u => u.plan === plan);
+  }
+  renderUsers(filtered);
 }
 
-function oeffne(u){
-  AKTUELL = u;
-  document.getElementById('mMail').textContent = u.email;
-  document.getElementById('mPlan').value = u.plan;
-  document.getElementById('mStatus').value = u.plan_status;
-  document.getElementById('mFirma').value = u.firma || '';
-  document.getElementById('mNotiz').value = u.notiz || '';
-  document.getElementById('mVerified').checked = !!u.email_verified;
-  document.getElementById('mLaunch').checked = !!u.launch_preis;
-  document.getElementById('overlay').classList.add('on');
-}
-function zuMachen(){ document.getElementById('overlay').classList.remove('on'); AKTUELL = null; }
+function editUser(id) {
+  const u = allUsers.find(x => x.id === id);
+  if (!u) return;
+  editingUserId = id;
+  document.getElementById('editModalUser').textContent = u.email;
+  document.getElementById('editPlan').value = u.plan === 'team_member' ? 'trial' : u.plan;
+  document.getElementById('editStatus').value = u.plan_status;
+  document.getElementById('editVerified').checked = (u.email_verified || 0) === 1;
 
-async function speichern(){
-  if(!AKTUELL) return;
-  const body = {
-    plan: document.getElementById('mPlan').value,
-    plan_status: document.getElementById('mStatus').value,
-    firma: document.getElementById('mFirma').value,
-    notiz: document.getElementById('mNotiz').value,
-    email_verified: document.getElementById('mVerified').checked ? 1 : 0,
-    launch_preis: document.getElementById('mLaunch').checked ? 1 : 0
-  };
-  const r = await fetch(`/api/admin/users/${AKTUELL.id}`,{method:'PATCH',headers:kopf(),body:JSON.stringify(body)});
-  if(r.ok){ toast('Gespeichert.'); zuMachen(); ladeAlles(); }
-  else toast('Fehler beim Speichern.');
-}
+  // Auswahl möglicher Hauptaccounts aufbauen (nur eigenständige Accounts, nicht der Nutzer selbst)
+  const sel = document.getElementById('editTeamOwner');
+  const owners = allUsers
+    .filter(o => !o.team_owner_id && o.id !== id)
+    .sort((x, y) => (x.company || x.email).localeCompare(y.company || y.email));
+  sel.innerHTML = '<option value="">Eigenständiger Account</option>' + owners.map(o => {
+    const belegt = allUsers.filter(m => m.team_owner_id === o.id).length + 1;
+    const seats  = o.plan_seats || 1;
+    const voll   = belegt >= seats;
+    const label  = `${o.company ? esc(o.company) + ' · ' : ''}${esc(o.email)} (${belegt}/${seats})`;
+    return `<option value="${o.id}"${voll ? ' disabled' : ''}>${label}${voll ? ' – voll' : ''}</option>`;
+  }).join('');
+  sel.value = u.team_owner_id || '';
 
-async function trialVerlaengern(){
-  if(!AKTUELL) return;
-  const tage = parseInt(document.getElementById('mTage').value, 10);
-  const r = await fetch(`/api/admin/users/${AKTUELL.id}/trial`,{method:'POST',headers:kopf(),body:JSON.stringify({tage})});
-  if(r.ok){ toast(`Test um ${tage} Tage verlängert.`); zuMachen(); ladeAlles(); }
-  else toast('Fehler beim Verlängern.');
+  // Gespeicherte Platzzahl beibehalten, auch wenn sie nicht in der Liste steht
+  const seatsSel = document.getElementById('editSeats');
+  const curSeats = String(u.plan_seats || 1);
+  if (![...seatsSel.options].some(o => o.value === curSeats)) {
+    seatsSel.insertAdjacentHTML('afterbegin', `<option value="${curSeats}">${curSeats} Plätze (aktuell)</option>`);
+  }
+  seatsSel.value = curSeats;
+  onTeamOwnerChange();
+  document.getElementById('editModal').classList.add('open');
 }
 
-async function loeschen(){
-  if(!AKTUELL) return;
-  if(!confirm(`Nutzer ${AKTUELL.email} endgültig löschen?`)) return;
-  const r = await fetch(`/api/admin/users/${AKTUELL.id}`,{method:'DELETE',headers:kopf()});
-  if(r.ok){ toast('Gelöscht.'); zuMachen(); ladeAlles(); }
-  else toast('Fehler beim Löschen.');
+function onTeamOwnerChange() {
+  const isMember = !!document.getElementById('editTeamOwner').value;
+  const seatsSel = document.getElementById('editSeats');
+  const hint     = document.getElementById('seatsHint');
+  const lbl      = document.getElementById('lblSeats');
+  // Team-Mitglieder haben keine eigenen Plätze
+  seatsSel.disabled = isMember;
+  seatsSel.style.opacity = isMember ? '0.4' : '1';
+  lbl.style.opacity = isMember ? '0.4' : '1';
+
+  if (isMember) {
+    hint.textContent = 'Als Team-Mitglied läuft der Zugang über den Hauptaccount. Plan und Plätze werden dort verwaltet.';
+    return;
+  }
+  const u = allUsers.find(x => x.id === editingUserId);
+  const members = u ? allUsers.filter(m => m.team_owner_id === u.id).length : 0;
+  const seats = parseInt(seatsSel.value, 10) || 1;
+  hint.textContent = members > 0
+    ? `Aktuell ${members} zugeordnete${members === 1 ? 's' : ''} Mitglied${members === 1 ? '' : 'er'}. Bei Reduzierung auf ${seats} Plätze werden überzählige Mitglieder gelöst.`
+    : 'Ab 2 Plätzen erscheint beim Nutzer die Team-Verwaltung unter „Mein Konto".';
 }
 
-document.getElementById('pw').addEventListener('keydown', e => { if(e.key === 'Enter') anmelden(); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape') zuMachen(); });
-if(SECRET) anmelden();
+async function saveUser() {
+  const plan = document.getElementById('editPlan').value;
+  const status = document.getElementById('editStatus').value;
+  closeModal();
+  try {
+    const r = await fetch(`${API}/api/admin/users/${editingUserId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
+      body: JSON.stringify({
+        plan,
+        plan_status: status,
+        email_verified: document.getElementById('editVerified').checked ? 1 : 0,
+        plan_seats: parseInt(document.getElementById('editSeats').value, 10) || 1,
+        team_owner_id: document.getElementById('editTeamOwner').value || null
+      })
+    });
+    let data = {};
+    try { data = await r.json(); } catch(e) {}
+    if (!r.ok) {
+      if (r.status === 403)      toast('Falsches Admin-Passwort – Änderung abgelehnt');
+      else if (r.status === 500) toast('Serverfehler: ' + (data.error || 'unbekannt'));
+      else                       toast('Fehler ' + r.status + ': ' + (data.error || ''));
+      console.error('Speichern fehlgeschlagen:', r.status, data);
+      return;
+    }
+    toast('Nutzer aktualisiert');
+    loadData();
+  } catch(err) {
+    toast('Verbindungsfehler: ' + err.message);
+    console.error(err);
+  }
+}
+
+async function repairUser(id, email) {
+  if (!confirm(`Zugang von "${email}" wiederherstellen?\n\nDer Account wird als eigenständiger Zugang mit 7 Tagen Testzeitraum reaktiviert. Anschließend kannst du ihn über „Bearbeiten" wieder einem Büro zuordnen.`)) return;
+  try {
+    const r = await fetch(`${API}/api/admin/repair/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
+      body: JSON.stringify({ mode: 'standalone' })
+    });
+    let d = {}; try { d = await r.json(); } catch(e) {}
+    if (!r.ok) { toast('Fehler: ' + (d.error || r.status)); return; }
+    toast('Zugang wiederhergestellt');
+    loadData();
+  } catch(err) { toast('Verbindungsfehler: ' + err.message); }
+}
+
+async function deleteUser(id, email) {
+  if (!confirm(`Nutzer "${email}" wirklich und endgültig löschen?`)) return;
+  try {
+    const r = await fetch(`${API}/api/admin/users/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-secret': adminSecret }
+    });
+    let data = {};
+    try { data = await r.json(); } catch(e) {}
+
+    if (!r.ok) {
+      // Fehler sichtbar machen statt Erfolg vorzutäuschen
+      if (r.status === 403)      toast('Falsches Admin-Passwort – Löschen abgelehnt');
+      else if (r.status === 404) toast('Nutzer nicht gefunden (evtl. bereits gelöscht)');
+      else if (r.status === 500) toast('Serverfehler: ' + (data.error || 'unbekannt'));
+      else                       toast('Fehler ' + r.status + ': ' + (data.error || ''));
+      console.error('Löschen fehlgeschlagen:', r.status, data);
+      return;
+    }
+
+    const extra = data.teamMembersDeleted ? ` (+${data.teamMembersDeleted} Team-Mitglieder)` : '';
+    toast('Nutzer gelöscht' + extra);
+    loadData();
+  } catch(err) {
+    toast('Verbindungsfehler: ' + err.message);
+    console.error(err);
+  }
+}
+
+// ── FEEDBACK ──────────────────────────────────────────────────────────────────
+function renderFeedback(items) {
+  const el = document.getElementById('feedbackList');
+  if (!items.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--ink4);padding:40px">Noch kein Feedback</div>';
+    return;
+  }
+  el.innerHTML = items.map(f => {
+    const cats = JSON.parse(f.categories || '[]');
+    const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
+    const date = new Date(f.created_at * 1000).toLocaleDateString('de-DE');
+    return `<div class="fb-card">
+      <div class="fb-card-hd">
+        <span class="fb-stars">${stars}</span>
+        <span style="font-size:11px;color:var(--ink4)">${f.email || 'Anonym'} · ${date}</span>
+      </div>
+      ${cats.length ? `<div class="fb-cats">${cats.map(c=>`<span class="fb-cat">${c}</span>`).join('')}</div>` : ''}
+      ${f.message ? `<div class="fb-msg">${f.message}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────────────────────
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none';
+  document.getElementById('tab-feedback').style.display = tab === 'feedback' ? 'block' : 'none';
+}
+
+function closeModal() { document.getElementById('editModal').classList.remove('open'); }
+document.getElementById('editModal').addEventListener('click', e => { if (e.target.id === 'editModal') closeModal(); });
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
 </script>
 </body>
 </html>

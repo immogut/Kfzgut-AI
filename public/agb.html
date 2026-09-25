@@ -3,168 +3,189 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AGB — KfzGut-AI</title>
-<link rel="stylesheet" href="/stil.css">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>AGB – KfzGut-AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a56a0'/><text y='70' x='50' text-anchor='middle' font-size='58' font-family='Georgia,serif' fill='white'>K</text></svg>">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1e2433;--ink2:#3a4155;--ink3:#5a6478;--ink4:#9aa0ae;--bg:#eef0f5;--white:#fff;--blue:#1a56a0;--orange:#d95f1a;--border:rgba(30,36,51,0.1);--serif:'Fraunces',Georgia,serif;--sans:'Instrument Sans',system-ui,sans-serif;--radius:10px}
+html,body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.65}
+.topbar{background:var(--ink);height:54px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--serif);font-size:21px;color:white;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:white}
+.logo-ai{color:var(--orange)}
+.back-btn{font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:5px 13px;border-radius:7px;transition:all .15s}
+.back-btn:hover{background:rgba(255,255,255,0.15);color:white}
+.page{max-width:720px;margin:48px auto;padding:0 24px 80px}
+.info-box ol li span{color:#8a6800;font-weight:500}
+h1{font-family:var(--serif);font-size:36px;font-weight:400;color:var(--ink);margin-bottom:8px;letter-spacing:-0.01em}
+.meta{font-size:13px;color:var(--ink4);margin-bottom:40px}
+.section{margin-bottom:36px}
+.section h2{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--ink);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section p{font-size:14px;color:var(--ink2);line-height:1.85;margin-bottom:10px;font-weight:300}
+.section p:last-child{margin-bottom:0}
+.section ul,.section ol{margin:10px 0;display:flex;flex-direction:column;gap:6px}
+.section ul{list-style:none}
+.section ul li{font-size:14px;color:var(--ink2);line-height:1.65;font-weight:300;padding-left:16px;position:relative}
+.section ul li::before{content:'–';position:absolute;left:0;color:var(--ink4)}
+.section ol{padding-left:20px}
+.section ol li{font-size:14px;color:var(--ink2);line-height:1.65;font-weight:300}
+.highlight-box{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin:12px 0}
+.highlight-box p{font-size:13px;color:var(--ink3);margin-bottom:0}
+footer{background:var(--ink);padding:20px 24px;text-align:center}
+footer a{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none;margin:0 12px}
+footer a:hover{color:rgba(255,255,255,0.6)}
+</style>
 </head>
 <body>
-<header class="kopf">
-  <div class="wrap">
-    <a class="logo" href="/"><span class="mark"></span>KfzGut<span class="ai">-AI</span></a>
-    <nav><a href="/">Startseite</a><a href="/login.html">Anmelden</a></nav>
-  </div>
-</header>
 
-<main class="recht">
-<div class="wrap-schmal">
-<h1>Allgemeine Geschäftsbedingungen</h1>
-
-<h2>§ 1 Geltungsbereich und Vertragspartner</h2>
-<p>
-  (1) Diese Bedingungen gelten für die Nutzung der Software KfzGut-AI, angeboten von
-  Johan Petersen, Täubchenweg 85, 04317 Leipzig (nachfolgend „Anbieter").
-</p>
-<p>
-  (2) Das Angebot richtet sich ausschließlich an Unternehmer im Sinne des § 14 BGB, insbesondere an
-  Kfz-Sachverständige und Sachverständigenbüros. Ein Vertragsschluss mit Verbrauchern ist
-  ausgeschlossen.
-</p>
-
-<h2>§ 2 Leistungsgegenstand</h2>
-<p>
-  (1) KfzGut-AI ist ein softwaregestütztes <strong>Assistenzwerkzeug zur Prüfung von
-  Kfz-Schadengutachten</strong>. Die Software analysiert vom Nutzer übermittelte Gutachtentexte und
-  gibt Hinweise auf mögliche Auffälligkeiten in den Bereichen Plausibilität und Kompatibilität,
-  Wiederbeschaffungs- und Restwert, Totalschadenabgrenzung, merkantiler Minderwert, Vor- und
-  Altschäden sowie Formalia und Honorar.
-</p>
-<p>
-  (2) <strong>Die Software erstellt keine Gutachten und trifft keine sachverständigen
-  Feststellungen.</strong> Sämtliche Ausgaben sind unverbindliche Hinweise. Die fachliche Bewertung,
-  die Entscheidung über deren Übernahme und die Verantwortung für das Gutachten verbleiben
-  ausschließlich beim Nutzer.
-</p>
-<p>
-  (3) Der Anbieter erbringt keine Rechtsdienstleistung im Sinne des RDG und keine Steuerberatung.
-</p>
-<p>
-  (4) Die Software arbeitet mit Verfahren der künstlichen Intelligenz. Ergebnisse können unvollständig
-  oder fehlerhaft sein. Eine Gewähr für Richtigkeit oder Vollständigkeit der Befunde wird nicht
-  übernommen. Der Nutzer ist verpflichtet, jeden Befund eigenständig zu prüfen.
-</p>
-
-<h2>§ 3 Vertragsschluss, Testzeitraum</h2>
-<p>
-  (1) Mit der Registrierung und Bestätigung der E-Mail-Adresse kommt ein unentgeltlicher Testvertrag
-  über sieben (7) Kalendertage zustande. Der Testzugang endet automatisch; es bedarf keiner Kündigung
-  und es entstehen keine Kosten.
-</p>
-<p>
-  (2) Der kostenpflichtige Vertrag kommt mit Abschluss des Bezahlvorgangs zustande.
-</p>
-
-<h2>§ 4 Vergütung und Preise</h2>
-<p>
-  (1) Die Vergütung beträgt 99,00 € netto je Zugang und Monat zzgl. gesetzlicher Umsatzsteuer.
-</p>
-<p>
-  (2) Der Anbieter gewährt den ersten 50 zahlenden Kunden einen Einführungspreis von 79,00 € netto je
-  Zugang und Monat. Dieser Preis gilt für die Dauer des ununterbrochen fortbestehenden
-  Vertragsverhältnisses; er entfällt bei Kündigung und späterer Neuregistrierung.
-</p>
-<p>
-  (3) Die Abrechnung erfolgt monatlich im Voraus über den Zahlungsdienstleister.
-</p>
-<p>
-  (4) Preisanpassungen für künftige Abrechnungszeiträume werden mindestens sechs Wochen vorher in
-  Textform angekündigt. Der Nutzer kann in diesem Fall zum Wirksamwerden der Anpassung kündigen.
-</p>
-
-<h2>§ 5 Nutzungsumfang und faire Nutzung</h2>
-<p>
-  (1) Ein Zugang berechtigt eine natürliche Person zur Nutzung. Die Weitergabe von Zugangsdaten an
-  Dritte ist unzulässig. Für weitere Personen im Büro sind zusätzliche Zugänge zu erwerben.
-</p>
-<p>
-  (2) Die Nutzung ist im Rahmen des vertragsgemäßen Gebrauchs unbegrenzt. Zum Schutz der
-  Systemstabilität gilt eine Grenze von 25 Prüfungen je Zugang und Kalendertag. Bei darüber
-  hinausgehendem Bedarf ist eine gesonderte Vereinbarung möglich.
-</p>
-<p>
-  (3) Untersagt sind insbesondere die automatisierte Massenabfrage, das Nachbilden der Software sowie
-  jede Nutzung, die den Betrieb beeinträchtigt.
-</p>
-
-<h2>§ 6 Pflichten des Nutzers, Datenschutz</h2>
-<p>
-  (1) Der Nutzer ist für die Rechtmäßigkeit der von ihm übermittelten Inhalte verantwortlich. Er stellt
-  sicher, dass er zur Übermittlung enthaltener personenbezogener Daten Dritter befugt ist.
-</p>
-<p>
-  (2) Der Nutzer hält Zugangsdaten geheim und zeigt Missbrauch unverzüglich an.
-</p>
-
-<h2>§ 7 Verfügbarkeit</h2>
-<p>
-  Der Anbieter ist um eine hohe Verfügbarkeit bemüht, schuldet jedoch keine bestimmte Verfügbarkeit.
-  Wartungsarbeiten und Störungen bei Vorleistern können zu Unterbrechungen führen.
-</p>
-
-<h2>§ 8 Haftung</h2>
-<p>
-  (1) Der Anbieter haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit sowie bei Verletzung von
-  Leben, Körper und Gesundheit.
-</p>
-<p>
-  (2) Bei leicht fahrlässiger Verletzung wesentlicher Vertragspflichten (Kardinalpflichten) ist die
-  Haftung auf den vertragstypischen, vorhersehbaren Schaden begrenzt, höchstens auf die im letzten
-  Vertragsjahr gezahlte Vergütung.
-</p>
-<p>
-  (3) <strong>Eine Haftung für Schäden aus der Verwendung von Prüfergebnissen in Gutachten,
-  Schriftsätzen oder gerichtlichen Verfahren ist ausgeschlossen</strong>, soweit nicht Absatz 1 greift.
-  Dies beruht darauf, dass die Ausgaben ausdrücklich unverbindliche Hinweise darstellen und der Nutzer
-  zur eigenständigen Prüfung verpflichtet ist (§ 2 Abs. 2).
-</p>
-<p>
-  (4) Die Haftung nach dem Produkthaftungsgesetz bleibt unberührt.
-</p>
-
-<h2>§ 9 Laufzeit und Kündigung</h2>
-<p>
-  (1) Der Vertrag läuft auf unbestimmte Zeit und kann von beiden Seiten mit einer Frist von 14 Tagen
-  zum Ende des laufenden Abrechnungsmonats gekündigt werden.
-</p>
-<p>
-  (2) Die Kündigung erfolgt über das Kundenportal oder formlos per E-Mail.
-</p>
-<p>
-  (3) Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt.
-</p>
-
-<h2>§ 10 Schlussbestimmungen</h2>
-<p>
-  (1) Es gilt deutsches Recht unter Ausschluss des UN-Kaufrechts.
-</p>
-<p>
-  (2) Gerichtsstand für alle Streitigkeiten ist Leipzig, soweit der Nutzer Kaufmann, juristische Person
-  des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen ist.
-</p>
-<p>
-  (3) Sollte eine Bestimmung unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.
-</p>
-
-<p class="stand">Stand: September 2026</p>
+<div class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-mark">K</div>
+    Kfz<span style="color:rgba(255,255,255,0.65)">Gut</span>-<span class="logo-ai">AI</span>
+  </a>
+  <a href="javascript:history.back()" class="tb-link" style="font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1)">← Zurück</a>
 </div>
-</main>
 
-<footer class="fuss">
-  <div class="wrap">
-    <div class="fuss-zeile">
-      <div><strong style="color:#fff">KfzGut-AI</strong><br>Der Prüfassistent für Kfz-Schadengutachten.</div>
-      <div><a href="/ki-transparenz.html">KI-Transparenz</a> · <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · <a href="/agb.html">AGB</a></div>
+<div class="page">
+
+
+<h1>Allgemeine Geschäftsbedingungen</h1>
+  <div class="meta">KfzGut-AI · Stand: 21. April 2026</div>
+
+  <div class="section">
+    <h2>§ 1 Geltungsbereich und Vertragsparteien</h2>
+    <p>Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB") regeln die Nutzung des Software-as-a-Service-Dienstes KfzGut-AI, erreichbar unter kfzgut-ai.de (nachfolgend „Dienst"), betrieben von Johan Petersen, Täubchenweg 85, 04317 Leipzig (nachfolgend „Anbieter").</p>
+    <p>Der Dienst richtet sich ausschließlich an Unternehmer im Sinne des § 14 BGB – insbesondere öffentlich bestellte und vereidigte Sachverständige für das Kraftfahrzeugwesen, zertifizierte Kfz-Sachverständige sowie Kfz-Sachverständigenbüros (nachfolgend „Nutzer"). Vertragsabschlüsse mit Verbrauchern im Sinne des § 13 BGB sind ausgeschlossen. Mit der Registrierung bestätigt der Nutzer ausdrücklich, in Ausübung seiner gewerblichen oder selbständigen beruflichen Tätigkeit zu handeln.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 2 Leistungsgegenstand</h2>
+    <p>KfzGut-AI stellt dem Nutzer folgende KI-gestützte Werkzeuge zur Verfügung:</p>
+    <ul>
+      <li>Automatisierte Prüfung von Kfz-Schadengutachten auf drei Ebenen: formale Fehler, Plausibilität und Kompatibilität des Schadenbildes sowie Kalkulation und Wertansätze</li>
+      <li>Generierung von Textbausteinen für alle Abschnitte eines Kfz-Schadengutachtens (55 Bausteine in 8 Kategorien)</li>
+      <li>Vollgutachten-Funktion: automatische Generierung aller Hauptabschnitte eines Schadengutachtens</li>
+      <li>Schreibstil-Assistent auf Basis hochgeladener Referenzgutachten des Nutzers</li>
+      <li>KI-Formulierungshilfe direkt am Prüfpunkt</li>
+      <li>Export des Prüfberichts als formatiertes Word-Dokument (.docx)</li>
+    </ul>
+    <div class="highlight-box">
+      <p><strong>Wichtiger Hinweis:</strong> Alle generierten Texte und Prüfergebnisse sind Arbeitshilfen und Entwürfe. Sie ersetzen nicht die fachliche, methodische und rechtliche Beurteilung durch einen zertifizierten Sachverständigen. Fehlende Beanstandungen im Prüfbericht bedeuten ausdrücklich nicht, dass das Gutachten fehlerfrei oder rechtssicher ist. Der Nutzer trägt die alleinige fachliche und rechtliche Verantwortung für das von ihm erstellte und unterzeichnete Gutachten.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>§ 3 Vertragsschluss und Registrierung</h2>
+    <p>Der Vertrag kommt durch vollständige Registrierung des Nutzers, Bestätigung der E-Mail-Adresse und Hinterlegung eines gültigen Zahlungsmittels zustande. Mit Abschluss der Registrierung akzeptiert der Nutzer diese AGB sowie die Datenschutzerklärung.</p>
+    <p>Der Nutzer ist verpflichtet, bei der Registrierung wahrheitsgemäße Angaben zu machen und seine gewerbliche Tätigkeit zu bestätigen. Die Zugangsdaten sind vertraulich zu behandeln und vor unbefugtem Zugriff zu schützen. Eine Weitergabe an Personen außerhalb des eigenen Unternehmens ist untersagt. Pro Nutzer ist ein Account gestattet. Die Nutzung innerhalb desselben Büros durch bis zu drei Personen ist zulässig.</p>
+    <p>Der Anbieter behält sich vor, Registrierungen ohne Angabe von Gründen abzulehnen, insbesondere wenn Anhaltspunkte bestehen, dass der Nutzer kein Unternehmer im Sinne des § 14 BGB ist.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 4 Testzeitraum und Abonnement</h2>
+    <p>Nach der Registrierung und Bestätigung der E-Mail-Adresse beginnt automatisch ein kostenloser Testzeitraum von <strong>7 Kalendertagen</strong>. Während des Testzeitraums wird kein Betrag belastet (0,00 € heute).</p>
+    <p>Nach Ablauf des Testzeitraums kann der Nutzer zwischen zwei Tarifen wählen:</p>
+    <ul>
+      <li><strong>Einzelplatz:</strong> 99,00 € zzgl. gesetzlicher USt. pro Monat, Nutzung durch eine Person</li>
+      <li><strong>Büro-Tarif:</strong> 149,00 € zzgl. gesetzlicher USt. pro Monat, Nutzung durch bis zu drei namentlich benannte Personen desselben Unternehmens</li>
+    </ul>
+    <p>Die Abrechnung erfolgt monatlich im Voraus. Beim Büro-Tarif verwaltet der Hauptaccount die weiteren Nutzerzugänge; die Verantwortung für die Weitergabe der Zugangsdaten liegt beim Hauptaccount-Inhaber.</p>
+    <p>Die Umsatzsteuer-Identifikationsnummer des Anbieters lautet: DE344796099. Auf allen Rechnungen wird die gesetzliche Umsatzsteuer von 19% ausgewiesen.</p>
+    <p>Die Zahlung erfolgt über den Zahlungsdienstleister Stripe Payments Europe Ltd., Irland. Die jeweils gültigen Preise sind unter kfzgut-ai.de ausgewiesen. Preisänderungen werden dem Nutzer mindestens 30 Tage vor Inkrafttreten per E-Mail angekündigt.</p>
+    <p>Rechnungen werden automatisch per E-Mail an die hinterlegte Adresse übermittelt und enthalten alle umsatzsteuerlich erforderlichen Pflichtangaben gemäß § 14 UStG, insbesondere den Ausweis der gesetzlichen Umsatzsteuer von 19% sowie die Umsatzsteuer-Identifikationsnummer DE344796099.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 5 Laufzeit und Kündigung</h2>
+    <p>Das Abonnement läuft auf unbestimmte Zeit und ist von beiden Seiten monatlich kündbar, ohne Angabe von Gründen und ohne Einhaltung einer Kündigungsfrist zum Ende des laufenden Abrechnungsmonats.</p>
+    <p>Die Kündigung durch den Nutzer erfolgt über den Bereich „Mein Konto" auf kfzgut-ai.de oder per E-Mail an <a href="mailto:info@kfzgut-ai.de">info@kfzgut-ai.de</a>. Nach Eingang der Kündigung behält der Nutzer den vollständigen Zugang bis zum Ende des bereits bezahlten Abrechnungszeitraums. Eine anteilige Rückerstattung bereits geleisteter Zahlungen erfolgt nicht.</p>
+    <p>Der Anbieter ist berechtigt, das Vertragsverhältnis außerordentlich und fristlos zu kündigen, wenn der Nutzer gegen wesentliche Pflichten aus diesen AGB verstößt, insbesondere bei missbräuchlicher Nutzung, unberechtigter Weitergabe von Zugangsdaten oder Nutzung des Dienstes für rechtswidrige Zwecke. In diesen Fällen besteht kein Anspruch auf Rückerstattung bereits geleisteter Zahlungen.</p>
+    <p>Nach Vertragsende werden die Kontodaten des Nutzers gelöscht. Lokal im Browser des Nutzers gespeicherte Daten (Verlauf, Schreibstil-Referenzen, generierte Texte) verbleiben bis zur manuellen Löschung durch den Nutzer auf dessen Gerät.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 6 Pflichten des Nutzers</h2>
+    <p>Der Nutzer verpflichtet sich, den Dienst ausschließlich für legitime berufliche Zwecke im Bereich der Kfz-Schadenbegutachtung zu nutzen. Insbesondere ist es untersagt:</p>
+    <ul>
+      <li>Generierte Texte unverändert und fachlich ungeprüft als eigenes Gutachten einzureichen oder zu unterzeichnen</li>
+      <li>Personenbezogene Daten von Eigentümern, Käufern, Mietern oder sonstigen am Bewertungsobjekt beteiligten Personen sollen nach Möglichkeit vor dem Hochladen geschwärzt oder anonymisiert werden (siehe § 9 und Datenschutzerklärung)</li>
+      <li>Zugangsdaten an Dritte außerhalb des eigenen Unternehmens weiterzugeben oder entgeltlich zu überlassen</li>
+      <li>Den Dienst zur Erstellung von Gutachten für Zwecke zu nutzen, die gegen geltendes Recht verstoßen</li>
+      <li>Den Dienst automatisiert, durch Bots oder Skripte zu nutzen</li>
+      <li>Sicherheitsmechanismen zu umgehen oder den Dienst in einer Weise zu nutzen, die Server, Infrastruktur oder andere Nutzer beeinträchtigt</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>§ 7 Haftung und Gewährleistung</h2>
+    <p>Der Anbieter haftet nicht für Schäden, die aus der Verwendung KI-generierter Texte, KI-gestützter Prüfergebnisse oder aus dem Vertrauen auf die Vollständigkeit oder Richtigkeit von Prüfberichten entstehen. Dies gilt insbesondere für:</p>
+    <ul>
+      <li>Fehlerhafte oder unvollständige Textbausteine oder Prüfhinweise</li>
+      <li>Übersehene Fehler im Prüfbericht oder unvollständige Prüfergebnisse</li>
+      <li>Schäden durch ungeprüfte Übernahme generierter Texte in Gutachten</li>
+      <li>Schäden durch Entscheidungen von Gerichten, Banken oder Auftraggebern auf Basis von mit KfzGut-AI erstellten oder geprüften Gutachten</li>
+      <li>Datenverlust, da Gutachtendaten nicht dauerhaft auf Servern des Anbieters gespeichert werden</li>
+    </ul>
+    <p>Die Haftung für Vorsatz und grobe Fahrlässigkeit sowie für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit bleibt unberührt. Die Gesamthaftung des Anbieters für sonstige Schäden ist auf den vom Nutzer im betreffenden Kalendermonat entrichteten Abonnementbetrag begrenzt.</p>
+    <p>Der Anbieter übernimmt keine Gewährleistung für eine bestimmte Qualität, Vollständigkeit, Aktualität oder fachliche Richtigkeit der KI-generierten Inhalte.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 8 Einsatz künstlicher Intelligenz</h2>
+    <p>Der Dienst ist ein KI-System im Sinne der Verordnung (EU) 2024/1689 (KI-Verordnung). Sowohl die Prüfberichte als auch die generierten Textbausteine werden automatisiert durch künstliche Intelligenz erzeugt und sind als solche gekennzeichnet.</p>
+    <p>Die Ergebnisse stellen Entwürfe und Hinweise dar. Sie ersetzen weder die fachliche Prüfung noch das Sachverständigenurteil des Nutzers. Der Nutzer bleibt für Inhalt und Richtigkeit des von ihm erstellten oder abgegebenen Gutachtens allein verantwortlich.</p>
+    <p>KI-Systeme können unzutreffende Hinweise liefern oder Sachverhalte übersehen. Der Anbieter übernimmt keine Gewähr für die Vollständigkeit oder Richtigkeit der Prüfergebnisse. Wird ein Gutachten nur teilweise ausgewertet, weist der Dienst hierauf gesondert hin.</p>
+    <p>Generierte Inhalte werden sichtbar sowie in den Dokument-Metadaten maschinenlesbar als KI-generiert gekennzeichnet (Art. 50 KI-Verordnung).</p>
+
+    <h2>§ 9 Datenschutz und KI-Datenverarbeitung</h2>
+    <p>Zur Erbringung des Dienstes verarbeitet der Anbieter Registrierungs- und Zahlungsdaten des Nutzers. Einzelheiten regelt die Datenschutzerklärung unter <a href="datenschutz.html" style="color:var(--blue)">kfzgut-ai.de/datenschutz.html</a>.</p>
+    <p>Gutachtentexte, Fahrzeug- und Schadendaten werden nicht dauerhaft auf Servern des Anbieters gespeichert; sie verbleiben lokal im Browser des Nutzers. Zur Analyse werden die eingegebenen Texte zur Laufzeit an Anthropic PBC, San Francisco, USA, übermittelt. Hierfür besteht zwischen dem Anbieter und Anthropic ein Auftragsverarbeitungsvertrag (Data Processing Addendum) inkl. EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO.</p>
+    <p>Sofern vom Nutzer eingegebene Gutachtentexte personenbezogene Daten Dritter (Eigentümer, Käufer, Mieter etc.) enthalten, kann zwischen dem Nutzer und dem Anbieter eine Auftragsverarbeitung im Sinne des Art. 28 DSGVO vorliegen. Der Anbieter arbeitet an einem entsprechenden Auftragsverarbeitungsvertrag mit seinen Nutzern. Bis zu dessen Bereitstellung wird empfohlen, personenbezogene Daten vor dem Hochladen zu schwärzen oder zu anonymisieren.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 10 Verfügbarkeit</h2>
+    <p>Der Anbieter strebt eine Verfügbarkeit des Dienstes von 99 % im Jahresmittel an, übernimmt jedoch keine rechtsverbindliche Garantie für eine unterbrechungsfreie Nutzbarkeit. Planmäßige Wartungsarbeiten werden nach Möglichkeit vorab per E-Mail oder auf der Produktseite angekündigt.</p>
+    <p>Bei ungeplanten Ausfällen von mehr als 24 Stunden am Stück wird die Abonnementlaufzeit des betroffenen Nutzers auf schriftliche Anfrage entsprechend verlängert. Darüber hinausgehende Ansprüche, insbesondere auf Schadensersatz, bestehen nicht.</p>
+    <p>Der Anbieter behält sich vor, den Funktionsumfang des Dienstes jederzeit zu ändern, zu erweitern oder einzuschränken, sofern dies dem Nutzer zumutbar ist und der wesentliche Leistungsgegenstand gemäß § 2 erhalten bleibt.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 11 Nutzungsrechte</h2>
+    <p>Der Anbieter räumt dem Nutzer für die Dauer des Abonnements ein einfaches, nicht übertragbares Recht zur Nutzung des Dienstes für eigene berufliche Zwecke ein.</p>
+    <p>Mit KfzGut-AI generierte Textbausteine und Prüfberichte darf der Nutzer für seine Tätigkeit als Sachverständiger verwenden, verändern und in eigene Gutachten einarbeiten. Ein Weiterverkauf des Dienstzugangs oder generierter Inhalte als eigenständiges Produkt ist nicht gestattet.</p>
+    <p>Die Software, Benutzeroberfläche, Datenbankstruktur und sämtliche sonstigen Bestandteile des Dienstes sind urheberrechtlich geschützt und verbleiben im Eigentum des Anbieters.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 12 Änderungen dieser AGB</h2>
+    <p>Der Anbieter ist berechtigt, diese AGB mit angemessener Frist zu ändern. Änderungen werden dem Nutzer mindestens <strong>30 Tage vor Inkrafttreten</strong> per E-Mail an die hinterlegte Adresse mitgeteilt. Die Mitteilung enthält einen ausdrücklichen Hinweis auf das Widerspruchsrecht und die Folgen des Schweigens.</p>
+    <p>Widerspricht der Nutzer den geänderten AGB nicht innerhalb von 30 Tagen nach Zugang der Mitteilung, gelten die neuen AGB als akzeptiert. Im Fall des fristgerechten Widerspruchs ist der Anbieter berechtigt, den Vertrag zum Ende des laufenden Abrechnungszeitraums zu beenden.</p>
+  </div>
+
+  <div class="section">
+    <h2>§ 13 Schlussbestimmungen</h2>
+    <p>Es gilt ausschließlich das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts (CISG). Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesem Vertrag ist Leipzig, sofern der Nutzer Kaufmann, juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen ist.</p>
+    <p>Sollten einzelne Bestimmungen dieser AGB ganz oder teilweise unwirksam sein oder werden, berührt dies die Wirksamkeit der übrigen Bestimmungen nicht (Salvatorische Klausel). An die Stelle der unwirksamen Bestimmung tritt die gesetzlich zulässige Regelung, die dem wirtschaftlichen Zweck der unwirksamen Bestimmung am nächsten kommt.</p>
+    <p>Nebenabreden bestehen nicht. Änderungen oder Ergänzungen dieses Vertrages bedürfen der Textform; eine E-Mail an <a href="mailto:info@kfzgut-ai.de">info@kfzgut-ai.de</a> genügt.</p>
+  </div>
+
+</div>
+
+<footer style="background:var(--ink);padding:20px 28px">
+  <div style="max-width:740px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="font-family:var(--serif);font-size:14px;color:rgba(255,255,255,0.35)">KfzGut-<span style="color:var(--orange)">AI</span></div>
+    <div style="display:flex;gap:20px">
+      <a href="impressum.html" style="font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none">Impressum</a>
+      <a href="datenschutz.html" style="font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none">Datenschutz</a>
+      <a href="agb.html" style="font-size:12px;color:rgba(255,255,255,0.65);text-decoration:none">AGB</a>
     </div>
   </div>
 </footer>
+
 </body>
 </html>
